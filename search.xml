@@ -1242,4 +1242,46 @@
         <tag>Java基础</tag>
       </tags>
   </entry>
+  <entry>
+    <title>GoLang</title>
+    <url>/2022/07/09/GoLang/</url>
+    <content><![CDATA[<h1 id="GoLang"><a href="#GoLang" class="headerlink" title="GoLang"></a>GoLang</h1><h2 id="一、特点"><a href="#一、特点" class="headerlink" title="一、特点"></a>一、特点</h2><p>既有静态语言的安全和性能，又有动态语言开发和维护的高效率</p>
+<p>Go &#x3D; C + Python</p>
+<span id="more"></span>
+
+<p>1、Go的每一个文件都要属于一个包</p>
+<p>2、垃圾回收机制，内存自动回收</p>
+<p>3、天然支持并发，可进行大并发处理，高效利用多核</p>
+<p>4、管道通信机制，可实现不同goroute间的通信</p>
+<p>5、函数可以返回多个值</p>
+<p>6、切片slice：动态数组，类似于Java的集合	</p>
+<p>​	  延时执行：defer</p>
+<h2 id="二、Go快速开发入门"><a href="#二、Go快速开发入门" class="headerlink" title="二、Go快速开发入门"></a>二、Go快速开发入门</h2><h4 id="1、hello-word"><a href="#1、hello-word" class="headerlink" title="1、hello word"></a>1、hello word</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">//导入fmt包</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//func:关键字，表示一个函数</span></span><br><span class="line"><span class="comment">//main:主函数，表示程序的入口</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">//调用fmt中的输出函数</span></span><br><span class="line">	fmt.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：Go中的编译命令</p>
+<ol>
+<li>build xxx.go:生成可执行文件.exe</li>
+<li>xxx.exe:执行可执行文件</li>
+<li>go run:直接运行xxx.go程序，一般仍先编译后执行</li>
+</ol>
+<h4 id="2、Go执行流程分析"><a href="#2、Go执行流程分析" class="headerlink" title="2、Go执行流程分析"></a>2、Go执行流程分析</h4><p>1、先编译后执行</p>
+<p>.go文件 –&gt;可执行文件 –&gt;运行结果</p>
+<p>2、使用go run</p>
+<p>区别：1、编译后的可执行文件，可以拷贝到没有go开发环境的设备上运行</p>
+<p>​			2、编译时会将程序运行所依赖的库文件包含在可执行文件中</p>
+<h4 id="3、注意事项"><a href="#3、注意事项" class="headerlink" title="3、注意事项"></a>3、注意事项</h4><p>1、源文件以.go结尾</p>
+<p>2、语句末尾不需要加分号</p>
+<p>3、定义的变量或引入的包未被使用，则编译不通过</p>
+<p>4、常用转义字符：</p>
+<p><code>\t:制表符	\n:换行	\\   \&quot;	   \r:回车,不换行，将回车后的字符从该行起始位置开始输出</code></p>
+<h4 id="4、注释"><a href="#4、注释" class="headerlink" title="4、注释"></a>4、注释</h4><p>行注释：<code>\\</code>  块注释：<code>/* */</code></p>
+<p>块注释中不允许嵌套</p>
+]]></content>
+      <categories>
+        <category>GoLang</category>
+      </categories>
+      <tags>
+        <tag>GoLang基础</tag>
+      </tags>
+  </entry>
 </search>
