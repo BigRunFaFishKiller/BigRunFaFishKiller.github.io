@@ -738,11 +738,12 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringMvc</title>
-    <url>/2022/07/07/SpringMVC%E7%AC%94%E8%AE%B0/</url>
+    <title>SpringMVC</title>
+    <url>/2022/07/06/SpringMVC%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="一、SpringMVC简介"><a href="#一、SpringMVC简介" class="headerlink" title="一、SpringMVC简介"></a>一、SpringMVC简介</h1><h3 id="1、什么是MVC"><a href="#1、什么是MVC" class="headerlink" title="1、什么是MVC"></a>1、什么是MVC</h3><p>MVC是一种软件架构的思想，将软件按照模型、视图、控制器来划分</p>
 <p>M：Model，模型层，指工程中的JavaBean，作用是处理数据</p>
 <span id="more"></span>
+
 <p>JavaBean分为两类：</p>
 <ul>
 <li>一类称为实体类Bean：专门存储业务数据的，如 Student、User 等</li>
@@ -886,6 +887,8 @@
 <p>required：设置是否必须传输此请求参数，默认值为true</p>
 <p>若设置为true时，则当前请求必须传输value所指定的请求参数，若没有传输该请求参数，且没有设置defaultValue属性，则页面报错400：Required String parameter ‘xxx’ is not present；若设置为false，则当前请求不是必须传输value所指定的请求参数，若没有传输，则注解所标识的形参的值为null</p>
 <p>defaultValue：不管required属性值为true或false，当value所指定的请求参数没有传输或传输的值为””时，则使用默认值为形参赋值</p>
+<p>特殊情况：</p>
+<p>如果参数为基本数据类型，且required为false，在没有默认值的情况下，没有传参数则会报错</p>
 <h3 id="4、-RequestHeader"><a href="#4、-RequestHeader" class="headerlink" title="4、@RequestHeader"></a>4、@RequestHeader</h3><p>@RequestHeader是将请求头信息和控制器方法的形参创建映射关系</p>
 <p>@RequestHeader注解一共有三个属性：value、required、defaultValue，用法同@RequestParam</p>
 <h3 id="5、-CookieValue"><a href="#5、-CookieValue" class="headerlink" title="5、@CookieValue"></a>5、@CookieValue</h3><p>@CookieValue是将cookie数据和控制器方法的形参创建映射关系</p>
