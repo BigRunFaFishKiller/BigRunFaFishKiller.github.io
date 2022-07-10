@@ -34,6 +34,44 @@
 <p><code>\t:制表符	\n:换行	\\   \&quot;	   \r:回车,不换行，将回车后的字符从该行起始位置开始输出</code></p>
 <h4 id="4、注释"><a href="#4、注释" class="headerlink" title="4、注释"></a>4、注释</h4><p>行注释：<code>\\</code>  块注释：<code>/* */</code></p>
 <p>块注释中不允许嵌套</p>
+<h2 id="三、基础语法"><a href="#三、基础语法" class="headerlink" title="三、基础语法"></a>三、基础语法</h2><h4 id="1、变量"><a href="#1、变量" class="headerlink" title="1、变量"></a>1、变量</h4><p>1、声明：</p>
+<ol>
+<li><p>指定变量数据类型，若不赋值，则使用默认值</p>
+</li>
+<li><p>不指定数据类型，类型推导</p>
+</li>
+<li><p>省略var，使用变量名 :&#x3D; 值的方式声明并赋值</p>
+</li>
+<li><p>多变量声明，使用 var n1, n2, n3 int 的方式赋值</p>
+</li>
+<li><p>多变量声明，使用 var n1, n2, n3 &#x3D; 1, 1.0, “str”，同时给不同类型赋值</p>
+</li>
+<li><p>多全局变量声明，var(n1 &#x3D; 1, n2 &#x3D; 1.0)</p>
+</li>
+</ol>
+<p>默认值：int &#x3D; 0，string &#x3D; “”, float &#x3D; 0</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span>(</span><br><span class="line">    n1 = <span class="number">1</span></span><br><span class="line">    n2 = <span class="number">1.0</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> i <span class="type">int</span> </span><br><span class="line">    <span class="keyword">var</span> i = <span class="number">1</span></span><br><span class="line">    i := <span class="number">1</span></span><br><span class="line">    <span class="keyword">var</span> n1, n2, n3 <span class="type">int</span></span><br><span class="line">    <span class="keyword">var</span> n1, n2, n3 <span class="type">int</span> = <span class="number">1</span>, <span class="number">1.0</span>, <span class="string">&quot;str&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、数据类型</p>
+<p>基本数据类型：</p>
+<ol>
+<li>整数类型：int, int8, int32 (rune， 表示一个Unicode码点，可以用来存汉字), int64, uint, uint8 (byte), uint 16, uint32, uint64, byte </li>
+<li>浮点类型：float32, float64</li>
+<li>字符型：没有专门类型，用byte保存单个字母（不能存汉字）</li>
+<li>布尔型</li>
+<li>字符串</li>
+</ol>
+<p>派生数据类型：</p>
+<ol>
+<li>指针</li>
+<li>数组</li>
+<li>结构体：类似于Class</li>
+<li>管道：并发</li>
+<li>函数</li>
+<li>切片：类似于动态数组</li>
+<li>接口</li>
+<li>map</li>
+</ol>
 ]]></content>
       <categories>
         <category>GoLang</category>
