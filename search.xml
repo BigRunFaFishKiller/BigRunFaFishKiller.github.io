@@ -1394,7 +1394,9 @@
   <entry>
     <title>开发日记-条件分页查询的实现</title>
     <url>/2022/07/15/%E5%BC%80%E5%8F%91%E6%97%A5%E8%AE%B0-%E6%9D%A1%E4%BB%B6%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E7%8E%B0/</url>
-    <content><![CDATA[<h2 id="需求说明"><a href="#需求说明" class="headerlink" title="需求说明"></a>需求说明</h2><p>在crm项目中的线索部分，点开页面后需要分页展示数据库内的全部线索的部分信息和总条数，并且在该页面内可以输入一定的条件，点击查询按钮后分页展示符合条件的线索的部分信息和总条数</p>
+    <content><![CDATA[<h2 id="需求说明"><a href="#需求说明" class="headerlink" title="需求说明"></a>需求说明</h2><span id="more"></span>
+
+<p>在crm项目中的线索部分，点开页面后需要分页展示数据库内的全部线索的部分信息和总条数，并且在该页面内可以输入一定的条件，点击查询按钮后分页展示符合条件的线索的部分信息和总条数</p>
 <p><img src="/.com//1.jpg" alt="需求说明"></p>
 <h2 id="流程分析"><a href="#流程分析" class="headerlink" title="流程分析"></a>流程分析</h2><p>表结构：线索表(tbl_clue)其结构如下图所示，其中owner、source、state为外键字段保存各自id分别储存在tbl_user、tbl_dic_value表中</p>
 <p><img src="/.com//2.jpg" alt="2"></p>
