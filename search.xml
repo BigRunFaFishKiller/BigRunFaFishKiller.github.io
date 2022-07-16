@@ -1428,4 +1428,28 @@
         <tag>开发日记</tag>
       </tags>
   </entry>
+  <entry>
+    <title>开发日记-子查询的实际应用</title>
+    <url>/2022/07/16/%E5%BC%80%E5%8F%91%E6%97%A5%E8%AE%B0-%E5%AD%90%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<h4 id="需求说明"><a href="#需求说明" class="headerlink" title="需求说明"></a>需求说明</h4><p>在crm的项目中，在线索明细界面给线索关联市场活动，在搜索市场活动的模态窗口内，要求能够模糊查询出未被关联市场活动</p>
+<span id="more"></span>
+
+<h4 id="需求实现"><a href="#需求实现" class="headerlink" title="需求实现"></a>需求实现</h4><p>前端传入模糊查询的名字和要进行关联的线索的id，在模态窗口内显示市场活动的名称、开始日期、结束日期、所有者等字段，先连接用户表查询</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span>  a.id, a.name, a.start_date, a.end_date, u.name <span class="keyword">as</span> owner</span><br><span class="line">    <span class="keyword">from</span> tbl_activity a</span><br><span class="line">    <span class="keyword">join</span> tbl_user u <span class="keyword">on</span> a.owner <span class="operator">=</span> u.id</span><br><span class="line">    <span class="keyword">where</span> a.name <span class="keyword">like</span> <span class="string">&#x27;%&#x27;</span> #&#123;activityName&#125; <span class="string">&#x27;%&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>要排除被该线索关联的市场活动，需要先在线索和市场活动关联表中查询出已经被该线索关联的市场活动的id再进行排除</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> activity_id <span class="keyword">from</span> tbl_clue_activity_relation <span class="keyword">where</span> clue_id <span class="operator">=</span> #&#123;clueId&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二个SQL语句的查询结果作为第一个SQL语句的子查询排查条件</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span>  a.id, a.name, a.start_date, a.end_date, u.name <span class="keyword">as</span> owner</span><br><span class="line">    <span class="keyword">from</span> tbl_activity a</span><br><span class="line">    <span class="keyword">join</span> tbl_user u <span class="keyword">on</span> a.owner <span class="operator">=</span> u.id</span><br><span class="line">    <span class="keyword">where</span> a.name <span class="keyword">like</span> <span class="string">&#x27;%&#x27;</span> #&#123;activityName&#125; <span class="string">&#x27;%&#x27;</span></span><br><span class="line">    <span class="keyword">and</span> a.id <span class="keyword">not</span> <span class="keyword">in</span> (</span><br><span class="line">        <span class="keyword">select</span> activity_id</span><br><span class="line">        <span class="keyword">from</span> tbl_clue_activity_relation</span><br><span class="line">        <span class="keyword">where</span> clue_id <span class="operator">=</span> #&#123;clueId&#125;</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>即可完成需求</p>
+]]></content>
+      <categories>
+        <category>其他</category>
+      </categories>
+      <tags>
+        <tag>开发日记</tag>
+      </tags>
+  </entry>
 </search>
