@@ -219,7 +219,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-24 21:38:48" itemprop="dateModified" datetime="2022-07-24T21:38:48+08:00">2022-07-24</time>
+                <time title="修改时间：2022-07-25 11:14:55" itemprop="dateModified" datetime="2022-07-25T11:14:55+08:00">2022-07-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -253,147 +253,14 @@
 
 <p>4、运行main方法</p>
 <p>在地址栏输入对应路径</p>
-<h2 id="2、简化开发"><a href="#2、简化开发" class="headerlink" title="2、简化开发"></a>2、简化开发</h2><p>1、所有配置被抽取放在同一个配置文件</p>
-<p>配置文件名字同一为application.properties(或者yaml，两者可以共存)，可以在该文件修改端口号、配置SpringMVC等等，具体参照官方文档</p>
-<p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/current/reference/html/index.html"></a></p>
-<p>2、可以将项目打包为jar包，包含全部运行环境，可直接在命令行运行jar包</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>需要取消cmd的快速编辑模式</p>
-<h1 id="二、了解自动配置原理"><a href="#二、了解自动配置原理" class="headerlink" title="二、了解自动配置原理"></a>二、了解自动配置原理</h1><h2 id="1、依赖管理"><a href="#1、依赖管理" class="headerlink" title="1、依赖管理"></a>1、依赖管理</h2><p>1、父项目进行管理依赖，几乎声明了开发中常用的jar包版本，后续引用无需版本号。自动仲裁版本，也可自行修改版本</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--父类依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--在pom.xml自行修改版本,需要去查看对应jar包的key--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">mysql.version</span>&gt;</span>xxx.xxx.xxx<span class="tag">&lt;/<span class="name">mysql.version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>2、引入starter场景启动器</p>
-<p>只要引入starter，对应场景的常用依赖将自动引入，具体starter参考官方文档</p>
-<p>spring-boot-starter-*为官方启动器，*-spring-boot-starter为第三方启动器</p>
-<h2 id="2、自动配置"><a href="#2、自动配置" class="headerlink" title="2、自动配置"></a>2、自动配置</h2><p>自动配置好Tomcat、SpringMVC、web常用应用组件（如字符编码拦截器、视图解析器等等）</p>
-<p>有默认包结构，main方法所在包下的所有子包的组件都会被扫描，包外的组件需要扫描，可以在@SpringBootApplication(scanBasePackages&#x3D;”xxx”)改变扫描路径，或者使用@ComponentScan指定扫描</p>
-<p>各种配置拥有默认值，比如Tomcat默认端口号、文件上传默认大小等等，这些默认配置最终被映射到MultipartProperties类中，配置文件的值也会绑定到对应的类中，并在容器中创建对象</p>
-<p>按需加载自动配置项，所有自动配置都在spring-boot-autoconfigure包中</p>
-<h2 id="3、容器功能"><a href="#3、容器功能" class="headerlink" title="3、容器功能"></a>3、容器功能</h2><h3 id="1、组件添加"><a href="#1、组件添加" class="headerlink" title="1、组件添加"></a>1、组件添加</h3><h4 id="1、-Configuration"><a href="#1、-Configuration" class="headerlink" title="1、@Configuration"></a>1、@Configuration</h4><p>编写配置类，等同于配置文件。</p>
-<p>属性：</p>
-<p>proxyBeanMethods：默认为true，获取单实例组件对象（代理对象），组件之间没有依赖关系设置为false减少判断，组件间有依赖设置为true保持单实例</p>
-<h4 id="2、-Bean"><a href="#2、-Bean" class="headerlink" title="2、@Bean"></a>2、@Bean</h4><p>注解在方法上，在容器中添加以方法名作为组件的id，返回类型作为组件类型的组件。也可以在标签内自定义组件id。默认为单实例。</p>
-<p>如果方法中存在参数，则会去容器中寻找对应的对象作为参数注入方法</p>
-<h4 id="3、-Component、-Controller等"><a href="#3、-Component、-Controller等" class="headerlink" title="3、@Component、@Controller等"></a>3、@Component、@Controller等</h4><h4 id="4、-Import"><a href="#4、-Import" class="headerlink" title="4、@Import"></a>4、@Import</h4><p>注解在配置类上，可以直接调用无参构造器，在容器中属性中对的应组件，属性为组件类型的数组，可一次注入多个组件。默认组件名为全类名</p>
-<h4 id="5、-Conditional"><a href="#5、-Conditional" class="headerlink" title="5、@Conditional"></a>5、@Conditional</h4><p>条件装配，满足指定条件则进行条件注入，为根注解存在多个派生注解。标注在类上则类的所有组件都要满足条件才会被装配</p>
-<h3 id="2、原生配置文件引入"><a href="#2、原生配置文件引入" class="headerlink" title="2、原生配置文件引入"></a>2、原生配置文件引入</h3><h4 id="ImportResource-“classpath-xxx-xml”"><a href="#ImportResource-“classpath-xxx-xml”" class="headerlink" title="@ImportResource(“classpath:xxx.xml”)"></a>@ImportResource(“classpath:xxx.xml”)</h4><p>解析配置文件，将其中配置的组件注入容器</p>
-<h3 id="3、属性绑定"><a href="#3、属性绑定" class="headerlink" title="3、属性绑定"></a>3、属性绑定</h3><p>读取application.properties文件中的内容，并封装到JavaBean中, 对应Bean类需要注入到容器</p>
-<h4 id="1、-ConfigurationProperties-prefix-x3D-“xxx”"><a href="#1、-ConfigurationProperties-prefix-x3D-“xxx”" class="headerlink" title="1、@ConfigurationProperties(prefix &#x3D; “xxx”)"></a>1、@ConfigurationProperties(prefix &#x3D; “xxx”)</h4><p>注解在类上，读取application.properties文件中的前缀为xxx的属性，并将其绑定到该类的对应的属性上</p>
-<h4 id="2、-EnableConfigurationProperties-“xxx-class”"><a href="#2、-EnableConfigurationProperties-“xxx-class”" class="headerlink" title="2、@EnableConfigurationProperties(“xxx.class”)"></a>2、@EnableConfigurationProperties(“xxx.class”)</h4><p>注解在配置类上，开启xxx的属性绑定功能并将对应类注入到容器中，无需再添加@Component注解，多用于操作第三方类</p>
-<h3 id="4、总结"><a href="#4、总结" class="headerlink" title="4、总结"></a>4、总结</h3><p>SpringBoot预先加载所有配置类，每个自动配置类按条件进行生效，生效的配置类会为容器添加各自的组件并绑定对应的properties文件以便从中获取值，组件加载完毕即配置完成。用户自定义的配置，则以用户的配置优先</p>
-<p>定制化配置可以通过自行创建配置类或者修改对应的配置文件</p>
-<p>SpringBoot所有配置文件的值被抽取在application.peoperties配置文件中（或者yaml两者可以共存）</p>
-<p>xxxAutoConfigration —&gt;注入组件—&gt;从xxx.properties中获取值—&gt;从application.properties中获取值</p>
-<p>配置文件中设置debug&#x3D;true开启自动配置报告，查看生效和没有生效的自动配置</p>
-<h1 id="三、开发技巧"><a href="#三、开发技巧" class="headerlink" title="三、开发技巧"></a>三、开发技巧</h1><h2 id="1、Lombok"><a href="#1、Lombok" class="headerlink" title="1、Lombok"></a>1、Lombok</h2><p>在编译时期给JavaBean添加构造器、set、get、toString等方法，源代码只需设置属性</p>
-<p>1、引入依赖</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>2、idea安装lombok插件</p>
-<p>3、添加对应注解</p>
-<ol>
-<li>@Data：set、get方法</li>
-<li>@ToString：toString方法</li>
-<li>@NoArgsConstructor：无参构造器</li>
-<li>@AllArgsConstructor：全参构造器</li>
-<li>@EqualsAndHashCode：equals和hsahcode方法</li>
-<li>@Slf4j：自动注入log属性，打印日志</li>
-</ol>
-<p>也可以自定义需要的方法</p>
-<h2 id="2、devtools"><a href="#2、devtools" class="headerlink" title="2、devtools"></a>2、devtools</h2><p>自动部署，按住ctrl+F9，开发静态页面不需要重新部署项目</p>
-<p>1、引入依赖</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="3、SpringInitializer"><a href="#3、SpringInitializer" class="headerlink" title="3、SpringInitializer"></a>3、SpringInitializer</h2><p>快速配置SpringBoot项目，勾选所需模块，自动引入所需依赖，创建项目结构，主程序类</p>
-<h1 id="四、核心功能"><a href="#四、核心功能" class="headerlink" title="四、核心功能"></a>四、核心功能</h1><h2 id="1、配置文件"><a href="#1、配置文件" class="headerlink" title="1、配置文件"></a>1、配置文件</h2><p>yaml，用来做以数据为中心的配置文件</p>
-<h3 id="1、基本语法"><a href="#1、基本语法" class="headerlink" title="1、基本语法"></a>1、基本语法</h3><ol>
-<li><p>key: value	kv之间有空格</p>
-</li>
-<li><p>大小写敏感</p>
-</li>
-<li><p>使用缩进表示层级间的关系：缩进只能使用空格，空格次数不想，相同层级对其计科</p>
-</li>
-<li><p>#表示注释</p>
-</li>
-<li><p>‘’和””中的字符串内容会被转义或不转义（\n作为换行输出）</p>
-</li>
-</ol>
-<h3 id="2、数据类型"><a href="#2、数据类型" class="headerlink" title="2、数据类型"></a>2、数据类型</h3><p>1、字面量：直接以kv形式写入</p>
-<p>2、对象（或者Map）：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">k:</span> &#123;<span class="attr">k1:</span> <span class="string">v1</span>,<span class="attr">k2:</span> <span class="string">v2....</span>&#125;</span><br><span class="line"><span class="string">或</span></span><br><span class="line"><span class="attr">k:</span> </span><br><span class="line">  <span class="attr">k1:</span> <span class="string">v1</span></span><br><span class="line">  <span class="attr">k2:</span> <span class="string">v2</span></span><br><span class="line">  <span class="string">...</span></span><br></pre></td></tr></table></figure>
-
-<p>3、集合和数组</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">k:</span> [<span class="string">v1</span>,<span class="string">v2</span>,<span class="string">v3</span>]</span><br><span class="line"><span class="string">或</span></span><br><span class="line"><span class="attr">k:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">v1</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">v2</span></span><br><span class="line">  <span class="string">...</span></span><br></pre></td></tr></table></figure>
-
-<p>添加自定义配置提示，在打包时排除该类</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">//打包时排除该类</span><br><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.2 <span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="2、web开发"><a href="#2、web开发" class="headerlink" title="2、web开发"></a>2、web开发</h2><h3 id="1、SpringMVC自动配置"><a href="#1、SpringMVC自动配置" class="headerlink" title="1、SpringMVC自动配置"></a>1、SpringMVC自动配置</h3><h4 id="1、静态资源访问"><a href="#1、静态资源访问" class="headerlink" title="1、静态资源访问"></a>1、静态资源访问</h4><p>默认静态资源目录：类路径下的static、public、resources或者&#x2F;META-INF&#x2F;resources</p>
-<p>原理：静态映射&#x2F;**，请求先去寻找Controller，如果找不到，则交给静态资源处理器，在静态资源目录下寻找</p>
-<p>默认路径为根路径+&#x2F;** ,  添加前缀需要配置spring.mvc.static-path-patten&#x3D;&#x2F;xxx&#x2F;**，再次访问静态资源时，需要在路径添加xxx路径，以根目录&#x2F;xxx&#x2F;资源名的方式访问</p>
-<p>改变默认静态资源目录：配置spring.resources.static-locations属性</p>
-<h4 id="2、欢迎页"><a href="#2、欢迎页" class="headerlink" title="2、欢迎页"></a>2、欢迎页</h4><p>访问根路径展示的页面</p>
-<p>静态资源下编写index.html，使用访问前缀会导致欢迎页失效</p>
-<h4 id="3、自定义Favicon"><a href="#3、自定义Favicon" class="headerlink" title="3、自定义Favicon"></a>3、自定义Favicon</h4><p>favicon.ico放在静态资源路径下即可，文件后缀必须为.ico</p>
-<h4 id="4、RESTFul风格请求"><a href="#4、RESTFul风格请求" class="headerlink" title="4、RESTFul风格请求"></a>4、RESTFul风格请求</h4><p>对于某个资源的操作，请求路径相同，根据不同的请求方式执行不同的控制器方法。在前端页面添加隐藏域，id设置为_method，value设置为对应的请求方式，将该value作为请求参数，并在后端开启spring.mvc.hiddenmethod.filter.enabled&#x3D;true，即可实现</p>
-<h3 id="2、普通参数与基本注解"><a href="#2、普通参数与基本注解" class="headerlink" title="2、普通参数与基本注解"></a>2、普通参数与基本注解</h3><h4 id="PathVariable"><a href="#PathVariable" class="headerlink" title="@PathVariable"></a>@PathVariable</h4><p>Restful风格中，使用&#x2F;xxx&#x2F;{id}作为请求路径映射，在控制器方法的形参中使用本注解@PathVariable(“id”) 变量名将请求参数赋值给对应的变量</p>
-<h4 id="RequestHeader"><a href="#RequestHeader" class="headerlink" title="@RequestHeader"></a>@RequestHeader</h4><p>获取请求头</p>
-<h4 id="RequestParam"><a href="#RequestParam" class="headerlink" title="@RequestParam"></a>@RequestParam</h4><p>获取同名参数，或者使用注解的属性设置对应的请求参数，不支持POST请求</p>
-<h4 id="CookieValue"><a href="#CookieValue" class="headerlink" title="@CookieValue"></a>@CookieValue</h4><p>获取同名cookie，或者使用注解的属性设置对应的cookie，可以使用Cookie对象封装参数</p>
-<h4 id="RequestBody"><a href="#RequestBody" class="headerlink" title="@RequestBody"></a>@RequestBody</h4><p>获取请求体</p>
-<h4 id="RequestAttribute"><a href="#RequestAttribute" class="headerlink" title="@RequestAttribute"></a>@RequestAttribute</h4><p>获取请求域中的属性值</p>
-<h4 id="MatrixVariable"><a href="#MatrixVariable" class="headerlink" title="@MatrixVariable"></a>@MatrixVariable</h4><p>矩阵变量，绑定在路径变量中，&#x2F;xxx&#x2F;xxx ; A&#x3D;xxx, B&#x3D;xxx, … 通过这种方式可以在cookie被禁用时，使用jsessionid&#x3D;xxx获取session的值</p>
-<p>在请求映射中使用&#x2F;xxx&#x2F;{path}&#x2F;xxx 的映射编写</p>
-<p>使用该注解可以获取矩阵参数的值，默认禁用，在后端配置配置UrlPathHelper的removeSemicolonContent属性为false即可开启矩阵变量，使用@Configuration和WebMvcConfigurer接口重写configurePathMatch方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = false)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WebConfig</span> <span class="keyword">implements</span> <span class="title class_">WebMvcConfigurer</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">configurePathMatch</span><span class="params">(PathMatchConfigurer configurer)</span> &#123;</span><br><span class="line">        <span class="type">UrlPathHelper</span> <span class="variable">urlPathHelper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UrlPathHelper</span>();</span><br><span class="line">        urlPathHelper.setRemoveSemicolonContent(<span class="literal">false</span>);</span><br><span class="line">        configurer.setUrlPathHelper(urlPathHelper)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>不同路径的部分存在相同的矩阵变量，使用pathVar属性指明路径</p>
-<h3 id="3、视图解析和模板引擎"><a href="#3、视图解析和模板引擎" class="headerlink" title="3、视图解析和模板引擎"></a>3、视图解析和模板引擎</h3><p>SpringBoot默认不支持jsp</p>
-<h4 id="ThymeLeaf"><a href="#ThymeLeaf" class="headerlink" title="ThymeLeaf"></a>ThymeLeaf</h4><p>1、基本语法</p>
-<ol>
-<li>变量取值: ${}</li>
-<li>选择变量: *{}</li>
-<li>生成链接: @{}</li>
-<li>片段表达式: ~{}</li>
-</ol>
-<p>2、字面量</p>
-<p>3、文本操作</p>
-<p>4、数学、布尔、比较、条件运算</p>
-<p>5、特殊操作：_ 无操作</p>
-<p>6、设置属性值</p>
-<p>th:attr&#x3D;”value&#x3D;${}”</p>
-<p>th:value&#x3D;”${}”</p>
-<p>7、设置文本域</p>
-<p>th:text &#x3D;”${}”</p>
-<p>修改那个属性，则使用th:属性</p>
-<p>8、标签外提取数据</p>
-<p>[[${}]]	使用两个中括号</p>
-<p>9、插入抽取出的公共标签</p>
-<p>先给被引用的标签命名：th:fragment&#x3D;”aaa”或id&#x3D;”bbb”</p>
-<p>th:insert&#x3D;”页面A ::  aaa”或th:insert&#x3D;”页面A ::  #bbb”（将引用部分插入引用时使用的标签</p>
-<p>th:replace&#x3D;”页面A ::  aaa”或th:replace&#x3D;”页面A ::  #bbb”（替换引用时所使用的标签）</p>
-<p>th:include&#x3D;”页面A ::  aaa”或th:include&#x3D;”页面A ::  #bbb”（将被引用标签内的内容查询引用时使用的标签）</p>
-<p>可以将A页面中对应标签内的内容引用到所需要的位置</p>
-<p>10、遍历数据</p>
-<p>在<tr>内使用th:each&#x3D;”user, status: ${users}”，遍历users中的每一个user，在user后使用逗号隔开添加一个status属性，即可获取当前遍历的数目等属性，使用status.count获取计数（从1开始）</tr></p>
-<p>使用：</p>
-<p>1、引入starter</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>2、自动配置完成模板引擎和视图解析器</p>
-<p>3、默认页面路径为templates、默认后缀为html</p>
-<p>4、页面添加名称空间</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;ch&quot;</span> <span class="attr">xmlns:th</span>=<span class="string">&quot;http://www.thymeleaf.org&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="4、拦截器"><a href="#4、拦截器" class="headerlink" title="4、拦截器"></a>4、拦截器</h3><p>preHandle：控制器方法处理前	postHandle：控制器方法处理后，解析视图前	afterHandle：解析视图后</p>
-<p>使用：</p>
-<p>1、实现HandleInceptor接口，重写需要的方法</p>
-<p>2、配置拦截的请求</p>
-<p>​	使用@Configuration和WebMVCConfigurer接口，重写addInterceptors方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> &#123;</span><br><span class="line">	registry.addaddInterceptor((<span class="keyword">new</span> <span class="title class_">xxxInterceptor</span>))</span><br><span class="line">	.addPathPatterns(<span class="string">&quot;/**&quot;</span>)					<span class="comment">//拦截请求</span></span><br><span class="line">	.excludePathPattern(<span class="string">&quot;/xxx&quot;</span>, <span class="string">&quot;/xxx&quot;</span>, <span class="string">&quot;/css/**&quot;</span>)		<span class="comment">//放行请求和静态资源</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/07/23/SpringBoot/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
