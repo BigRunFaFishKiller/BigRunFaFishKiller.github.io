@@ -1512,7 +1512,7 @@
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">   <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>2、创建main方法</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainApplication</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ConfigurableApplicationContext</span> <span class="variable">run</span> <span class="operator">=</span> SpringApplication.run(MainApplication.class, args);<span class="comment">//</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Application</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ConfigurableApplicationContext</span> <span class="variable">run</span> <span class="operator">=</span> SpringApplication.run(MainApplication.class, args);<span class="comment">//</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>3、编写业务逻辑</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloController</span> &#123;</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/helloworld&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -1618,7 +1618,8 @@
 
 <p>不同路径的部分存在相同的矩阵变量，使用pathVar属性指明路径</p>
 <h3 id="3、视图解析和模板引擎"><a href="#3、视图解析和模板引擎" class="headerlink" title="3、视图解析和模板引擎"></a>3、视图解析和模板引擎</h3><p>SpringBoot默认不支持jsp</p>
-<h4 id="ThymeLeaf"><a href="#ThymeLeaf" class="headerlink" title="ThymeLeaf"></a>ThymeLeaf</h4><p>1、基本语法</p>
+<h4 id="ThymeLeaf"><a href="#ThymeLeaf" class="headerlink" title="ThymeLeaf"></a>ThymeLeaf</h4><p><a href="https://www.thymeleaf.org/">Thymeleaf</a></p>
+<p>1、基本语法</p>
 <ol>
 <li>变量取值: ${}</li>
 <li>选择变量: *{}</li>
@@ -1679,7 +1680,7 @@
 <li>默认无法处理异常，再将异常抛出</li>
 </ol>
 </li>
-<li><p>无法处理的异常则会发送&#x2F;error请求</p>
+<li><p>无法处理的异常则会发送&#x2F;error请求3</p>
 <ol>
 <li><p>BasicErrorController处理请求</p>
 </li>
@@ -1712,15 +1713,261 @@
 </li>
 <li><p>DefaultHandlerExceptionResolver处理SpringMVC的异常，比如缺少请求参数，最终发送&#x2F;error请求</p>
 </li>
-<li><p>自定义异常解析器ErrorViewResolver</p>
+<li><p>自定义异常解析器ErrorViewResolver，一般不使用这种方式</p>
 <ol>
 <li>实现HandlerExceptionResolver接口，重写resolverException方法</li>
 <li>response.sendError(status, message)可以直接发送&#x2F;error请求</li>
-<li>使用@Component注解添加组件，使用@order注解为其指定最高优先级</li>
+<li>使用@Component注解添加组件，使用@order注解为其指定优先级</li>
 </ol>
 </li>
 </ol>
-<h3 id="7、原生组件注入"><a href="#7、原生组件注入" class="headerlink" title="7、原生组件注入"></a>7、原生组件注入</h3>]]></content>
+<h3 id="7、Web原生组件注入"><a href="#7、Web原生组件注入" class="headerlink" title="7、Web原生组件注入"></a>7、Web原生组件注入</h3><p>1、在主类添加@ServletComponentScan指定原生组件位置，再使用@WebServlet，@WebFilter、@WebListener</p>
+<p>2、使用配置类，注册ServletRegistrationBean、FilterRegistrationBean、ListenerRegistrationBean组件并设置对应的路径，建议保持对应组件的单实例，这些bean可以通过方法初始化内部参数</p>
+<h3 id="8、嵌入式Servlet服务器"><a href="#8、嵌入式Servlet服务器" class="headerlink" title="8、嵌入式Servlet服务器"></a>8、嵌入式Servlet服务器</h3><p>定制容器</p>
+<p>1、修改server前缀的配置文件</p>
+<p>2、自定义ConfigurableServletWebServerFactory</p>
+<p>3、实现ServletWebServerFactoryCustomizer接口，将配置文件的值和ServletWebServerFactory进行绑定</p>
+<h3 id="9、SpringBoot定制化原理"><a href="#9、SpringBoot定制化原理" class="headerlink" title="9、SpringBoot定制化原理"></a>9、SpringBoot定制化原理</h3><p>场景starter-&gt;xxxAutoConfiguration-&gt;导入xxx组件-&gt;绑定XXXProperties-&gt;绑定配置文件项</p>
+<p>常见定制化方式</p>
+<ol>
+<li>修改配置文件</li>
+<li>xxxCustomizer</li>
+<li>编写配置类@Configuration+@Bean替换增加容器中的组件，推荐使用</li>
+<li>web应用实现WebMVCConfigurer接口，定制web功能</li>
+<li>全面接管SpringMVC使用@EnableWebMvc，原本所有默认的资源将全部失效如视图解析器</li>
+</ol>
+<h2 id="3、数据访问"><a href="#3、数据访问" class="headerlink" title="3、数据访问"></a>3、数据访问</h2><h3 id="1、SQL"><a href="#1、SQL" class="headerlink" title="1、SQL"></a>1、SQL</h3><h4 id="1、数据源的自动配置"><a href="#1、数据源的自动配置" class="headerlink" title="1、数据源的自动配置"></a>1、数据源的自动配置</h4><p>引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>		<span class="comment">&lt;!--自动版本仲裁，根据数据库版本自行选择对应的驱动版本--&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">          <span class="comment">&lt;!--&lt;verson&gt;5.1.49&lt;/version&gt;--&gt;</span> <span class="comment">&lt;!--自行决定版本，maven的就近依赖原则--&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>修改数据源相关的配置，修改spring.datasource配置文件即可</p>
+<h4 id="2、使用Druid数据源"><a href="#2、使用Druid数据源" class="headerlink" title="2、使用Druid数据源"></a>2、使用Druid数据源</h4><p>1、引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>编写配置类，所有set方法设置的属性均可以通过配置文件进行设置</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DataSourceConfig</span> &#123;</span><br><span class="line">    <span class="comment">//添加组件并开启监控功能</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties(&quot;spring.datasource&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> DataSource <span class="title function_">dataSource</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">DruidDataSource</span> <span class="variable">dataSource</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DruidDataSource</span>();</span><br><span class="line">        dataSource.setFilters(<span class="string">&quot;stat&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> dataSource;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//访问durid监控页</span></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> ServletRegistrationBean <span class="title function_">statViewServlet</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">StatViewServlet</span> <span class="variable">statViewServlet</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StatViewServlet</span>();</span><br><span class="line">        ServletRegistrationBean&lt;StatViewServlet&gt; statViewServletServletRegistrationBean =</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ServletRegistrationBean</span>&lt;&gt;(statViewServlet, <span class="string">&quot;/druid&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> statViewServletServletRegistrationBean;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>更多设置参考Druid文档<a href="https://github.com/alibaba/druid/wiki/Druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E4%BB%8B%E7%BB%8D">Druid连接池介绍 · alibaba&#x2F;druid Wiki (github.com)</a></p>
+<p>2、引入starter</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>编写配置文件</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> </span><br><span class="line">    <span class="attr">druid:</span></span><br><span class="line">      <span class="attr">filter:</span> <span class="string">stat,wall</span></span><br><span class="line">      <span class="comment">#监控页的配置</span></span><br><span class="line">      <span class="attr">stat-view-servlet:</span></span><br><span class="line">        <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">login-username:</span> <span class="string">admin</span></span><br><span class="line">        <span class="attr">login-password:</span> <span class="number">123456</span></span><br><span class="line">      </span><br></pre></td></tr></table></figure>
+
+<p>更多设置参考Druid文档<a href="https://github.com/alibaba/druid/wiki/Druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E4%BB%8B%E7%BB%8D">Druid连接池介绍 · alibaba&#x2F;druid Wiki (github.com)</a></p>
+<h3 id="2、整合Mybatis"><a href="#2、整合Mybatis" class="headerlink" title="2、整合Mybatis"></a>2、整合Mybatis</h3><p>引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>1、配置模式开发</p>
+<p>配置文件前缀：mybatis，全局配置文件前缀：mybatis.configuration</p>
+<ol>
+<li>指定全局配置文件路径：mybatis.config-location&#x3D;classpath:xxx（在yaml配置文件中配置全局配置文件的属性是，这个路径不能指定。建议在yaml配置文件中配置全局配置文件的属性）</li>
+<li>指定mapper映射文件路径：mybatis.mapper-locations&#x3D;classpath:xxx</li>
+<li>Mapper接口标注@Mapper（或者在主类上添加@MapperScan（包名））</li>
+<li>编写sql映射文件并绑定Mapper接口（指定namespace）</li>
+</ol>
+<p>2、注解模式开发（简单SQL语句使用该方式进行开发）</p>
+<p>不需要指定Mapper映射文件，在方法上添加@Select、@Insert等注解，注解属性为SQL语句，按照mybatis原生SQL语句书写方式，使用@option注解可以设置一些sql语句的属性如useGenerateKey&#x3D;true主键自增</p>
+<h3 id="3、整合MybatisPlus"><a href="#3、整合MybatisPlus" class="headerlink" title="3、整合MybatisPlus"></a>3、整合MybatisPlus</h3><p>引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.baomidou<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-plus-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.4.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置文件前缀：mybatis-plus</p>
+<ol>
+<li>mapperlocation自动配置完成：classpath*:&#x2F;mapper&#x2F;**&#x2F;*.xml即任意包下的所有Mapper文件夹下的任意路径下的xml都是sql文件</li>
+<li>@Mapper标注的接口也会被自动扫描</li>
+</ol>
+<p>使用</p>
+<ol>
+<li>引入依赖</li>
+<li>导入数据源</li>
+<li>编写Mapper接口继承于BaseMapper&lt;Dao&gt;</li>
+<li>编写Service接口继承于ServiceImpl&lt;Dao&gt;，其实现类实现该接口并继承于IService的实现类ServiceImpl&lt;Mapper, Dao&gt;</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">UserMapper</span> <span class="keyword">extends</span> <span class="title class_">BaseMapper</span>&lt;User&gt; &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">UserService</span>  <span class="keyword">extends</span> <span class="title class_">IService</span>&lt;User&gt; &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserServiceImpl</span> <span class="keyword">extends</span> <span class="title class_">ServiceImpl</span>&lt;UserMapper, User&gt; <span class="keyword">implements</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>更多使用参考官方文档<a href="https://www.mybatis-plus.com/guide/quick-start.html#%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8">快速开始 | MyBatis-Plus</a></p>
+<p>分页查询：在MybatisPlus中实现了分页查询的方法，需要整合MyBatisPlus分页插件</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Spring boot方式</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@MapperScan(&quot;com.baomidou.cloud.service.*.mapper*&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MybatisPlusConfig</span> &#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> MybatisPlusInterceptor <span class="title function_">mybatisPlusInterceptor</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">MybatisPlusInterceptor</span> <span class="variable">interceptor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MybatisPlusInterceptor</span>();</span><br><span class="line">        interceptor.addInnerInterceptor(<span class="keyword">new</span> <span class="title class_">PaginationInnerInterceptor</span>(DbType.H2));</span><br><span class="line">        <span class="keyword">return</span> interceptor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>创建Page&lt;Dao&gt;对象并创建当前页面和每页条数</li>
+<li>调用xxxService.page方法传入page对象和查询条件的包装类</li>
+<li>返回一个Page对象，可以从中获取总数，每页条数等信息</li>
+<li>分页条可以使用thymeleaf的一些功能实现</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Page&lt;User&gt; userPage = <span class="keyword">new</span> <span class="title class_">Page</span>&lt;&gt;(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">      userPage = userService.page(userPage);</span><br><span class="line">      List&lt;User&gt; records = userPage.getRecords();<span class="comment">//获取查询到的User</span></span><br><span class="line">      <span class="type">long</span> <span class="variable">total</span> <span class="operator">=</span> userPage.getTotal();<span class="comment">//获取总页数</span></span><br><span class="line">      <span class="type">long</span> <span class="variable">current</span> <span class="operator">=</span> userPage.getCurrent();<span class="comment">//获取当前页</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.thymeleaf.org/">Thymeleaf</a></p>
+<h3 id="4、整合Redis"><a href="#4、整合Redis" class="headerlink" title="4、整合Redis"></a>4、整合Redis</h3><p>引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>87</span><br><span class="line">         <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<h2 id="4、单元测试"><a href="#4、单元测试" class="headerlink" title="4、单元测试"></a>4、单元测试</h2><p>引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1、常见注解"><a href="#1、常见注解" class="headerlink" title="1、常见注解"></a>1、常见注解</h3><ol>
+<li>@Test</li>
+<li>@DisplayName：添加测试方法名</li>
+<li>@BeforeEach：每次单元测试前都执行一次</li>
+<li>@AfterEach：每次单元测试后都执行一次</li>
+<li>@BeforeAll：所有测试前执行一次，静态方法（在类上执行单元测试即可执行该类下的所有单元测试）</li>
+<li>@AfterAll：同上</li>
+<li>@Tag：标注单元测试类别</li>
+<li>@Disable：禁用测试方法</li>
+<li>@TimeOut：多少时间后方法超时，可设置时间单位，超时抛出异常</li>
+<li>@ExtendWith：对单元测试使用扩展，如扩展Spring单元测试，则可以使用Spring的自动装配等功能、</li>
+<li>@RepeatTest：多次测试</li>
+<li>@SpringBootTest：以SpringBoot启动单元测试，可以使用Spring的功能</li>
+</ol>
+<h3 id="2、断言机制"><a href="#2、断言机制" class="headerlink" title="2、断言机制"></a>2、断言机制</h3><blockquote>
+<p><strong>断言(assertion)是一种在程序中的一阶逻辑(如：一个结果为真或假的逻辑判断式)，目的为了表示与验证软件开发者预期的结果——当程序执行到断言的位置时，对应的断言应该为真。若断言不为真时，程序会中止执行，并给出错误信息</strong></p>
+</blockquote>
+<p>运行Maven.test执行所有单元测试，所有测试运行结束后对有详细的测试报告</p>
+<p>所有断言方法在Assertion类中</p>
+<p>1、简单断言</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>assertNotEquals</td>
+<td>判断两个对象或两个原始类型是否不相等</td>
+</tr>
+<tr>
+<td>assertSame</td>
+<td>判断两个对象引用是否指向同一个对象</td>
+</tr>
+<tr>
+<td>assertNotSame</td>
+<td>判断两个对象引用是否指向不同的对象</td>
+</tr>
+<tr>
+<td>assertTrue</td>
+<td>判断布尔值是否为true</td>
+</tr>
+<tr>
+<td>assertFalse</td>
+<td>判断布尔值是否为false</td>
+</tr>
+<tr>
+<td>assertNull</td>
+<td>判断给定的对象是否为空</td>
+</tr>
+<tr>
+<td>assertNotNull</td>
+<td>判断给定的对象是否非空</td>
+</tr>
+<tr>
+<td>assertEquals</td>
+<td>判断两个对象或两个原始类型是否相等</td>
+</tr>
+</tbody></table>
+<p>2、数组断言</p>
+<p>assertArrayEquals 		判断两个对象或原始类型的数组是否相等</p>
+<p>3、组合断言</p>
+<p>assertAll 方法接受多个 org.junit.jupiter.api.Executable 函数式接口的实例作为要验证的断言，可以通过 lambda 表达式很容易的提供这些断言，所有断言需要全部成功才能通过</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;assert all&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">all</span><span class="params">()</span> &#123;</span><br><span class="line">     assertAll(<span class="string">&quot;Math&quot;</span>,</span><br><span class="line">        () -&gt; assertEquals(<span class="number">2</span>, <span class="number">1</span> + <span class="number">1</span>),</span><br><span class="line">        () -&gt; assertTrue(<span class="number">1</span> &gt; <span class="number">0</span>)</span><br><span class="line">     );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4、异常断言</p>
+<p>测试方法的异常情况assertThrows() ,配合函数式编程就可以进行使用，出现异常断言通过，否侧断言不通过</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;异常测试&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">exceptionTest</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">ArithmeticException</span> <span class="variable">exception</span> <span class="operator">=</span> Assertions.assertThrows(</span><br><span class="line">           <span class="comment">//扔出断言异常</span></span><br><span class="line">            ArithmeticException.class, () -&gt; System.out.println(<span class="number">1</span> % <span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>5、超时断言</p>
+<p>Assertions.assertTimeout() 超时即断言失败</p>
+<p>6、快速失败</p>
+<p>通过 fail 方法直接使得测试直接失败</p>
+<p>其他参考Junit官方文档</p>
+<h3 id="3、前置条件"><a href="#3、前置条件" class="headerlink" title="3、前置条件"></a>3、前置条件</h3><p>类似于断言，不满足前置条件的放法会终止执行而不会抛出错误即不满足条件的代码没有必要执行</p>
+<p>所有断言方法在Assumptions类中</p>
+<p>方法类似于断言</p>
+<p>assumeTrue 和 assumFalse 确保给定的条件为 true 或 false，不满足条件会使得测试执行终止。assumingThat 的参数是表示条件的布尔值和对应的 Executable 接口的实现对象。只有条件满足时，Executable 对象才会被执行；当条件不满足时，测试执行并不会终止。</p>
+<h3 id="4、嵌套测试"><a href="#4、嵌套测试" class="headerlink" title="4、嵌套测试"></a>4、嵌套测试</h3><p>通过 Java 中的内部类和@Nested 注解实现嵌套测试，外部的测试方法不能驱动内部的@BeforeEach等等，内层的测试方法可以驱动外层的@BeforeEach等等</p>
+<h3 id="5、参数化测试"><a href="#5、参数化测试" class="headerlink" title="5、参数化测试"></a>5、参数化测试</h3><p>使用不用的参数多次运行测试，使用@ParameterizedTest标注测试方法</p>
+<p>注解：</p>
+<ol>
+<li>@ValueSource(ints &#x3D; {1, 2, 3, 4, 5})：指定参数来源</li>
+<li>@NullSource：指定一个null参数</li>
+<li>@EnumSource：指定一个枚举参数</li>
+<li>@CsvFileSource：从指定csv文件中获取参数</li>
+<li>@MethodSource：从指定方法返回值获取参数，方法必须返回一个流</li>
+</ol>
+<h2 id="5、指标监控"><a href="#5、指标监控" class="headerlink" title="5、指标监控"></a>5、指标监控</h2><p>对每个服务进行监控、追踪、审计、控制等等</p>
+<p>引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置文件前缀：manegement</p>
+<p>使用</p>
+<ol>
+<li><p>引入场景</p>
+</li>
+<li><p>访问 <a href="http://localhost:8080/actuator/">http://localhost:8080/actuator/</a>**</p>
+</li>
+<li><p>暴露所有监控信息为HTTP</p>
+</li>
+</ol>
+<p>编辑配置文件，更多配置信息参考官方文档</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">management:</span></span><br><span class="line">  <span class="attr">endpoints:</span></span><br><span class="line">    <span class="attr">enabled-by-default:</span> <span class="literal">true</span> <span class="comment">#暴露所有端点信息</span></span><br><span class="line">    <span class="attr">web:</span></span><br><span class="line">      <span class="attr">exposure:</span></span><br><span class="line">        <span class="attr">include:</span> <span class="string">&#x27;*&#x27;</span>  <span class="comment">#以web方式暴露</span></span><br><span class="line"> </span><br><span class="line">  <span class="attr">endpoint:</span> <span class="comment">#对某个端点具体配置</span></span><br><span class="line">     <span class="attr">health:</span> </span><br><span class="line">      <span class="attr">show-datail:</span> <span class="string">always</span></span><br></pre></td></tr></table></figure>
+
+<p>常用端点</p>
+<ol>
+<li>Health：健康检测</li>
+<li>Metrics：运行时指标</li>
+<li>Loggers：日志记录</li>
+</ol>
+<p>自定义指标监控</p>
+<p>继承于AbstractHealthIndicator并实现方法doHealthCheck，类名以HealthIndicator结尾</p>
+<p>使用builder.up返回健康信息或者builder.status(状态码)返回健康信息，使用builder.withDetail(信息)返回健康信息</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestHealthIndicator</span> <span class="keyword">extends</span> <span class="title class_">AbstractHealthIndicator</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doHealthCheck</span><span class="params">(Health.Builder builder)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        Map&lt;String, Object&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">&quot;code&quot;</span>, <span class="number">100</span>);</span><br><span class="line">        builder.status(Status.UP);</span><br><span class="line">        builder.withDetail(<span class="string">&quot;count&quot;</span>, <span class="number">1</span>).withDetails(map);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自定义Info</p>
+<p>在配置文件，文件前缀info。获取Pom的信息，@project.artifactId@</p>
+<p>实现接口InfoContributor，并实现contribute方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestInfo</span> <span class="keyword">implements</span> <span class="title class_">InfoContributor</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">contribute</span><span class="params">(Info.Builder builder)</span> &#123;</span><br><span class="line">        builder.withDetail(<span class="string">&quot;code&quot;</span>, <span class="number">100</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自定义metrics</p>
+<p>在业务处理的类的构造器中注入一个MeterRegistry，构造方法内调用counter方法，返回一个Counter实例并赋值给业务处理类的counter属性。在业务处理逻辑中调用counter.increment即可计数每个方法的执行次数</p>
+<p>可以使用AOP进行处理</p>
+<p>自定义Endpoint</p>
+<p>@EndPoint标注类，@ReadOperation读取信息，@WriteOperation写入信息</p>
+<p>可视化</p>
+<p>开源项目<a href="https://github.com/codecentric/spring-boot-admin">codecentric&#x2F;spring-boot-admin: Admin UI for administration of spring boot applications (github.com)</a></p>
+<p>1、建立一个服务器，引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-admin-starter-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2、主类添加@EnableAdminServer</p>
+<p>注册其他微服务</p>
+<p>1、引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-admin-starter-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2、配置文件spring.boot.admin.client.url&#x3D;监控服务器地址，并使用ip注册应用spring.boot.admin.client.instace.prefer-ip&#x3D;true</p>
+<h2 id="6、高级特性"><a href="#6、高级特性" class="headerlink" title="6、高级特性"></a>6、高级特性</h2><h3 id="1、Profile功能"><a href="#1、Profile功能" class="headerlink" title="1、Profile功能"></a>1、Profile功能</h3><p>切换项目运行环境时，快速切换配置文件</p>
+<p>准备多个application配置文件，不同文件名末尾添加-aaa、-bbb区别不同环境的文件，运行时在.properties文件中使用sping.profiles.active&#x3D;aaa、bbb激活不同的配置文件</p>
+<p>当properties文件中配置了与yaml（profile文件）同名的属性时，以profile文件为准</p>
+<p>当项目被打包后修改使用的配置文件可以使用命令java -jar xxx.jar –spring.profiles.active&#x3D;bbb切换配置文件</p>
+<p>@Profile(“xxx”)指定的类或者组件在指定环境下注入</p>
+<p>多种配置文件分组，spring.profiles.group.aaa[0]&#x3D;111、spring.profiles.group.aaa[0]&#x3D;222，spring.profiles.group.bbb[0]&#x3D;333，spring.profiles.group.bbb[0]&#x3D;444，使用sping.profiles.active&#x3D;aaa、bbb激活不同组的配置文件</p>
+<h3 id="2、外部化配置"><a href="#2、外部化配置" class="headerlink" title="2、外部化配置"></a>2、外部化配置</h3><p>1、将数据库等配置文件放在外部</p>
+<p>@Value(“${}”)，该注解既可以重application.yaml中取值，亦可以从环境变量中取值</p>
+<p>可以通过主类的Ioc容器获取环境变量等</p>
+<p>常用：Java属性文件、YAML文件、环境变量、命令行参数；</p>
+<p>2、配置文件查找位置</p>
+<p>(1) classpath 根路径</p>
+<p>(2) classpath 根路径下config目录</p>
+<p>(3) jar包当前目录</p>
+<p>(4) jar包当前目录的config目录</p>
+<p>(5) &#x2F;config子目录的直接子目录，会覆盖掉（4）配置文件的配置的同名数属性</p>
+<p>项目打包后可以从外部再次修改配置文件</p>
+<p>3、配置文件加载顺序：</p>
+<ol>
+<li>　当前jar包内部的application.properties和application.yml</li>
+<li>　当前jar包内部的application-{profile}.properties 和 application-{profile}.yml</li>
+<li>　引用的外部jar包的application.properties和application.yml</li>
+<li>　引用的外部jar包的application-{profile}.properties 和 application-{profile}.yml</li>
+</ol>
+<p>下面的值覆盖上面的值</p>
+<p>4、指定环境优先，外部优先，后面的可以覆盖前面的同名配置项</p>
+<h1 id><a href="#" class="headerlink" title></a></h1>]]></content>
       <categories>
         <category>Java</category>
       </categories>
