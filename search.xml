@@ -2015,4 +2015,55 @@
         <tag>前端框架</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Redis</title>
+    <url>/2022/07/27/redis/</url>
+    <content><![CDATA[<h1 id="1、NoSQL"><a href="#1、NoSQL" class="headerlink" title="1、NoSQL"></a>1、NoSQL</h1><p>Not Only SQL 泛指非关系型数据库，不依赖于业务逻辑的方式存储，以键值对的形式存储。</p>
+<ol>
+<li>不遵循SQL标准</li>
+<li>不支持ACID</li>
+<li>性能远超SQL</li>
+</ol>
+<span id="more"></span>
+
+<p>使用场景</p>
+<ol>
+<li>高并发</li>
+<li>海量数据读写</li>
+<li>数据高扩展性</li>
+<li>用不着SQL或用了SQL也不行的场景</li>
+</ol>
+<p>不适应场景</p>
+<ol>
+<li>事务支持</li>
+<li>基于SQL的结构化存储</li>
+</ol>
+<p>Redis特性</p>
+<ol>
+<li>支持多种数据类型</li>
+<li>对于数据类型的操作多样，且具有原子性</li>
+<li>支持各种不同方式的类型</li>
+<li>数据缓存在内存中，周期性将数据写入磁盘或记录修改日志</li>
+<li>实现主从同步</li>
+</ol>
+<p>redis相关介绍：</p>
+<p>将redis安装在linux虚拟机中</p>
+<ol>
+<li>redis-server：redis服务器启动命令，后台启动不推荐</li>
+<li>redis-cli：客户端操作入口</li>
+<li>关闭shutdown</li>
+</ol>
+<p>默认端口号6379</p>
+<p>默认16个数据库，下标从0开始，默认使用0号库</p>
+<p>底层是单线程+多路IO复用</p>
+<h1 id="2、常用数据类型"><a href="#2、常用数据类型" class="headerlink" title="2、常用数据类型"></a>2、常用数据类型</h1><h2 id="1、key"><a href="#1、key" class="headerlink" title="1、key"></a>1、key</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">keys * 查看所有key</span><br><span class="line">exists key 判断某个key是否存在</span><br><span class="line">type key 查看key的类型</span><br><span class="line">del key 删除key，直接删除</span><br><span class="line">unlink key 删除key，异步删除</span><br><span class="line">expire key 100 设置key的删除事件，秒为单位</span><br><span class="line">ttl key 查看key的过期时间，-1永不过期，-2已过期</span><br><span class="line">select i 切换到第i个库</span><br><span class="line">dbsize 查看key的数目</span><br><span class="line">flushdb 清空当前库</span><br><span class="line">flushall 清空所有库</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>redis</tag>
+      </tags>
+  </entry>
 </search>
