@@ -28,7 +28,7 @@
 <meta property="og:description" content="1、NoSQLNot Only SQL 泛指非关系型数据库，不依赖于业务逻辑的方式存储，以键值对的形式存储。  不遵循SQL标准 不支持ACID 性能远超SQL">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-27T09:49:55.000Z">
-<meta property="article:modified_time" content="2022-07-27T15:31:23.219Z">
+<meta property="article:modified_time" content="2022-07-28T14:16:35.581Z">
 <meta property="article:author" content="大润发杀鱼匠">
 <meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary">
@@ -216,10 +216,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-07-27 17:49:55 / 修改时间：23:31:23" itemprop="dateCreated datePublished" datetime="2022-07-27T17:49:55+08:00">2022-07-27</time>
+              <time title="创建时间：2022-07-27 17:49:55" itemprop="dateCreated datePublished" datetime="2022-07-27T17:49:55+08:00">2022-07-27</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-28 22:16:35" itemprop="dateModified" datetime="2022-07-28T22:16:35+08:00">2022-07-28</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -281,13 +287,85 @@
 <ol>
 <li>redis-server：redis服务器启动命令，后台启动不推荐</li>
 <li>redis-cli：客户端操作入口</li>
-<li>关闭shutdown</li>
+<li>进入redis-cli shutdown</li>
 </ol>
 <p>默认端口号6379</p>
 <p>默认16个数据库，下标从0开始，默认使用0号库</p>
 <p>底层是单线程+多路IO复用</p>
-<h1 id="2、常用数据类型"><a href="#2、常用数据类型" class="headerlink" title="2、常用数据类型"></a>2、常用数据类型</h1><h2 id="1、key"><a href="#1、key" class="headerlink" title="1、key"></a>1、key</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">keys * 查看所有key</span><br><span class="line">exists key 判断某个key是否存在</span><br><span class="line">type key 查看key的类型</span><br><span class="line">del key 删除key，直接删除</span><br><span class="line">unlink key 删除key，异步删除</span><br><span class="line">expire key 100 设置key的删除事件，秒为单位</span><br><span class="line">ttl key 查看key的过期时间，-1永不过期，-2已过期</span><br><span class="line">select i 切换到第i个库</span><br><span class="line">dbsize 查看key的数目</span><br><span class="line">flushdb 清空当前库</span><br><span class="line">flushall 清空所有库</span><br></pre></td></tr></table></figure>
+<h1 id="2、常用数据类型"><a href="#2、常用数据类型" class="headerlink" title="2、常用数据类型"></a>2、常用数据类型</h1><h2 id="1、对key的操作"><a href="#1、对key的操作" class="headerlink" title="1、对key的操作"></a>1、对key的操作</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">keys * 查看所有key</span><br><span class="line">exists key 判断某个key是否存在</span><br><span class="line">type key 查看key的类型</span><br><span class="line">del key 删除key，直接删除</span><br><span class="line">unlink key 删除key，异步删除</span><br><span class="line">expire key 100 设置key的删除事件，秒为单位</span><br><span class="line">ttl key 查看key的过期时间，-1永不过期，-2已过期</span><br><span class="line">select i 切换到第i个库</span><br><span class="line">dbsize 查看key的数目</span><br><span class="line">flushdb 清空当前库</span><br><span class="line">flushall 清空所有库</span><br></pre></td></tr></table></figure>
 
+<h2 id="2、String-字符串"><a href="#2、String-字符串" class="headerlink" title="2、String 字符串"></a>2、String 字符串</h2><p>二进制安全，可以保存二进制文件，value最多可以为512Mb</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">set &lt;key&gt; &lt;value&gt; 设置键值对，设置相同key覆盖初值</span><br><span class="line">get &lt;key&gt; 获取值</span><br><span class="line">append &lt;key&gt; &lt;value&gt; 将指定的值追加到对应key的值</span><br><span class="line">strlen &lt;key&gt; 获取值的长度</span><br><span class="line">setnx &lt;key&gt; &lt;value&gt; 可以不存在才能设置，不可重复设置</span><br><span class="line">incr &lt;key&gt; key中存储的value数字加一 incrby &lt;key&gt; &lt;步长&gt; 储存的数字加步长</span><br><span class="line">decr &lt;key&gt; key中储存的value数字减一</span><br><span class="line">mset k1 v1 k2 v2 设置多个键值对</span><br><span class="line">mget k1 k2 k3 获取多个值</span><br><span class="line">msetnx k1 v1 k2 v2 k1,k2都不存在才能设置</span><br><span class="line">getrange k 0 3 获取从第0位到第3位共4个值</span><br><span class="line">setrange k 3 v 在第三位设置值</span><br><span class="line">setex k 过期时间 v 在设置值的时候设置过期时间</span><br><span class="line">getset k v 取出旧值，设置新值</span><br></pre></td></tr></table></figure>
+
+<p>value底层采用动态字符串，字符串大小小于1m，扩容时翻倍，大于1m时，扩容时增加1m，最大512m</p>
+<p>redis操作是原子性的</p>
+<h2 id="3、List-列表"><a href="#3、List-列表" class="headerlink" title="3、List 列表"></a>3、List 列表</h2><p>单键多值，按插入顺序排序，可以添加数据到头尾，底层实现为双向链表，当元素较少时使用连续分配空间的压缩列表，当储存大量数据时使用多个压缩列表组成大列表</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">lpush/rpush k1 v1 k2 v2 从左边或右边插入一个或多个值</span><br><span class="line">lpop/rpop k 从左边或右边弹出一个值，当取出所有值时，键被销毁</span><br><span class="line">rpoplpush k1 k2 从k1右边弹出一个值，放入k2左边</span><br><span class="line">lrange k 0 1 返回索引从0到1的值，0到-1取出全部</span><br><span class="line">lindex k 0 返回指定索引的值</span><br><span class="line">llen k 返回列表长度</span><br><span class="line">linsert k before/after v newv 将newv放入v的前面或后面</span><br><span class="line">lrem k n v 从左边删除n个v</span><br><span class="line">lset k index v 将下标为index的值设置为v</span><br></pre></td></tr></table></figure>
+
+<h2 id="4、Set-集合"><a href="#4、Set-集合" class="headerlink" title="4、Set 集合"></a>4、Set 集合</h2><p>类似于list，但可以自动排重，且无序，底层实现为value为空的hash表所实现的字典，添加删除查找的时间复杂度为O(1)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sadd k v1 v2 将一个或多个值加入集合</span><br><span class="line">smembers k 返回所有值</span><br><span class="line">sismemember k v 判断集合中是否有v值</span><br><span class="line">scard k 返回集合中的元素个数</span><br><span class="line">srem k v1 v2 删除集合中的v1、v2</span><br><span class="line">spop k 随机从集合中弹出值，弹出后删除</span><br><span class="line">srandmember k  n 随机从集合中返回n个值</span><br><span class="line">smove source destination v 将v从一个集合移动到另一个集合</span><br><span class="line">sinter k1 k2 返回两个集合的交集元素</span><br><span class="line">sunion k1 k2 返回两个集合的并集元素</span><br><span class="line">sdiff k1 k2 返回在k1中不在k2中的元素</span><br></pre></td></tr></table></figure>
+
+<h2 id="5、Hash-哈希"><a href="#5、Hash-哈希" class="headerlink" title="5、Hash 哈希"></a>5、Hash 哈希</h2><p>值是一个string类型f的filed和value的映射表即键值对的集合，适合存储对象，类似java的Map&lt;String, Object&gt; ，底层实现为两种，当field较少时使用压缩列表，当field较多时使用哈希表</p>
+<p>key {field1&#x3D;value1，field2&#x3D;value2}</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">hset k filed v 给filed赋值v</span><br><span class="line">hget k f 从f中返回值</span><br><span class="line">hmset k f1 v1 f2 v2 批量设置hash值</span><br><span class="line">hexists k f 查看f是否存在</span><br><span class="line">hkeys k 返回所有的f</span><br><span class="line">hvals k 返回所有的v</span><br><span class="line">hincrby k f i 给f中的值增加i</span><br><span class="line">hsetnx k f v 当f不存在时，设置值</span><br></pre></td></tr></table></figure>
+
+<h2 id="6、Zset-有序集合"><a href="#6、Zset-有序集合" class="headerlink" title="6、Zset 有序集合"></a>6、Zset 有序集合</h2><p>类似于set，但是每个成员关联一个“评分”，被用于按照从最低分到最高分排序，成员唯一，但评分不一定唯一。底层实现类似于Map&lt;String, Double&gt;，又类似于TreeSet，根据权重排序，使用两种结构，hash关联value和score，跳跃表用于给value排序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">zadd k score1 v1 score2 v1 将一个或多个元素及其评分放入有序集合</span><br><span class="line">zrange k 0 3 返回下标在0到3的元素，使用withscores可以将评分取出</span><br><span class="line">zrangebyscore k min max 返回值介于min max的元素，按score从小到大排序，使用withscores可以将评分取出</span><br><span class="line">zrevrangebyscore k max min 同上，从大到小排序</span><br><span class="line">zincrby k i v 给元素加上i</span><br><span class="line">zrem k v 删除指定的v</span><br><span class="line">zcount k min max 统计区间内元素个数</span><br><span class="line">zrank k v 返回该值的排名，从0开始</span><br></pre></td></tr></table></figure>
+
+<h1 id="3、Redis配置文件"><a href="#3、Redis配置文件" class="headerlink" title="3、Redis配置文件"></a>3、Redis配置文件</h1><p>1、配置储存空间大小单位，只支持byte不支持bit，大小写不敏感</p>
+<p>2、配置网络</p>
+<ol>
+<li>bind：127.0.0.1时只接受本机访问</li>
+<li>protected-mode：开启时只支持本机访问，远程访问时，注释bind，配置该属性为yes</li>
+<li>port：端口号默认6379</li>
+<li>tcp-backlog：设置tcp连接队列，队列总和等于未三次握手的队列+已完成握手的队列，高并发时需要一个较大的backlog，linux下会将值压缩到128，需要修改&#x2F;proc&#x2F;sys&#x2F;net&#x2F;core&#x2F;somaxconn和&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;tcp_max_syn_backlog两个值达到效果</li>
+<li>timeout：默认为0，永不超时，秒为单位</li>
+<li>tcp-keepalive：默认为300秒，检查是否连接</li>
+</ol>
+<p>3、其他配置</p>
+<ol>
+<li>daemonize：后台启动</li>
+<li>pidfile：设置进程号</li>
+<li>loglevel：日志等级</li>
+<li>logfile：设置日志输出文件</li>
+<li>database：数据库数量</li>
+</ol>
+<p>4、安全设置</p>
+<ol>
+<li>password：设置密码</li>
+</ol>
+<p>5、限制设置</p>
+<ol>
+<li>maxclients：设置redis可以与多少个客户端连接，默认10000个</li>
+<li>maxmemory：设置最大内存，超过内存服务器宕机，可以根据一定规则设置超内存时的删除规则</li>
+</ol>
+<h1 id="4、发布与订阅"><a href="#4、发布与订阅" class="headerlink" title="4、发布与订阅"></a>4、发布与订阅</h1><p>消息通信模式，发送者发送消息，订阅者接受消息，两者通过频道完成消息交互，两个客户端需要连接同一个服务。redis可以订阅任意数目的频道。</p>
+<p>操作：订阅：subscribe channel1</p>
+<p>​			发布：publish channel1 xxxx</p>
+<h1 id="5、新数据类型"><a href="#5、新数据类型" class="headerlink" title="5、新数据类型"></a>5、新数据类型</h1><h2 id="1、Bitmaps"><a href="#1、Bitmaps" class="headerlink" title="1、Bitmaps"></a>1、Bitmaps</h2><p>严格来说本身不是一种数据类型，为字符串，但可以对字符串的比特位进行操作。初始化时全部为0，储存0和1的数组，数组下标称为偏移量，范围为0到2的32次。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">setbit k offset v 设置 某个偏移量的值</span><br><span class="line">getbit offset 获取某个偏移量的值，不存在的偏移量会被赋值为0</span><br><span class="line">bitcount k 统计1的数量，可以添加start end参数，统计范围内的数目</span><br><span class="line">bitop and/or/not/xor newkey k1 k2 将k1k2做交集、并集、非、异或，并放入新的key</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、HyperLogLog"><a href="#2、HyperLogLog" class="headerlink" title="2、HyperLogLog"></a>2、HyperLogLog</h2><p>解决求集合中不重复的元素个数问题，本身是一种算法，使用较少空间计算基数个数，但是不能返回输入的元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pfadd k v 将值放入</span><br><span class="line">pfcount k 统计数量</span><br><span class="line">pfmerge newkey k1 k2 将k1k2合并入新的key</span><br></pre></td></tr></table></figure>
+
+<h2 id="3、Geospatial"><a href="#3、Geospatial" class="headerlink" title="3、Geospatial"></a>3、Geospatial</h2><p>GEO是地理位置信息的缩写，针对经纬度的操作，基于该类型体精经纬度设置、查询、范围查询、距离查询等操作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">geoadd k longitude latitude member 添加地理位置的经度、纬度和名称</span><br><span class="line">geopos k member 返回指定位置的经纬度</span><br><span class="line">geodist k member1 member2 获取两个位置间的直线距离，默认为米</span><br><span class="line">georadius k longitude latitude redius 返回以给定经纬度为中心给定长度为半径的圆中的元素</span><br></pre></td></tr></table></figure>
+
+<h1 id="6、客户端工具"><a href="#6、客户端工具" class="headerlink" title="6、客户端工具"></a>6、客户端工具</h1><h2 id="1、Jedis"><a href="#1、Jedis" class="headerlink" title="1、Jedis"></a>1、Jedis</h2><p>1、引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2、禁用Linux防火墙，注释bind，取消保护模式</p>
+<p>3、创建Jedis对象并次测试联通</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Jedis</span> <span class="variable">jedis</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Jedis</span>(<span class="string">&quot;192.168&quot;</span>, <span class="number">6379</span>);</span><br><span class="line"><span class="type">String</span> <span class="variable">ping</span> <span class="operator">=</span> jedis.ping();</span><br></pre></td></tr></table></figure>
+
+<p>4、通过Jedis API操作数据库，方法名与命令名相同</p>
+<h1 id="7、SpringBoot整合Redis"><a href="#7、SpringBoot整合Redis" class="headerlink" title="7、SpringBoot整合Redis"></a>7、SpringBoot整合Redis</h1><p>1、引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--连接池--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.commons<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-pool2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.11.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2、配置Redis, 前缀spring.redis</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Redis数据库索引（默认为0）</span></span><br><span class="line"><span class="attr">spring.redis.database</span>=<span class="string">0  </span></span><br><span class="line"><span class="comment"># Redis服务器地址</span></span><br><span class="line"><span class="attr">spring.redis.host</span>=<span class="string">127.0.0.1</span></span><br><span class="line"><span class="comment"># Redis服务器连接端口</span></span><br><span class="line"><span class="attr">spring.redis.port</span>=<span class="string">6379  </span></span><br><span class="line"><span class="comment"># Redis服务器连接密码（默认为空）</span></span><br><span class="line"><span class="attr">spring.redis.password</span>=<span class="string"></span></span><br><span class="line"><span class="comment"># 连接池最大连接数（使用负值表示没有限制）</span></span><br><span class="line"><span class="attr">spring.redis.pool.max-active</span>=<span class="string">8  </span></span><br><span class="line"><span class="comment"># 连接池最大阻塞等待时间（使用负值表示没有限制）</span></span><br><span class="line"><span class="attr">spring.redis.pool.max-wait</span>=<span class="string">-1  </span></span><br><span class="line"><span class="comment"># 连接池中的最大空闲连接</span></span><br><span class="line"><span class="attr">spring.redis.pool.max-idle</span>=<span class="string">8  </span></span><br><span class="line"><span class="comment"># 连接池中的最小空闲连接</span></span><br><span class="line"><span class="attr">spring.redis.pool.min-idle</span>=<span class="string">0  </span></span><br><span class="line"><span class="comment"># 连接超时时间（毫秒）</span></span><br><span class="line"><span class="attr">spring.redis.timeout</span>=<span class="string">0 </span></span><br></pre></td></tr></table></figure>
+
+<p>3、使用RedisTmeplate操作Redis</p>
 
     </div>
 
@@ -368,7 +446,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1%E3%80%81NoSQL"><span class="nav-number">1.</span> <span class="nav-text">1、NoSQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2%E3%80%81%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">2、常用数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81key"><span class="nav-number">2.1.</span> <span class="nav-text">1、key</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1%E3%80%81NoSQL"><span class="nav-number">1.</span> <span class="nav-text">1、NoSQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2%E3%80%81%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">2、常用数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AF%B9key%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">2.1.</span> <span class="nav-text">1、对key的操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81String-%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">2.2.</span> <span class="nav-text">2、String 字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81List-%E5%88%97%E8%A1%A8"><span class="nav-number">2.3.</span> <span class="nav-text">3、List 列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81Set-%E9%9B%86%E5%90%88"><span class="nav-number">2.4.</span> <span class="nav-text">4、Set 集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81Hash-%E5%93%88%E5%B8%8C"><span class="nav-number">2.5.</span> <span class="nav-text">5、Hash 哈希</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81Zset-%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88"><span class="nav-number">2.6.</span> <span class="nav-text">6、Zset 有序集合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3%E3%80%81Redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">3、Redis配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4%E3%80%81%E5%8F%91%E5%B8%83%E4%B8%8E%E8%AE%A2%E9%98%85"><span class="nav-number">4.</span> <span class="nav-text">4、发布与订阅</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5%E3%80%81%E6%96%B0%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">5、新数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81Bitmaps"><span class="nav-number">5.1.</span> <span class="nav-text">1、Bitmaps</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81HyperLogLog"><span class="nav-number">5.2.</span> <span class="nav-text">2、HyperLogLog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81Geospatial"><span class="nav-number">5.3.</span> <span class="nav-text">3、Geospatial</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6%E3%80%81%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B7%A5%E5%85%B7"><span class="nav-number">6.</span> <span class="nav-text">6、客户端工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81Jedis"><span class="nav-number">6.1.</span> <span class="nav-text">1、Jedis</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7%E3%80%81SpringBoot%E6%95%B4%E5%90%88Redis"><span class="nav-number">7.</span> <span class="nav-text">7、SpringBoot整合Redis</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
