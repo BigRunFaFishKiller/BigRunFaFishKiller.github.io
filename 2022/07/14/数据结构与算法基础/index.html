@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="数据结构与算法">
+  <meta name="description" content="1、复杂度">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法基础">
 <meta property="og:url" content="http://example.com/2022/07/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="BigRunFaFishKiller">
-<meta property="og:description" content="数据结构与算法">
+<meta property="og:description" content="1、复杂度">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-14T13:24:24.000Z">
-<meta property="article:modified_time" content="2022-07-14T13:58:12.399Z">
+<meta property="article:modified_time" content="2022-07-31T14:09:49.931Z">
 <meta property="article:author" content="大润发杀鱼匠">
 <meta property="article:tag" content="数据结构与算法基础">
 <meta name="twitter:card" content="summary">
@@ -216,10 +216,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-07-14 21:24:24 / 修改时间：21:58:12" itemprop="dateCreated datePublished" datetime="2022-07-14T21:24:24+08:00">2022-07-14</time>
+              <time title="创建时间：2022-07-14 21:24:24" itemprop="dateCreated datePublished" datetime="2022-07-14T21:24:24+08:00">2022-07-14</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-31 22:09:49" itemprop="dateModified" datetime="2022-07-31T22:09:49+08:00">2022-07-31</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -248,9 +254,91 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="数据结构与算法"><a href="#数据结构与算法" class="headerlink" title="数据结构与算法"></a>数据结构与算法</h1><span id="more"></span>
+        <h2 id="1、复杂度"><a href="#1、复杂度" class="headerlink" title="1、复杂度"></a>1、复杂度</h2><span id="more"></span>
 
-<h3 id><a href="#" class="headerlink" title></a></h3>
+<h3 id="1、时间复杂度"><a href="#1、时间复杂度" class="headerlink" title="1、时间复杂度"></a>1、时间复杂度</h3><p>一次操作如果与数据量没有关系，每次按照固定的时间完成操作，称为常数操作。</p>
+<p>时间复杂度为一个算法流程中，常数操作数量的一个指标，用O表示。根据常数操作数目，推算出常数操作的表达式。</p>
+<p>在表达式中只要高阶项，排除低阶项和常数项，排除高阶项系数，剩余的部分如果为f(N)，则时间复杂度为O(f(N))。</p>
+<p>评价一个算法的好坏，先看时间复杂度的指标，在分析不同样本下的实际运行时间，即常数项时间，时间复杂度相同时，根据实际测试确定算法好坏</p>
+<p>对于if-else操作，时间复杂度为较大者；对于for操作，时间复杂度为两者乘积</p>
+<p>选择排序时间复杂度：一个长度为n的数组</p>
+<ol>
+<li><p>第一次比较，查询n次，比较n次，1次交换</p>
+</li>
+<li><p>第二次比较，查询n-1次，比较n-1次，1次交换</p>
+</li>
+<li><p>以此类推</p>
+</li>
+<li><p>常数操作次数相加，求和的到表达式：<br>$$<br>an^2+bn+c<br>$$</p>
+</li>
+<li><p>排除低阶项和常数项，排除高阶项系数</p>
+</li>
+<li><p>得时间复杂度<br>$$<br>O(N^2)<br>$$</p>
+</li>
+<li></li>
+</ol>
+<p>关于异或运算的几个性质：</p>
+<ol>
+<li>a^a&#x3D;0,	a^0&#x3D;a</li>
+<li>异或运算满足交换律结合律</li>
+<li>可以理解为无进位的二进制相加</li>
+</ol>
+<h3 id="2、空间复杂度"><a href="#2、空间复杂度" class="headerlink" title="2、空间复杂度"></a>2、空间复杂度</h3><p>要完成自己设计流程 需要多少额外的空间</p>
+<p>如果程序运行过程中，不需要额外的数据结构，只是使用了额外的几个变量。那么额外空间复杂度为O(1)；<br>如果要申请一个和原数组大小一样的数组，那额外空间复杂度为O(n)；<br>如果申请一个是原数组大小一半的数组，那额外空间复杂度为O(n)（因为系数是可以忽略的）</p>
+<h3 id="3、最差情况下的进行时间复杂度计算"><a href="#3、最差情况下的进行时间复杂度计算" class="headerlink" title="3、最差情况下的进行时间复杂度计算"></a>3、最差情况下的进行时间复杂度计算</h3><p>插入排序</p>
+<ol>
+<li>先保障0到1有序，从第1位向前比较</li>
+<li>再保障0到2有序，从第二位向前比较</li>
+<li>以此类推</li>
+</ol>
+<p>最差时间复杂度:<br>$$<br>O(N^2)<br>$$<br>但是在该算法中，时间复杂度与数据情况相关。</p>
+<p>所以时间复杂度的计算应修正为数据情况最差的情况下的时间复杂度</p>
+<h3 id="4、递归行为和递归行为时间复杂度的估算"><a href="#4、递归行为和递归行为时间复杂度的估算" class="headerlink" title="4、递归行为和递归行为时间复杂度的估算"></a>4、递归行为和递归行为时间复杂度的估算</h3><p>使用master公式估计递归时间复杂度<br>$$<br>T(N) &#x3D; a*T(N&#x2F;b) + O(N^d)<br>$$<br>母问题的规模为N，等于子问题规模为N&#x2F;b（子问题即为递归调用），且子问题调用a次，加上除去递归的时间复杂度</p>
+<p>条件：<br>$$<br>\log_ba&lt;d &#x3D;&gt; O(N^d)<br>$$</p>
+<p>$$<br>\log_ba&gt;d &#x3D;&gt; O(N的\log_ba次)<br>$$</p>
+<p>$$<br>\log_ba&#x3D;d &#x3D;&gt; O(N^d * logN)<br>$$</p>
+<p>由此可以确定递归的时间复杂度</p>
+<p>归并排序：</p>
+<ol>
+<li>将数组分为两个部分，递归分割</li>
+<li>返回时合并左右两侧数组为一个临时数组，从两侧选择较小的数填入数组，较小侧指针右移，再次比较</li>
+<li>将临时将临时数组赋值到一个新数组上</li>
+</ol>
+<p>时间复杂度：O(N*logN)，空间复杂度O(N)</p>
+<p>快速排序：</p>
+<ol>
+<li>随机给定一个值num并将其与数组末尾交换，先将数组化为三个区域，大于区，小于区，等于区</li>
+<li>当小于时将此数与小于区的下一位交换，小于区从左向右扩大一位，数组指针右移</li>
+<li>当大于时将此数与大于区的上一位交换，大于区从右向左扩大一位，数组指针不动</li>
+<li>当等于时，数组指针右移，数组指针等于大于区时停止</li>
+<li>递归调用，将等于区左边第一位和等于去右边第一位和本次调用最两侧作为新的边界，当右侧边界小于等于左侧边界时，方法返回</li>
+</ol>
+<p>时间复杂度：O(N*logN)，空间复杂度：O(logN)</p>
+<h2 id="2、堆"><a href="#2、堆" class="headerlink" title="2、堆"></a>2、堆</h2><p>堆为完全二叉树，每一层从左向右一次加满</p>
+<p>大根堆：每颗子树的根节点为整颗数最大的节点</p>
+<p>小根堆：每颗子树的根节点为整颗数最小的节点，又被称为优先级队列，java中的类为PriorityQueue</p>
+<p>如果使用连续数组储存二叉树：父节点点（下标为i）的</p>
+<ol>
+<li>左下角数的索引为2 * i + 1</li>
+<li>右下角数的索引为2 * i + 2</li>
+<li>其父结点索引为(i - 1)  &#x2F; 2</li>
+</ol>
+<p>操作（大根堆）：</p>
+<ol>
+<li>heapInsert：将一个数和父节点进行比较，如果大于父节点则与其交换，直至父节点大于等于该数或该数的索引为0</li>
+<li>heapify（堆化）：将一个数和子节点的较大值与其比较，如果小于子节点则与其交换，直至子节点均小于该数或者没有子节点</li>
+</ol>
+<p>对于完全二叉树的一次操作，时间复杂度为O(logN)</p>
+<p>堆排序：将一个原始数组转换为堆，将最大值取出放到堆的最后一位堆大小减一，再将整个堆堆化，以此类推，直至取出所有的数，整个数组即完成排序</p>
+<p>堆的每一步操作时间复杂为O(logN)，遍历整个堆的时间复杂度为O(N)，循环嵌套，整个堆排序时间复杂度为O(N*logN)</p>
+<h2 id="3、排序"><a href="#3、排序" class="headerlink" title="3、排序"></a>3、排序</h2><p>1、桶排序</p>
+<p>取0到9十个桶（即容器），按照每个数的个位放进每个桶，再将从0开始到9的桶里数依次倒出，每个桶中的数字先进先出，再按照十位百位以此类推，排完所有数位即完成排序 </p>
+<p>具体实现：</p>
+<ol>
+<li>构造一个长度为10的数频表，记录每个数字出现的次数，记录完成后将其转换为一个前缀和数表，其意义为，小于等于索引 i 的数共产生了多少次。</li>
+<li>取出数时，从原数组的右侧遍历（保证先进先出），根据前缀和数表的具体数字决定其位置，取出数前将前缀表对应位置的数减一，然后将其作为在临时数组中的索引</li>
+</ol>
+
     </div>
 
     
@@ -333,7 +421,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">数据结构与算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.0.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">1.</span> <span class="nav-text">1、复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">1.1.</span> <span class="nav-text">1、时间复杂度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text">2、空间复杂度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E6%9C%80%E5%B7%AE%E6%83%85%E5%86%B5%E4%B8%8B%E7%9A%84%E8%BF%9B%E8%A1%8C%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E8%AE%A1%E7%AE%97"><span class="nav-number">1.3.</span> <span class="nav-text">3、最差情况下的进行时间复杂度计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E9%80%92%E5%BD%92%E8%A1%8C%E4%B8%BA%E5%92%8C%E9%80%92%E5%BD%92%E8%A1%8C%E4%B8%BA%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E7%9A%84%E4%BC%B0%E7%AE%97"><span class="nav-number">1.4.</span> <span class="nav-text">4、递归行为和递归行为时间复杂度的估算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%A0%86"><span class="nav-number">2.</span> <span class="nav-text">2、堆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E6%8E%92%E5%BA%8F"><span class="nav-number">3.</span> <span class="nav-text">3、排序</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
