@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title></title>
+    <title>GoLang</title>
     <url>/2022/07/09/GoLang/</url>
     <content><![CDATA[<h1 id="GoLang"><a href="#GoLang" class="headerlink" title="GoLang"></a>GoLang</h1><h2 id="一、特点"><a href="#一、特点" class="headerlink" title="一、特点"></a>一、特点</h2><p>既有静态语言的安全和性能，又有动态语言开发和维护的高效率</p>
 <p>Go &#x3D; C + Python</p>
