@@ -323,12 +323,215 @@
 <p>如果一个类型实现了String() string方法，则使用fmt.Printlen()输出该类型变量时将默认调用该方法</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(person *Person)</span></span> String() <span class="type">string</span> &#123;</span><br><span class="line">	str := fmt.Sprintf(<span class="string">&quot;Name = [%v] Age = [%v] Sex = [%v]&quot;</span>, person.Name, person.Age, person.Sex)</span><br><span class="line">	<span class="keyword">return</span> str</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> person Person</span><br><span class="line">	person.Name = <span class="string">&quot;Tom&quot;</span></span><br><span class="line">	person.Age = <span class="number">18</span></span><br><span class="line">	person.info(<span class="string">&quot;male&quot;</span>)</span><br><span class="line">	fmt.Println(&amp;person)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
-
 <h4 id="3、方法的调用和传值机制"><a href="#3、方法的调用和传值机制" class="headerlink" title="3、方法的调用和传值机制"></a>3、方法的调用和传值机制</h4><p>方法调用时会将方法的调用者传入方法，如果调用者是值类型则传递值，如果调用者是引用类型则传递地址</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> IntArr []<span class="type">int</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i IntArr)</span></span> Sum() (res <span class="type">int</span>) &#123;</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> _, v := <span class="keyword">range</span> i &#123;</span><br><span class="line">		res += v</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>此时参数传递为一个int切片，将切片按引用传参</p>
+<h4 id="4、方法和函数的区别"><a href="#4、方法和函数的区别" class="headerlink" title="4、方法和函数的区别"></a>4、方法和函数的区别</h4><p>1、调用方式不同</p>
+<p>2、函数的参数必须严格按照对应的值类型或者引用类型传递</p>
+<p>​      方法绑定值类型时可以通过指针调用，反之亦然，但是实际传入参数时，值传递仍然传递值，引用传递仍然传递地址</p>
+<h4 id="5、工厂模式"><a href="#5、工厂模式" class="headerlink" title="5、工厂模式"></a>5、工厂模式</h4><p>go中没有构造函数，使用工厂模式构造私有的结构体</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> person <span class="keyword">struct</span> &#123;</span><br><span class="line">	Name <span class="type">string</span></span><br><span class="line">	Age  <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewPerson</span><span class="params">(name <span class="type">string</span>, age <span class="type">int</span>)</span></span> (p *person) &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;person&#123;</span><br><span class="line">		Name: name,</span><br><span class="line">		Age:  age,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="6、get、set方法"><a href="#6、get、set方法" class="headerlink" title="6、get、set方法"></a>6、get、set方法</h4><p>对于结构体中私有的属性，可以实现指针的get、set方法达到获取修改的效果</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewPerson</span><span class="params">(name <span class="type">string</span>, age <span class="type">int</span>, sex <span class="type">string</span>)</span></span> (p *person) &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;person&#123;</span><br><span class="line">		Name: name,</span><br><span class="line">		Age:  age,</span><br><span class="line">		sex:  sex,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *person)</span></span> GetSex() <span class="type">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> p.sex</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *person)</span></span> SetSex(sex <span class="type">string</span>) &#123;</span><br><span class="line">	p.sex = sex</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="7、封装"><a href="#7、封装" class="headerlink" title="7、封装"></a>7、封装</h4><p>将字段和对字段的操作封装在一起，程序对外只提供接口访问修改数据</p>
+<p>隐藏实现细节，实现数据校验</p>
+<p>实现：</p>
+<ol>
+<li>结构体小写，对数据封装</li>
+<li>提供首字母大写的工厂方法、Get方法、Set方法</li>
+</ol>
+<h4 id="8、继承"><a href="#8、继承" class="headerlink" title="8、继承"></a>8、继承</h4><p>继承解决代码复用问题</p>
+<p>当多个结构体存在相同的属性方法时，可以抽象出共同的属性方法到一个匿名结构体中，其他结构只需嵌套一个匿名结构体，即在go中结构体嵌套一个匿名结构体，则这个结构体可以直接方法匿名结构体</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> person <span class="keyword">struct</span> &#123;</span><br><span class="line">	name <span class="type">string</span></span><br><span class="line">	age  <span class="type">int</span></span><br><span class="line">	sex  <span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> student <span class="keyword">struct</span> &#123;</span><br><span class="line">	person</span><br><span class="line">	score <span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *person)</span></span> show() &#123;</span><br><span class="line">    fmt.PrintLn(name, age, sex)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewStudent</span><span class="params">(name <span class="type">string</span>, age <span class="type">int</span>, sex <span class="type">string</span>, score <span class="type">int</span>)</span></span> *student &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;student&#123; <span class="comment">//使用构造函数初始化结构体时，因为内部结构体为匿名，无法使用属性名（person: person&#123;&#125;）的方式赋值</span></span><br><span class="line">		person&#123;</span><br><span class="line">			Name: name,</span><br><span class="line">			Age: age,</span><br><span class="line">			sex: sex,</span><br><span class="line">		&#125;,</span><br><span class="line">		score,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//赋值方式</span></span><br><span class="line">stu := &amp;student&#123;&#125;</span><br><span class="line">stu.person.name = <span class="string">&quot;Tom&quot;</span></span><br><span class="line">stu.age = <span class="number">18</span></span><br><span class="line">stu1 := &amp;student&#123;</span><br><span class="line">    person&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;,</span><br><span class="line">    score</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//方法调用方式</span></span><br><span class="line">stu.person.show()</span><br><span class="line">stu.show()</span><br></pre></td></tr></table></figure>
+
+<p>结构体可以使用匿名结构体所有内容，不管首字母大写还是小写</p>
+<p>嵌套匿名结构体创建实例时可直接指定各个匿名结构体的值</p>
+<p>通过结构体直接访问字段或方法时，会先查看该结构体是否存在其定义，若无，则会去其匿名结构体下寻找，对访问匿名结构体属性方法的过程进行了简化</p>
+<p>当匿名结构体和结构体存在相同字段时，将会财通就近原则访问，当需要访问匿名结构体的属性方法时，可以通过增加匿名结构体名的方式访问</p>
+<p>如果结构体嵌入了多个匿名结构体，且匿名结构体存在相同的字段方法，则访问时必须加上匿名结构体名</p>
+<p>如果结构体嵌入了一个有名结构体，这种方式被称为组合，访问有名结构体的内容时必须加上有名结构体的名字</p>
+<p>结构体可以嵌入匿名基本数据类型，使用时直接 .基本数据类型</p>
+<h4 id="9、多重继承"><a href="#9、多重继承" class="headerlink" title="9、多重继承"></a>9、多重继承</h4><p>一个结构体嵌套多个匿名结构体</p>
+<p>匿名结构体中相同的字段名和方法，需要通过匿名结构体类型名区分</p>
+<p>尽量不要使用多重继承</p>
+<h4 id="10、接口"><a href="#10、接口" class="headerlink" title="10、接口"></a>10、接口</h4><p>go的多态通过接口实现</p>
+<p>声明：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Usb <span class="keyword">interface</span>&#123;</span><br><span class="line">    Start()</span><br><span class="line">    Stop()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接口可以定义一系列方法且不需要实现，不能包含变量，当自定义类型需要使用时，实现接口中的所有方法即可</p>
+<p>go中的接口没有implements关键字，实现所有方法即实现该接口</p>
+<p>注意事项：</p>
+<ol>
+<li>只要是自定义类型都能实现接口，不只是结构体</li>
+<li>可以实现多个接口</li>
+<li>接口可以继承，实现接口时必须将其继承的方法一起实现</li>
+<li>实现了接口的类型可以赋值给以接口为数据类型的变量</li>
+<li>interface默认是一个指针即引用类型，没有初始化就是要会输出nil，即以接口为参数的函数，传值时传递的是指针</li>
+<li>空接口interface{}没有方法，所有类型都实现了空接口</li>
+</ol>
+<h4 id="11、接口与继承"><a href="#11、接口与继承" class="headerlink" title="11、接口与继承"></a>11、接口与继承</h4><p>继承：提高代码的复用性和可维护性</p>
+<p>接口：设计，提供一种规范，在一定程度上实现代码解耦</p>
+<h4 id="12、多态"><a href="#12、多态" class="headerlink" title="12、多态"></a>12、多态</h4><p>通过接口实现，统一的接口调用不同的具体实现，体现了接口变量的多态性</p>
+<ol>
+<li>多态参数，只要实现接口，接口变量都能接受对应的实参</li>
+<li>多态数组</li>
+</ol>
+<h4 id="13、类型断言"><a href="#13、类型断言" class="headerlink" title="13、类型断言"></a>13、类型断言</h4><p>接口为一个一般类型，转成具体的类型，需要使用类型断言</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> t <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">a := <span class="number">10</span></span><br><span class="line">t = a</span><br><span class="line"><span class="keyword">var</span> b <span class="type">int</span></span><br><span class="line">b, ok = t.(<span class="type">int</span>)	<span class="comment">//类型断言，ok为bool型，用于判断是否转换成功</span></span><br><span class="line">x.(<span class="keyword">type</span>)	<span class="comment">//判断x类型并返回</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="八、文件"><a href="#八、文件" class="headerlink" title="八、文件"></a>八、文件</h2><h4 id="1、使用-2"><a href="#1、使用-2" class="headerlink" title="1、使用"></a>1、使用</h4><p>文件通过输入输出流在内存和硬盘间交互</p>
+<p>go的所有关于文件的操作封装在os包的的File结构体中</p>
+<p>常用方法：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Open</span><span class="params">(name <span class="type">string</span>)</span></span> (file *File, err,<span class="type">error</span>)	<span class="comment">//打开文件，返回一个文件的指针</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f *File)</span></span> Close() <span class="type">error</span> <span class="comment">//关闭一个文件</span></span><br><span class="line"><span class="comment">//带缓冲的读取</span></span><br><span class="line">file := os.Open(<span class="string">&quot;路径&quot;</span>)</span><br><span class="line"><span class="keyword">defer</span> file.<span class="built_in">close</span>()</span><br><span class="line">reader := bufio.NewReader(file)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		str, err := reader.ReadString(<span class="string">&#x27;\n&#x27;</span>)	<span class="comment">//表示文件读取到换行符结束读取</span></span><br><span class="line">		<span class="keyword">if</span> err == io.EOF &#123;		<span class="comment">//io.EOF表示文件读取到末尾</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Print(str)</span><br><span class="line">	&#125;</span><br><span class="line"><span class="comment">//不带缓冲的读取，文件较小可以使用这种方式，在io/iouil包下，文件不需要手动打开关闭</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ReadFile</span><span class="params">(fileName <span class="type">string</span>)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WriteFile</span><span class="params">(filename <span class="type">string</span>, data []<span class="type">byte</span>, perm os.FileMode)</span></span> <span class="type">error</span></span><br><span class="line"><span class="comment">//创建并写入文件，os包下，第一个参数表示打开的文件，第二个表示文件打开的方式，第三个表示权限只有linux下有用</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">OpenFile</span><span class="params">(name <span class="type">string</span>, flag <span class="type">int</span>, perm FileMode)</span></span>(file *File, err <span class="type">error</span>)</span><br><span class="line"><span class="comment">//带缓存的写入</span></span><br><span class="line">writer := bufio.NewWriter(file)</span><br><span class="line">writer.WriteString(str)</span><br><span class="line">writer.Flush()</span><br><span class="line"><span class="comment">//判断文件或目录是否存在，返回一个描述文件的info</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Stat</span><span class="params">(name <span class="type">string</span>)</span></span>(fi FileInfo, err <span class="type">error</span>)</span><br><span class="line"><span class="comment">//拷贝文件，io包下,返回拷贝的字节数和错误</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Copy</span><span class="params">(dst Writer, src Reader)</span></span> (written <span class="type">int64</span>, err <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、命令行参数"><a href="#2、命令行参数" class="headerlink" title="2、命令行参数"></a>2、命令行参数</h4><p>os.Args是一个string类型的切片，用于存储命令行参数</p>
+<p>执行可执行文件时，在命令后添加命令行参数，遍历Args即可获取所有参数</p>
+<p>flag包解析命令行参数</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//p为参数值，name为参数名，value为默认值，usage为参数说明，获取指定命令行参数为&quot;-name&quot;的参数值，</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">IntVar</span><span class="params">(p *<span class="type">int</span>, name <span class="type">string</span>, value <span class="type">int</span>, usage <span class="type">string</span>)</span></span></span><br><span class="line"><span class="comment">//解析flag，必须在所有flag注册后，且未使用前解析</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Parse</span><span class="params">()</span></span> </span><br></pre></td></tr></table></figure>
+
+<h4 id="3、json"><a href="#3、json" class="headerlink" title="3、json"></a>3、json</h4><p>轻量级的一种数据交换格式，在网络传输时，将数据序列化为json，接收到json后将其反序列化回数据，go中的字符串数字对象map结构体均可转换成json</p>
+<p>数据格式：{“key1”:”value1”, “key1”:”value2”}</p>
+<p>数组使用中括号括起来</p>
+<p>json序列化是指将具有key-value结构的数据类型转化成json</p>
+<p>结构体、map、切片的序列化：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//返回v的json编码，解析后将数组强转为字符串，序列化的字段首字母必须大写</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Marshal</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
+
+<p>结构体在json序列化时，可以在字段后面添加&#96;&#96;一对反引号，写入”json:别名”，在进行序列化时会将json的名字改为反引号里面的别名</p>
+<p>反序列化：将json转换为对应的结构</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//解析json，并将其返回到v指向的结构,v通常传递一个指针</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Unmarshal</span><span class="params">(data []<span class="type">byte</span>, v <span class="keyword">interface</span>&#123;&#125;)</span></span> <span class="type">error</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="九、单元测试"><a href="#九、单元测试" class="headerlink" title="九、单元测试"></a>九、单元测试</h2><p>testing测试框架</p>
+<p>引入testing包，编写测试样例并将需要测试的文件以xxx_test.go命名，使用go test命令，可以自动执行如下形式的函数</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestXxx</span><span class="params">(t *testing.T)</span></span>	<span class="comment">//Xxx可以为任何字母数字字符串，但是第一个字母不能小写</span></span><br><span class="line"></span><br><span class="line">t.Fatalf(<span class="string">&quot;预期为%v，结果为%v&quot;</span>, expect, res)		<span class="comment">//函数不正确，调用方法输出日志并终止程序</span></span><br><span class="line">t.Logf(<span class="string">&quot;测试成功&quot;</span>)	<span class="comment">//执行正确，输出日志</span></span><br></pre></td></tr></table></figure>
+
+<p>go test 运行正确不输出日志，错误输出日志</p>
+<p>go test -v 无论正确与否均输出日志</p>
+<p>测试单个文件</p>
+<p>go test cal_test.go cal.go  		&#x2F;&#x2F;需要带上源文件</p>
+<p>go test -test.run 测试函数名  &#x2F;&#x2F;测试单个函数</p>
+<h2 id="十、Goroutine和Channel"><a href="#十、Goroutine和Channel" class="headerlink" title="十、Goroutine和Channel"></a>十、Goroutine和Channel</h2><h4 id="1、Goroutine-协程"><a href="#1、Goroutine-协程" class="headerlink" title="1、Goroutine 协程"></a>1、Goroutine 协程</h4><p>进程：程序在操作系统中的一次执行过程</p>
+<p>线程：进程执行的一个实例，程序执行的最小单元</p>
+<p>一个进程可以创建多个线程，线程可以并发执行。</p>
+<p>并发：多线程程序在单核上执行</p>
+<p>并行：多线程程序在多核上执行</p>
+<p>go中的主线程可以启用多个协程，协程就是轻量级的线程</p>
+<p>协程特点：</p>
+<ol>
+<li>独立的栈空间</li>
+<li>共享堆空间</li>
+<li>由用户控制调度</li>
+<li>轻量级线程</li>
+</ol>
+<p>go的主线程是一个物理态线程直接作用于cpu，协程是逻辑态线程并不基于物理态，一个主线程可以开启上万个协程</p>
+<p>使用：开启两个协程</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;hello golang&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">go</span> test()</span><br><span class="line">    <span class="keyword">go</span> test()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主线程结束后，即使协程为执行完也会停止执行</p>
+<p>go的调度模型：MPG模式</p>
+<ol>
+<li>M：操作系统主线程</li>
+<li>P：协程执行时的上下文环境</li>
+<li>G：协程，多个协程将形成队列</li>
+</ol>
+<p>运行状态一：多个线程并行或并发执行，每个进程下都有自己的协程</p>
+<p>运行状态二：当一个线程阻塞时，会拉起另外一个线程（或从线程池取出），将阻塞线程下的协程挂在新的线程下执行</p>
+<p>线程安全问题：多个协程同时操作同一块数据时可能产生线程安全问题，使用sync包下的lock进行加锁</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">lock sync.Mutex	<span class="comment">//全局变量</span></span><br><span class="line"><span class="comment">//加锁</span></span><br><span class="line">lock.Lock()</span><br><span class="line"><span class="comment">//解锁</span></span><br><span class="line">lock.UnLock()</span><br></pre></td></tr></table></figure>
+
+<p>WaitGroup实现协程完成，当所有协程完成后，主线程才会被放行</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> wp sync.WaitGroup</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">hello</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">    wp.Done	<span class="comment">//或者wp.add(-1)</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++  &#123;</span><br><span class="line">        wp.add(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">go</span> hello()</span><br><span class="line">    &#125;</span><br><span class="line">    wp.wait</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、Channel-管道"><a href="#2、Channel-管道" class="headerlink" title="2、Channel 管道"></a>2、Channel 管道</h4><p>有些时候，不同协程之间的通信，依靠全局变量互斥锁解决时不能很好的解决问题</p>
+<ol>
+<li>难以确定主线程休眠等待的时间</li>
+<li>通过全局变量加锁的机制不利于多个协程对全局变量的读写操作</li>
+</ol>
+<p>channel的本质是一个队列，本身是线程安全的，多个Goroutine访问时不需要加锁，有类型，string类型的channel只能存放string数据，管道中存在多态机制，注意类型断言</p>
+<p>声明：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> intChan <span class="keyword">chan</span> <span class="type">int</span></span><br><span class="line">intChan = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>, <span class="number">3</span>)		<span class="comment">//有缓冲管道，长度不能自增长</span></span><br><span class="line">intChan = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>)		<span class="comment">//无缓冲管道</span></span><br></pre></td></tr></table></figure>
+
+<p>无缓冲通道：同步通信，放入数据不取走会被阻塞</p>
+<p>有缓冲通道：异步通信</p>
+<p>channel本身是引用数据类型，且需要make后才能写入数据</p>
+<p>使用</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//写入</span></span><br><span class="line">intChan &lt;- <span class="number">10</span></span><br><span class="line">intChan &lt;- num</span><br><span class="line"><span class="comment">//取出</span></span><br><span class="line">num, ok = &lt;- intChan	<span class="comment">//ok表示是否取出</span></span><br><span class="line">num = &lt;- intChan</span><br><span class="line">&lt;-intChan</span><br><span class="line"><span class="comment">//关闭</span></span><br><span class="line"><span class="built_in">close</span>(intChan)</span><br><span class="line"><span class="comment">//遍历，for-range，不能使用常规的for</span></span><br><span class="line"><span class="keyword">for</span> v := <span class="keyword">range</span> intChan &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在没有协程的情况下，管道内没有数据，再取数据将会报错</p>
+<p>管道关闭后，管道的数据只能取出，不能写入</p>
+<p>遍历时如果管道没有关闭则会报错，管道已经关闭则正常执行</p>
+<p>管道阻塞机制：如果只是向管道写入数据而未读取数据，则会出现阻塞而导致死锁，原因是因为超出了管道容量，则会检查是否存在读取操作，如果没有读取操作，则管道死锁</p>
+<p>注意事项：</p>
+<ol>
+<li><p>channel可以声明为只读或只写</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//只写</span></span><br><span class="line"><span class="keyword">var</span> a <span class="keyword">chan</span> &lt;- <span class="type">int</span></span><br><span class="line"><span class="comment">//只读</span></span><br><span class="line"><span class="keyword">var</span> b &lt;- <span class="keyword">chan</span> <span class="type">int</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用select解决处理异步io</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> v := &lt;- intChan : </span><br><span class="line">    	操作<span class="number">1</span></span><br><span class="line">	<span class="keyword">case</span> v := &lt;- strChan :</span><br><span class="line">    	操作<span class="number">2</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">    	操作<span class="number">3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>多个case可执行时，会公平随机选择一个。没有case、default可以执行时，会阻塞，直到某个case可执行</p>
+</li>
+<li><p>协程中产生panic，可以使用recover解决协程崩溃</p>
+</li>
+<li><p>没有使用协程时，通道未关闭，没有数据时读取会死锁，通道关闭，没有数据读取时读取默认值</p>
+</li>
+</ol>
+<h4 id="3、runtime包"><a href="#3、runtime包" class="headerlink" title="3、runtime包"></a>3、runtime包</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">runtime.Gosched() <span class="comment">//让出CPU时间片，等待重新分配</span></span><br><span class="line">runtime.GOexit() <span class="comment">//退出协程</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NumCPU</span><span class="params">()</span></span> <span class="type">int</span> <span class="comment">//返回机器逻辑CPU</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GOMAXPROCS</span><span class="params">(n <span class="type">int</span>)</span></span> <span class="type">int</span> <span class="comment">//设置最多可同时执行CPU</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4、timer"><a href="#4、timer" class="headerlink" title="4、timer"></a>4、timer</h4><p>定时器，定时处理一些操作，底层使用channel实现</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">time1 := time.NewTimer(time.Second * <span class="number">2</span>)</span><br><span class="line">&lt;- time1.C	<span class="comment">//阻塞，直到时间结束</span></span><br><span class="line">time.Sleep(time.Second * <span class="number">2</span>)</span><br><span class="line">&lt;- time.After(time.Second * <span class="number">2</span>)</span><br><span class="line">time1.Stop()	<span class="comment">//停止对应计时器</span></span><br><span class="line">time1.Reset(time.Second) <span class="comment">//重新设置计时器等待时间</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="5、ticker"><a href="#5、ticker" class="headerlink" title="5、ticker"></a>5、ticker</h4><p>周期性执行的定时器</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">ticker := time.NewTicker(time.Second * <span class="number">2</span>)</span><br><span class="line"><span class="keyword">for</span> _ = <span class="keyword">range</span> ticker &#123;&#125; <span class="comment">//周期性停止</span></span><br><span class="line">ticker.Stop() <span class="comment">//停止计时</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6、原子操作"><a href="#6、原子操作" class="headerlink" title="6、原子操作"></a>6、原子操作</h4><p>atomic提供的原子操作，确保任何时候都只有一个goroutine对变量进行操作，提供增减、载入、比较交换、存储等操作</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddInt32</span><span class="params">(addr *<span class="type">int32</span>, delta <span class="type">int32</span>)</span></span> (val <span class="type">int32</span>)	<span class="comment">//增减，此外还可以操作int64，uint32,unit63,uintptr</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LoadInt32</span><span class="params">(addr *<span class="type">int32</span>)</span></span> (val <span class="type">int32</span>)	<span class="comment">//载入，即获取对应值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">StoreInt32</span><span class="params">(addr *<span class="type">int32</span>, val <span class="type">int32</span>)</span></span><span class="comment">//存储，保存到val中</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CompareAndSwapInt32</span><span class="params">(addr *<span class="type">int32</span>, old, <span class="built_in">new</span> <span class="type">int32</span>)</span></span> (swapped <span class="type">bool</span>)<span class="comment">//比较交换，先比较old和addr的值相同返回真，再赋值</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="十一、反射"><a href="#十一、反射" class="headerlink" title="十一、反射"></a>十一、反射</h2><p>动态的获取运行时变量的各种信息，比如类型、类别。如果是结构体变量还可以获取属性、方法，通过反射还可以修改变量的值。</p>
+<p>反射相关的内容在reflect包中，具体的方法查看官方文档</p>
+<p>反射重要的函数：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TypeOf</span><span class="params">(i <span class="keyword">interface</span>&#123;&#125;)</span></span> Type <span class="comment">//返回一个type</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ValueOf</span><span class="params">(i <span class="keyword">interface</span>&#123;&#125;)</span></span> Value <span class="comment">//返回一个value</span></span><br></pre></td></tr></table></figure>
+
+<p>在反射中，变量、空接口、Value可以相互转换</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//空接口到value</span></span><br><span class="line">a := reflect.ValueOf(b)</span><br><span class="line"><span class="comment">//value到空接口</span></span><br><span class="line">b := reflect.Interface(a)</span><br><span class="line"><span class="comment">//空接口到value，类型断言</span></span><br></pre></td></tr></table></figure>
+
+<p>注意事项：</p>
+<ol>
+<li>Type是类型，Kind是类别，两者可能相同也可能不同，例如var a int类型类别都是int，var a student类型时student类别时sturct</li>
+</ol>
+<p>待续</p>
+<h2 id="十二、网络编程"><a href="#十二、网络编程" class="headerlink" title="十二、网络编程"></a>十二、网络编程</h2><p>TCP Socket：基于TCP&#x2F;ip协议</p>
+<p>Http：底层基于TCP Socket</p>
+<p>服务器端处理流程：</p>
+<ol>
+<li>监听端口</li>
+<li>创建tcp连接</li>
+<li>创建Goroutine，处理连接请求</li>
+</ol>
+<p>客户端处理流程：</p>
+<ol>
+<li>与服务器建立连接</li>
+<li>发送请求数据，接受服务器端返回的数据</li>
+<li>关闭连接</li>
+</ol>
+<p>net包：与网络相关的所有操作在该包中</p>
+<p>服务器监听：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;开始监听&quot;</span>)</span><br><span class="line">	listen, err1 := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;0.0.0.0:8888&quot;</span>)	<span class="comment">//ip加端口</span></span><br><span class="line">	<span class="keyword">defer</span> listen.Close()</span><br><span class="line">	<span class="keyword">if</span> err1 != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;监听失败&quot;</span>, err1)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">&quot;监听成功&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		conn, err := listen.Accept() <span class="comment">//等待连接</span></span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;连接失败&quot;</span>, err)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			fmt.Printf(<span class="string">&quot;连接成功，客户端ip=%v\n&quot;</span>, conn, conn.RemoteAddr().String())</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端发送请求：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    conn,err := net.Dial(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;127.0.0.1:8888&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;连接失败&quot;</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端发送请求、服务端接受请求的一个实例</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//客户端</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	conn, err := net.Dial(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;127.0.0.1:8888&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;连接失败&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	reader := bufio.NewReader(os.Stdin) <span class="comment">//获取标准输入即终端</span></span><br><span class="line">	line, err := reader.ReadString(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;读取失败&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">	n, err := conn.Write([]<span class="type">byte</span>(line))</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;发送失败&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;客户端发送了%d字节的信息&quot;</span>, n)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//服务器端</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;开始监听&quot;</span>)</span><br><span class="line">	listen, err1 := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;0.0.0.0:8888&quot;</span>)</span><br><span class="line">	<span class="keyword">defer</span> listen.Close()</span><br><span class="line">	<span class="keyword">if</span> err1 != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;监听失败&quot;</span>, err1)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">&quot;监听成功&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		conn, err := listen.Accept() <span class="comment">//等待连接</span></span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;连接失败&quot;</span>, err)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//开启协程</span></span><br><span class="line">		<span class="keyword">go</span> process(conn)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">process</span><span class="params">(conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		buf := <span class="built_in">make</span>([]<span class="type">byte</span>, <span class="number">1024</span>)</span><br><span class="line">		n, err := conn.Read(buf)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;接受失败&quot;</span>)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//读取服务器发送内容</span></span><br><span class="line">		fmt.Println(<span class="type">string</span>(buf[:n]))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="十三、依赖管理"><a href="#十三、依赖管理" class="headerlink" title="十三、依赖管理"></a>十三、依赖管理</h2><p>go mod，管理模块中的包依赖关系</p>
+<p>使用：终端输入命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//初始化模块</span><br><span class="line">go mod init &lt;项目模块名称&gt;</span><br><span class="line">//根据go.mod文件处理依赖关系，没有则会创建对应文件</span><br><span class="line">go mod tidy</span><br><span class="line">//将依赖包复制到vendor目录</span><br><span class="line">go mod vendor</span><br><span class="line">//显示依赖关系</span><br><span class="line">go list -m all</span><br><span class="line">//下载依赖</span><br><span class="line">go mod download [path@version]</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>GoLang</category>
