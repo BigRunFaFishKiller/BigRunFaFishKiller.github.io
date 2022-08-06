@@ -2710,6 +2710,8 @@
 <p>快速启动：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	r := gin.Default()		<span class="comment">//创建默认路由引擎</span></span><br><span class="line">	r.GET(<span class="string">&quot;/ping&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;	<span class="comment">//配置请求地址和回调函数</span></span><br><span class="line">		c.JSON(<span class="number">200</span>, gin.H&#123;			<span class="comment">//响应json，200可以用http.StatusOk替换，其他状态码也有对应常量</span></span><br><span class="line">			<span class="string">&quot;message&quot;</span>: <span class="string">&quot;pong&quot;</span>,</span><br><span class="line">		&#125;)</span><br><span class="line">	&#125;)</span><br><span class="line">    r.Run() <span class="comment">// 监听并在 0.0.0.0:8080 上启动服务，Run(&quot;:8000&quot;)，在8000端口上启动服务</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<span id="more"></span>
+
 <p>golang热加载：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">go get github.com/pilu/fresh</span><br><span class="line">使用fresh命令</span><br></pre></td></tr></table></figure>
 
@@ -2803,6 +2805,10 @@
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//设置redis中间件</span></span><br><span class="line"><span class="comment">//参数为最大连接数、协议、地址、密码、密钥</span></span><br><span class="line">store, err := redis.NewStore(<span class="number">10</span>, <span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;192.168.128:6379&quot;</span>, <span class="string">&quot;&quot;</span>, []<span class="type">byte</span>(<span class="string">&quot;yuanxiao&quot;</span>))</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	fmt.Println(err)</span><br><span class="line">&#125;</span><br><span class="line">r.Use(sessions.Sessions(<span class="string">&quot;session&quot;</span>, store))</span><br><span class="line">r.GET(<span class="string">&quot;/session&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">	session := sessions.Default(c)</span><br><span class="line">	session.Set(<span class="string">&quot;username&quot;</span>, <span class="string">&quot;zhangsan&quot;</span>)</span><br><span class="line">	session.Save()</span><br><span class="line">    c.String(<span class="number">200</span>, <span class="string">&quot;session值为%v&quot;</span>, session.Get(<span class="string">&quot;username&quot;</span>))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <p>关于redis的操作可以使用go-redis</p>
+<h1 id="十、重定向"><a href="#十、重定向" class="headerlink" title="十、重定向"></a>十、重定向</h1><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//http重定向</span></span><br><span class="line">r.GET(<span class="string">&quot;/redirect&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    c.Redirect(http.StatusMovedPermanently, url)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//路由重定向</span></span><br><span class="line">r.GET(<span class="string">&quot;/aim&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Comtext)</span></span> &#123;</span><br><span class="line">    c.String(http.StatusOk, <span class="string">&quot;aim&quot;</span>)</span><br><span class="line">&#125;)</span><br><span class="line">r.GET(<span class="string">&quot;/redirect&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    c.Request.URL.Path = <span class="string">&quot;/aim&quot;</span></span><br><span class="line">    r.HandleContext(c)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
 ]]></content>
       <categories>
         <category>Golang</category>
@@ -2879,6 +2885,76 @@
 <p>Sql.NullString为一个结构体，当Valid为true时，传入零值也不会被默认值替换，其他数据类型同理</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> NullString <span class="keyword">struct</span> &#123;</span><br><span class="line">    tring <span class="type">string</span></span><br><span class="line">	Valid  <span class="type">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ol>
+<h1 id="四、查询"><a href="#四、查询" class="headerlink" title="四、查询"></a>四、查询</h1><p>简单查询可以使用下列方法，复杂查询建议使用原生SQL</p>
+<p>一般查询:</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> user User</span><br><span class="line"><span class="keyword">var</span> users []User</span><br><span class="line"><span class="comment">//根据主键查询第一条记录</span></span><br><span class="line">db.First(&amp;user)</span><br><span class="line"><span class="comment">//随机查询一条记录</span></span><br><span class="line">db.Take(&amp;user)</span><br><span class="line"><span class="comment">//根据主键查询最后一条记录</span></span><br><span class="line">ab.Last(&amp;user)</span><br><span class="line"><span class="comment">//查询所有记录</span></span><br><span class="line">db.Find(&amp;users)</span><br><span class="line"><span class="comment">//查询指定某条记录，当主键为整形时可用</span></span><br><span class="line">db.First(&amp;user, <span class="number">10</span>)</span><br><span class="line"><span class="comment">//查询第一个，没有则按照条件生成一个</span></span><br><span class="line">db.FirstOrInit(&amp;user, User&#123;Name: <span class="string">&quot;zhangsan&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>where条件查询：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Where(<span class="string">&quot;name = ?&quot;</span>, <span class="string">&quot;zhangsan&quot;</span>).First(&amp;user)</span><br><span class="line">db.Where(<span class="string">&quot;name in (?)&quot;</span>, []<span class="type">string</span>&#123;<span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;lisi&quot;</span>&#125;).Find(&amp;users)</span><br><span class="line">db.Where(<span class="string">&quot;name like ?&quot;</span>, <span class="string">&quot;%shangsan&quot;</span>).Find(&amp;users)</span><br><span class="line">db.Where(<span class="string">&quot;name = ? and age &gt; ?&quot;</span>, <span class="string">&quot;zhangsan&quot;</span>. <span class="string">&quot;22&quot;</span>).Fins(&amp;users)</span><br><span class="line">db.Where(<span class="string">&quot;created_at &gt; ?&quot;</span>, day).Find(&amp;user)	<span class="comment">//day为time.Time类型</span></span><br></pre></td></tr></table></figure>
+
+<p>struct和map查询：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Where(User&#123;Name: <span class="string">&quot;zhangsan&quot;</span>, Age: <span class="number">18</span>&#125;).Find(&amp;users)</span><br><span class="line">db.Where(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>&#125;).Find(&amp;users)</span><br><span class="line">db.Where([]<span class="type">int64</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;).Find(&amp;users)	<span class="comment">//传入主键的切片</span></span><br></pre></td></tr></table></figure>
+
+<p>当传入结构体查询时，字段值为零值时，这些字段不会用于构建查询条件</p>
+<p>not条件查询：</p>
+<p>排除条件，使用同where</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Not([]<span class="type">int64</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;).Find(&amp;users) <span class="comment">//查询主键字段不在1，2,3的记录</span></span><br></pre></td></tr></table></figure>
+
+<p>or条件查询：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Where(<span class="string">&quot;name = zhangsan&quot;</span>).Or(User&#123;Name: <span class="string">&quot;lisi&quot;</span>&#125;).Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+<p>内联查询：将查询条件直接写在会立即生成SQL语句的方法里面</p>
+<p>Attrs:</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//条件查询第一条记录，如果没有查询到记录，则会使用Attrs中的数据更新结构体</span></span><br><span class="line">db.Where(User&#123;Username: <span class="string">&quot;zhangsan&quot;</span>&#125;).Attrs(User&#123;Password: <span class="number">234</span>&#125;).FirstOrInit(&amp;user)</span><br></pre></td></tr></table></figure>
+
+<p>Assign：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//条件查询第一条记录，无论是否查询到数据, 都会使用Assign中的数据更新结构体</span></span><br><span class="line">db.Where(User&#123;Username: <span class="string">&quot;zhangsan&quot;</span>&#125;).Assign(User&#123;Password: <span class="number">234</span>&#125;).FirstOrInit(&amp;user)</span><br></pre></td></tr></table></figure>
+
+<p>FirstOrCreate：匹配第一条记录，如果没有匹配到则创建一条记录</p>
+<p>查询字段：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Select(<span class="string">&quot;name as username, age&quot;</span>).Find(&amp;users)</span><br><span class="line">db.Select([]<span class="type">string</span>&#123;<span class="string">&quot;name&quot;</span>, <span class="string">&quot;age&quot;</span>&#125;).Find(&amp;users)</span><br><span class="line">db.Select(<span class="string">&quot;?&quot;</span>, )</span><br></pre></td></tr></table></figure>
+
+<p>子查询：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//等价于select * from &#x27;user&#x27; where id in (select age from &#x27;user&#x27; where age &gt; 18)</span></span><br><span class="line">db.Where(<span class="string">&quot;id in ?&quot;</span>, db.Table(<span class="string">&quot;user&quot;</span>).Select(<span class="string">&quot;age&quot;</span>).Where(<span class="string">&quot;age &gt; 18&quot;</span>).QueryExpr())</span><br></pre></td></tr></table></figure>
+
+<p>排序：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Order(<span class="string">&quot;name desc&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">//覆盖排序，执行第二条Sql时将覆盖前面的排序</span></span><br><span class="line"><span class="comment">//等价于：</span></span><br><span class="line"><span class="comment">//select * from user order by name</span></span><br><span class="line"><span class="comment">//select * from user order by age</span></span><br><span class="line">db.Order(<span class="string">&quot;name&quot;</span>).Find(&amp;users).Order(<span class="string">&quot;age&quot;</span>, <span class="literal">true</span>).Find(&amp;users1)</span><br></pre></td></tr></table></figure>
+
+<p>Limit：指定检索出的记录条数</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Limit(<span class="number">3</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+<p>偏移：指定返回记录时跳过的条数</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Offset(<span class="number">3</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">//-1表示取消偏移</span></span><br><span class="line"><span class="comment">//等价于</span></span><br><span class="line"><span class="comment">//select * from user offset 3</span></span><br><span class="line"><span class="comment">//select * from user</span></span><br><span class="line">db.Offset(<span class="number">3</span>).Find(&amp;users).Offset(<span class="number">-1</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+<p>count：立即执行方法</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//count()必须时链式查询的最后一个操作，他会覆盖前面的select</span></span><br><span class="line">db.Where(<span class="string">&quot;age &gt; 10&quot;</span>).Find(&amp;users).Count(&amp;count)</span><br></pre></td></tr></table></figure>
+
+<p>连接查询：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Select(<span class="string">&quot;user.name, email.email&quot;</span>).Joins(<span class="string">&quot;left join email on email.user_id = user.id&quot;</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+<p>单独查询一个列：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//查询一个列并返回一个切片</span></span><br><span class="line">db.Find(&amp;users).Pluck(<span class="string">&quot;age&quot;</span>, &amp;ages)</span><br></pre></td></tr></table></figure>
+
+<p>scan：扫描结果至一个结构体</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Result <span class="keyword">struct</span> &#123;</span><br><span class="line">    Name <span class="type">string</span></span><br><span class="line">    Age <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line">db.Table(<span class="string">&quot;user&quot;</span>).Select(<span class="string">&quot;name, age&quot;</span>).Scan(&amp;result)</span><br></pre></td></tr></table></figure>
+
+<p>原生SQL：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Row(<span class="string">&quot;select name, age from uer where name = ?&quot;</span>, <span class="string">&quot;zhangsan&quot;</span>).Scan(&amp;result)</span><br></pre></td></tr></table></figure>
+
+<p>链式操作：</p>
+<p>除了crud方法，其他方法如<code>db.Where()</code>不会立即执行语句，可以在其基础上再增加条件，最后再执行</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">tx := db.Where(<span class="string">&quot;age &gt; 18&quot;</span>)</span><br><span class="line">tx = tx.Where(<span class="string">&quot;name = ?&quot;</span>, zhangsan)</span><br><span class="line">tx.Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+<p>范围：</p>
+<p>scopes，建立在链式操作基础上，抽取通用逻辑，重复利用代码</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AgeGreaterThan18</span><span class="params">(db *gorm.DB)</span></span> *gotm.DB &#123;</span><br><span class="line">    <span class="keyword">return</span> db.Where(<span class="string">&quot;age &gt; 18&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Scopes内可以传入多个参数</span></span><br><span class="line">db.Scopes(AgeGreaterThan18).Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+<p>多个立即执行方法：在执行多个立即执行方法时，后一个立即执行方法会复用第一个立即执行方法（不包含内联条件）</p>
+<h1 id="五、更新"><a href="#五、更新" class="headerlink" title="五、更新"></a>五、更新</h1><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//更新所有字段</span></span><br><span class="line">db.Save()</span><br><span class="line"><span class="comment">//更新指定字段</span></span><br><span class="line">db.Model(&amp;user).Update(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;lisi&quot;</span>)</span><br><span class="line"><span class="comment">//更新多个字段，只有属性变化才会更新，传入结构体时，结构体必须为非零值</span></span><br><span class="line">db.Model(&amp;user).Updates(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;shangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>&#125;)</span><br><span class="line"><span class="comment">//更新选中字段</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">&quot;name&quot;</span>).Updates(<span class="string">&quot;name&quot;</span>: <span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>)</span><br><span class="line"><span class="comment">//忽略选中字段</span></span><br><span class="line">db.Model(&amp;user).Omit(<span class="string">&quot;name&quot;</span>).Updates(<span class="string">&quot;name&quot;</span>: <span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>)</span><br><span class="line"><span class="comment">//无Hooks更新</span></span><br><span class="line">db.Model(&amp;user).UpdateColumns(<span class="string">&quot;name&quot;</span>)</span><br><span class="line"><span class="comment">//批量更新，钩子函数也不会执行</span></span><br><span class="line">db.Model(User&#123;&#125;).Where(<span class="string">&quot;id in (?)&quot;</span>, []<span class="type">int</span>&#123;<span class="number">10</span>, <span class="number">11</span>&#125;).Updates()</span><br><span class="line"><span class="comment">//返回影响条数</span></span><br><span class="line">db.Model(User&#123;&#125;).Where(<span class="string">&quot;id in (?)&quot;</span>, []<span class="type">int</span>&#123;<span class="number">10</span>, <span class="number">11</span>&#125;).Updates().RowsAffected</span><br></pre></td></tr></table></figure>
+
+<h1 id="六、删除"><a href="#六、删除" class="headerlink" title="六、删除"></a>六、删除</h1><p>gorm通过主键字段删除记录，如果主键为空，则会删除所有值</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Delete(&amp;user)</span><br><span class="line"><span class="comment">//批量删除</span></span><br><span class="line">db.Where(<span class="string">&quot;id in (?)&quot;</span>, []<span class="type">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;).Delete(User&#123;&#125;)</span><br><span class="line"><span class="comment">//软删除，如果一个模型由DeleteAt字段，调用Delete方法时将执行软删除，不会真正删除记录，只会为该字段赋值</span></span><br><span class="line"><span class="comment">//查询软删除记录</span></span><br><span class="line">db.Unscoped().Where(<span class="string">&quot;age = 20&quot;</span>).Find(&amp;user)</span><br><span class="line"><span class="comment">//物理删除</span></span><br><span class="line">db.Unscoped().Delete(&amp;user)</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>Golang</category>
