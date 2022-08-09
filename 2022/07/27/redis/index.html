@@ -28,7 +28,7 @@
 <meta property="og:description" content="1、NoSQLNot Only SQL 泛指非关系型数据库，不依赖于业务逻辑的方式存储，以键值对的形式存储。  不遵循SQL标准 不支持ACID 性能远超SQL">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-27T09:49:55.000Z">
-<meta property="article:modified_time" content="2022-07-29T14:50:42.280Z">
+<meta property="article:modified_time" content="2022-08-09T11:08:04.241Z">
 <meta property="article:author" content="大润发杀鱼匠">
 <meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary">
@@ -224,7 +224,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-29 22:50:42" itemprop="dateModified" datetime="2022-07-29T22:50:42+08:00">2022-07-29</time>
+                <time title="修改时间：2022-08-09 19:08:04" itemprop="dateModified" datetime="2022-08-09T19:08:04+08:00">2022-08-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -403,41 +403,59 @@
 <p>避免文件过大，当文件超过设定的阈值时，启动文件压缩，只保留可以回复数据的最小指令集，即只关注对数据最后的一次操作。</p>
 <p>优势：数据备份更稳健，可读取日志文件，处理误操作</p>
 <p>劣势：更占磁盘空间，备份速度更慢，有一定性能压力</p>
-<h1 id="10、主从复制-master-x2F-slaver机制"><a href="#10、主从复制-master-x2F-slaver机制" class="headerlink" title="10、主从复制 master&#x2F;slaver机制"></a>10、主从复制 master&#x2F;slaver机制</h1><p>主机数据更新后根据配置和策略，自动同步到备份机上，master以写为主，master以读为主，一主多从</p>
-<p>优势：</p>
+<h1 id="10、缓存穿透、击穿、雪崩"><a href="#10、缓存穿透、击穿、雪崩" class="headerlink" title="10、缓存穿透、击穿、雪崩"></a>10、缓存穿透、击穿、雪崩</h1><h2 id="1、缓存穿透"><a href="#1、缓存穿透" class="headerlink" title="1、缓存穿透"></a>1、缓存穿透</h2><p>现象：</p>
 <ol>
-<li>读写分离，降低性能需求</li>
-<li>容灾快速恢复</li>
+<li>应用服务器压力增大</li>
+<li>redis命中率降低，即缓存中查不到数据</li>
+<li>一直查询数据库，数据库无法同步缓存</li>
 </ol>
-<p>搭建主从复制：</p>
+<p>原因：</p>
 <ol>
-<li><p>创建文件夹</p>
-</li>
-<li><p>复制入一份redis.conf文件</p>
-</li>
-<li><p>修改端口号，rdb文件名称，pid文件位置</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">include /myredis/redis.conf 引入其他配置文件公共部分</span><br><span class="line">pidfile /var/run/redis_6379.pid</span><br><span class="line">port 6379</span><br><span class="line">dbfilename dump6379.rdb</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置从库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slaveof ip port 成为某个实例的从服务器 </span><br></pre></td></tr></table></figure></li>
+<li>redis查询不到数据</li>
+<li>大量非正常url访问</li>
 </ol>
-<p>复制原理：</p>
+<p>解决方法：</p>
 <ol>
-<li>从服务器连上主服务器后，发送同步请求</li>
-<li>主服务器接受消息后进行持久化，然后将rdb文件发送给从服务器，从服务器读取文件</li>
-<li>每次主服务器写数据后，将数据同步到从服务器中</li>
+<li>缓存空值：如果查询缓存数据为空，则将该空值进行缓存，并将过期时间设置为一个较短时间</li>
+<li>设置白名单：使用bitmap定义一个可访问白名单，名单id作为bitmaps的偏移量，每一次访问和map中的id进行比较，id存在才可访问</li>
+<li>布隆过滤器：</li>
+<li>实时监控：Redis命中率急剧降低时，排查访问对象，进行处理</li>
 </ol>
-<p>常用模式：</p>
+<h2 id="2、缓存击穿"><a href="#2、缓存击穿" class="headerlink" title="2、缓存击穿"></a>2、缓存击穿</h2><p>现象：</p>
 <ol>
-<li>一主二仆：从服务器宕机后，再次启动需重新设置主服务器。主服务器宕机后，从服务器不会成为主服务器</li>
-<li>薪火相传：主服务器同步部分从服务器，这部分从服务器同步到剩余的从服务器</li>
-<li>反客为主：主服务器宕机后，从服务器编程主服务器。使用命令slaveof no one</li>
-<li>哨兵模式：监听主机状态，主机宕机后自动升级丛机为主机<ol>
-<li>在redis目录下新建文件sentinel.conf</li>
-<li>配置哨兵：sentinel monitor mymaster（为被监控的对象起名） 主机地址 1（1为至少有一个哨兵统一迁移  ）</li>
+<li>数据库压力瞬间增加</li>
+<li>reids没有大量key过期</li>
+<li>redis正常运行</li>
 </ol>
-</li>
+<p>原因：</p>
+<ol>
+<li>redis某个key过期，同时大量访问中使用了该key</li>
 </ol>
+<p>解决方法：</p>
+<ol>
+<li>预先设置热门key</li>
+<li>实时调整，实时调整redis的key过期时间</li>
+<li>使用锁：查询redis如果为空，则设置排他锁，休眠一段时间再次查询，查询成功则释放锁，否则不释放锁</li>
+</ol>
+<h2 id="3、缓存雪崩"><a href="#3、缓存雪崩" class="headerlink" title="3、缓存雪崩"></a>3、缓存雪崩</h2><p>现象：</p>
+<ol>
+<li>数据库压力变大</li>
+<li>服务器崩溃</li>
+</ol>
+<p>原因：</p>
+<ol>
+<li>在极少时间段出现大量key过期</li>
+</ol>
+<p>解决方案：</p>
+<ol>
+<li>构建多级缓存，比如Nginx缓存、redis缓存</li>
+<li>使用锁或者队列，不适合高并发</li>
+<li>及时更新缓存，某个key将要过期时，触发通知另一个线程去后台实时更新key</li>
+<li>将缓存失效时间分散开，在原有缓存失效时间上增加一个随机值，这样每一个缓存的过期时间的重复率将降低，很难引发集体失效</li>
+</ol>
+<h2 id="4、分布式锁"><a href="#4、分布式锁" class="headerlink" title="4、分布式锁"></a>4、分布式锁</h2><p>单机部署系统演化为分布式系统，分布式系统多线程、多进程且分布在不同的机器上，原本单机部署的控制锁策略将失效，则需要分布式锁解决</p>
+<p>实现方案：redis实现分布式锁</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">setnx users 10		相当于加锁</span><br><span class="line">expire 10			给锁设置过期时间</span><br><span class="line">set users 10 nx ex 10 加锁并设置过期时间，保证原子性</span><br><span class="line">del users			相当于释放锁</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -521,7 +539,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1%E3%80%81NoSQL"><span class="nav-number">1.</span> <span class="nav-text">1、NoSQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2%E3%80%81%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">2、常用数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AF%B9key%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">2.1.</span> <span class="nav-text">1、对key的操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81String-%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">2.2.</span> <span class="nav-text">2、String 字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81List-%E5%88%97%E8%A1%A8"><span class="nav-number">2.3.</span> <span class="nav-text">3、List 列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81Set-%E9%9B%86%E5%90%88"><span class="nav-number">2.4.</span> <span class="nav-text">4、Set 集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81Hash-%E5%93%88%E5%B8%8C"><span class="nav-number">2.5.</span> <span class="nav-text">5、Hash 哈希</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81Zset-%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88"><span class="nav-number">2.6.</span> <span class="nav-text">6、Zset 有序集合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3%E3%80%81Redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">3、Redis配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4%E3%80%81%E5%8F%91%E5%B8%83%E4%B8%8E%E8%AE%A2%E9%98%85"><span class="nav-number">4.</span> <span class="nav-text">4、发布与订阅</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5%E3%80%81%E6%96%B0%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">5、新数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81Bitmaps"><span class="nav-number">5.1.</span> <span class="nav-text">1、Bitmaps</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81HyperLogLog"><span class="nav-number">5.2.</span> <span class="nav-text">2、HyperLogLog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81Geospatial"><span class="nav-number">5.3.</span> <span class="nav-text">3、Geospatial</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6%E3%80%81%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B7%A5%E5%85%B7"><span class="nav-number">6.</span> <span class="nav-text">6、客户端工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81Jedis"><span class="nav-number">6.1.</span> <span class="nav-text">1、Jedis</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7%E3%80%81SpringBoot%E6%95%B4%E5%90%88Redis"><span class="nav-number">7.</span> <span class="nav-text">7、SpringBoot整合Redis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8%E3%80%81%E4%BA%8B%E5%8A%A1%E5%92%8C%E9%94%81%E6%9C%BA%E5%88%B6"><span class="nav-number">8.</span> <span class="nav-text">8、事务和锁机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis%E4%BA%8B%E5%8A%A1%E4%B8%89%E9%87%8D%E6%80%A7"><span class="nav-number">8.1.</span> <span class="nav-text">Redis事务三重性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%92%E6%9D%80%E6%A1%88%E4%BE%8B"><span class="nav-number">8.2.</span> <span class="nav-text">秒杀案例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9%E3%80%81%E6%8C%81%E4%B9%85%E5%8C%96%E6%93%8D%E4%BD%9C"><span class="nav-number">9.</span> <span class="nav-text">9、持久化操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81RDB"><span class="nav-number">9.1.</span> <span class="nav-text">1、RDB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81AOF"><span class="nav-number">9.2.</span> <span class="nav-text">2、AOF</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10%E3%80%81%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-master-x2F-slaver%E6%9C%BA%E5%88%B6"><span class="nav-number">10.</span> <span class="nav-text">10、主从复制 master&#x2F;slaver机制</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1%E3%80%81NoSQL"><span class="nav-number">1.</span> <span class="nav-text">1、NoSQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2%E3%80%81%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">2、常用数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AF%B9key%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">2.1.</span> <span class="nav-text">1、对key的操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81String-%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">2.2.</span> <span class="nav-text">2、String 字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81List-%E5%88%97%E8%A1%A8"><span class="nav-number">2.3.</span> <span class="nav-text">3、List 列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81Set-%E9%9B%86%E5%90%88"><span class="nav-number">2.4.</span> <span class="nav-text">4、Set 集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81Hash-%E5%93%88%E5%B8%8C"><span class="nav-number">2.5.</span> <span class="nav-text">5、Hash 哈希</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81Zset-%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88"><span class="nav-number">2.6.</span> <span class="nav-text">6、Zset 有序集合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3%E3%80%81Redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">3、Redis配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4%E3%80%81%E5%8F%91%E5%B8%83%E4%B8%8E%E8%AE%A2%E9%98%85"><span class="nav-number">4.</span> <span class="nav-text">4、发布与订阅</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5%E3%80%81%E6%96%B0%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">5、新数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81Bitmaps"><span class="nav-number">5.1.</span> <span class="nav-text">1、Bitmaps</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81HyperLogLog"><span class="nav-number">5.2.</span> <span class="nav-text">2、HyperLogLog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81Geospatial"><span class="nav-number">5.3.</span> <span class="nav-text">3、Geospatial</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6%E3%80%81%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B7%A5%E5%85%B7"><span class="nav-number">6.</span> <span class="nav-text">6、客户端工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81Jedis"><span class="nav-number">6.1.</span> <span class="nav-text">1、Jedis</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7%E3%80%81SpringBoot%E6%95%B4%E5%90%88Redis"><span class="nav-number">7.</span> <span class="nav-text">7、SpringBoot整合Redis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8%E3%80%81%E4%BA%8B%E5%8A%A1%E5%92%8C%E9%94%81%E6%9C%BA%E5%88%B6"><span class="nav-number">8.</span> <span class="nav-text">8、事务和锁机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis%E4%BA%8B%E5%8A%A1%E4%B8%89%E9%87%8D%E6%80%A7"><span class="nav-number">8.1.</span> <span class="nav-text">Redis事务三重性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%92%E6%9D%80%E6%A1%88%E4%BE%8B"><span class="nav-number">8.2.</span> <span class="nav-text">秒杀案例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9%E3%80%81%E6%8C%81%E4%B9%85%E5%8C%96%E6%93%8D%E4%BD%9C"><span class="nav-number">9.</span> <span class="nav-text">9、持久化操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81RDB"><span class="nav-number">9.1.</span> <span class="nav-text">1、RDB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81AOF"><span class="nav-number">9.2.</span> <span class="nav-text">2、AOF</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10%E3%80%81%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E3%80%81%E5%87%BB%E7%A9%BF%E3%80%81%E9%9B%AA%E5%B4%A9"><span class="nav-number">10.</span> <span class="nav-text">10、缓存穿透、击穿、雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">10.1.</span> <span class="nav-text">1、缓存穿透</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">10.2.</span> <span class="nav-text">2、缓存击穿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">10.3.</span> <span class="nav-text">3、缓存雪崩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-number">10.4.</span> <span class="nav-text">4、分布式锁</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

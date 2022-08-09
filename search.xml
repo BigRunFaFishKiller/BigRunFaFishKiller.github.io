@@ -2657,41 +2657,59 @@
 <p>避免文件过大，当文件超过设定的阈值时，启动文件压缩，只保留可以回复数据的最小指令集，即只关注对数据最后的一次操作。</p>
 <p>优势：数据备份更稳健，可读取日志文件，处理误操作</p>
 <p>劣势：更占磁盘空间，备份速度更慢，有一定性能压力</p>
-<h1 id="10、主从复制-master-x2F-slaver机制"><a href="#10、主从复制-master-x2F-slaver机制" class="headerlink" title="10、主从复制 master&#x2F;slaver机制"></a>10、主从复制 master&#x2F;slaver机制</h1><p>主机数据更新后根据配置和策略，自动同步到备份机上，master以写为主，master以读为主，一主多从</p>
-<p>优势：</p>
+<h1 id="10、缓存穿透、击穿、雪崩"><a href="#10、缓存穿透、击穿、雪崩" class="headerlink" title="10、缓存穿透、击穿、雪崩"></a>10、缓存穿透、击穿、雪崩</h1><h2 id="1、缓存穿透"><a href="#1、缓存穿透" class="headerlink" title="1、缓存穿透"></a>1、缓存穿透</h2><p>现象：</p>
 <ol>
-<li>读写分离，降低性能需求</li>
-<li>容灾快速恢复</li>
+<li>应用服务器压力增大</li>
+<li>redis命中率降低，即缓存中查不到数据</li>
+<li>一直查询数据库，数据库无法同步缓存</li>
 </ol>
-<p>搭建主从复制：</p>
+<p>原因：</p>
 <ol>
-<li><p>创建文件夹</p>
-</li>
-<li><p>复制入一份redis.conf文件</p>
-</li>
-<li><p>修改端口号，rdb文件名称，pid文件位置</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">include /myredis/redis.conf 引入其他配置文件公共部分</span><br><span class="line">pidfile /var/run/redis_6379.pid</span><br><span class="line">port 6379</span><br><span class="line">dbfilename dump6379.rdb</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置从库</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">slaveof ip port 成为某个实例的从服务器 </span><br></pre></td></tr></table></figure></li>
+<li>redis查询不到数据</li>
+<li>大量非正常url访问</li>
 </ol>
-<p>复制原理：</p>
+<p>解决方法：</p>
 <ol>
-<li>从服务器连上主服务器后，发送同步请求</li>
-<li>主服务器接受消息后进行持久化，然后将rdb文件发送给从服务器，从服务器读取文件</li>
-<li>每次主服务器写数据后，将数据同步到从服务器中</li>
+<li>缓存空值：如果查询缓存数据为空，则将该空值进行缓存，并将过期时间设置为一个较短时间</li>
+<li>设置白名单：使用bitmap定义一个可访问白名单，名单id作为bitmaps的偏移量，每一次访问和map中的id进行比较，id存在才可访问</li>
+<li>布隆过滤器：</li>
+<li>实时监控：Redis命中率急剧降低时，排查访问对象，进行处理</li>
 </ol>
-<p>常用模式：</p>
+<h2 id="2、缓存击穿"><a href="#2、缓存击穿" class="headerlink" title="2、缓存击穿"></a>2、缓存击穿</h2><p>现象：</p>
 <ol>
-<li>一主二仆：从服务器宕机后，再次启动需重新设置主服务器。主服务器宕机后，从服务器不会成为主服务器</li>
-<li>薪火相传：主服务器同步部分从服务器，这部分从服务器同步到剩余的从服务器</li>
-<li>反客为主：主服务器宕机后，从服务器编程主服务器。使用命令slaveof no one</li>
-<li>哨兵模式：监听主机状态，主机宕机后自动升级丛机为主机<ol>
-<li>在redis目录下新建文件sentinel.conf</li>
-<li>配置哨兵：sentinel monitor mymaster（为被监控的对象起名） 主机地址 1（1为至少有一个哨兵统一迁移  ）</li>
+<li>数据库压力瞬间增加</li>
+<li>reids没有大量key过期</li>
+<li>redis正常运行</li>
 </ol>
-</li>
+<p>原因：</p>
+<ol>
+<li>redis某个key过期，同时大量访问中使用了该key</li>
 </ol>
+<p>解决方法：</p>
+<ol>
+<li>预先设置热门key</li>
+<li>实时调整，实时调整redis的key过期时间</li>
+<li>使用锁：查询redis如果为空，则设置排他锁，休眠一段时间再次查询，查询成功则释放锁，否则不释放锁</li>
+</ol>
+<h2 id="3、缓存雪崩"><a href="#3、缓存雪崩" class="headerlink" title="3、缓存雪崩"></a>3、缓存雪崩</h2><p>现象：</p>
+<ol>
+<li>数据库压力变大</li>
+<li>服务器崩溃</li>
+</ol>
+<p>原因：</p>
+<ol>
+<li>在极少时间段出现大量key过期</li>
+</ol>
+<p>解决方案：</p>
+<ol>
+<li>构建多级缓存，比如Nginx缓存、redis缓存</li>
+<li>使用锁或者队列，不适合高并发</li>
+<li>及时更新缓存，某个key将要过期时，触发通知另一个线程去后台实时更新key</li>
+<li>将缓存失效时间分散开，在原有缓存失效时间上增加一个随机值，这样每一个缓存的过期时间的重复率将降低，很难引发集体失效</li>
+</ol>
+<h2 id="4、分布式锁"><a href="#4、分布式锁" class="headerlink" title="4、分布式锁"></a>4、分布式锁</h2><p>单机部署系统演化为分布式系统，分布式系统多线程、多进程且分布在不同的机器上，原本单机部署的控制锁策略将失效，则需要分布式锁解决</p>
+<p>实现方案：redis实现分布式锁</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setnx users 10		相当于加锁</span><br><span class="line">expire 10			给锁设置过期时间</span><br><span class="line">set users 10 nx ex 10 加锁并设置过期时间，保证原子性</span><br><span class="line">del users			相当于释放锁</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>数据库</category>
