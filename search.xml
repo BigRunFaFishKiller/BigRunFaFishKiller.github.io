@@ -249,10 +249,11 @@
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="built_in">len</span>() <span class="comment">//求数组、切片、map等结构的长度</span></span><br><span class="line"><span class="built_in">new</span>(<span class="type">int</span>)		<span class="comment">//主要分配值类型内存，返回指针</span></span><br><span class="line"><span class="built_in">make</span>()	<span class="comment">//主要分配引用类型内存</span></span><br><span class="line"><span class="built_in">cap</span>()	<span class="comment">//返回数组切片等结构的容量</span></span><br><span class="line"><span class="built_in">append</span>() <span class="comment">//动态给切片追加长度</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="12、错误处理"><a href="#12、错误处理" class="headerlink" title="12、错误处理"></a>12、错误处理</h4><p>go中抛出一个panic异常，然后再defer中通过recover（内置函数）捕获异常，然后正常处理</p>
+<p>defer只能在defer修饰的函数中使用，用于获取错误值，程序正常执行则会返回nil</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">err</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		err := <span class="built_in">recover</span>()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123; <span class="comment">//捕获到异常</span></span><br><span class="line">			fmt.Println(<span class="string">&quot;error = &quot;</span>, err)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	num1 := <span class="number">1</span></span><br><span class="line">	num2 := <span class="number">0</span></span><br><span class="line">	i := num1 / num2</span><br><span class="line">	fmt.Print(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>自定义错误</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">err</span><span class="params">()</span></span> &#123;</span><br><span class="line">	err2 := errors.New(<span class="string">&quot;致命错误&quot;</span>)	<span class="comment">//生成错误</span></span><br><span class="line">	<span class="built_in">panic</span>(err2)						<span class="comment">//捕获错误并终止程序</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">err</span><span class="params">()</span></span> &#123;</span><br><span class="line">	err := errors.New(<span class="string">&quot;致命错误&quot;</span>)	<span class="comment">//生成错误</span></span><br><span class="line">	<span class="built_in">panic</span>(err)						<span class="comment">//捕获错误并终止程序</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="五、数组和切片"><a href="#五、数组和切片" class="headerlink" title="五、数组和切片"></a>五、数组和切片</h2><h4 id="1、数组"><a href="#1、数组" class="headerlink" title="1、数组"></a>1、数组</h4><p>使用索引取值赋值，元素具有默认值，且数组为值类型</p>
 <p>数组的地址为首元素地址，每个元素地址间隔根据数组类型决定</p>
@@ -415,6 +416,7 @@
 </ol>
 <h4 id="11、接口与继承"><a href="#11、接口与继承" class="headerlink" title="11、接口与继承"></a>11、接口与继承</h4><p>继承：提高代码的复用性和可维护性</p>
 <p>接口：设计，提供一种规范，在一定程度上实现代码解耦</p>
+<p>当父类实现了某个接口后，子类继承父类后同样实现了该接口</p>
 <h4 id="12、多态"><a href="#12、多态" class="headerlink" title="12、多态"></a>12、多态</h4><p>通过接口实现，统一的接口调用不同的具体实现，体现了接口变量的多态性</p>
 <ol>
 <li>多态参数，只要实现接口，接口变量都能接受对应的实参</li>
@@ -426,16 +428,49 @@
 <h4 id="14、type-switch"><a href="#14、type-switch" class="headerlink" title="14、type-switch"></a>14、type-switch</h4><p>接口类型的变量可以使用一种特殊形式的switch，满足对应的类型即执行对应的语句</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">switch</span> i := t.(<span class="keyword">type</span>) &#123;	<span class="comment">//变量i得到了对应的值和类型</span></span><br><span class="line">	<span class="keyword">case</span> *a:</span><br><span class="line">    <span class="comment">//Todo</span></span><br><span class="line">    <span class="keyword">case</span> *b:</span><br><span class="line">    <span class="comment">//Todo</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">    <span class="comment">//Todo</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="八、文件"><a href="#八、文件" class="headerlink" title="八、文件"></a>八、文件</h2><h4 id="1、使用-2"><a href="#1、使用-2" class="headerlink" title="1、使用"></a>1、使用</h4><p>文件通过输入输出流在内存和硬盘间交互</p>
-<p>go的所有关于文件的操作封装在os包的的File结构体中</p>
-<p>常用方法：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Open</span><span class="params">(name <span class="type">string</span>)</span></span> (file *File, err,<span class="type">error</span>)	<span class="comment">//打开文件，返回一个文件的指针</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f *File)</span></span> Close() <span class="type">error</span> <span class="comment">//关闭一个文件</span></span><br><span class="line"><span class="comment">//带缓冲的读取</span></span><br><span class="line">file := os.Open(<span class="string">&quot;路径&quot;</span>)</span><br><span class="line"><span class="keyword">defer</span> file.<span class="built_in">close</span>()</span><br><span class="line">reader := bufio.NewReader(file)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		str, err := reader.ReadString(<span class="string">&#x27;\n&#x27;</span>)	<span class="comment">//表示文件读取到换行符结束读取</span></span><br><span class="line">		<span class="keyword">if</span> err == io.EOF &#123;		<span class="comment">//io.EOF表示文件读取到末尾</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Print(str)</span><br><span class="line">	&#125;</span><br><span class="line"><span class="comment">//不带缓冲的读取，文件较小可以使用这种方式，在io/iouil包下，文件不需要手动打开关闭</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ReadFile</span><span class="params">(fileName <span class="type">string</span>)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WriteFile</span><span class="params">(filename <span class="type">string</span>, data []<span class="type">byte</span>, perm os.FileMode)</span></span> <span class="type">error</span></span><br><span class="line"><span class="comment">//创建并写入文件，os包下，第一个参数表示打开的文件，第二个表示文件打开的方式，第三个表示权限只有linux下有用</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">OpenFile</span><span class="params">(name <span class="type">string</span>, flag <span class="type">int</span>, perm FileMode)</span></span>(file *File, err <span class="type">error</span>)</span><br><span class="line"><span class="comment">//带缓存的写入</span></span><br><span class="line">writer := bufio.NewWriter(file)</span><br><span class="line">writer.WriteString(str)</span><br><span class="line">writer.Flush()</span><br><span class="line"><span class="comment">//判断文件或目录是否存在，返回一个描述文件的info</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Stat</span><span class="params">(name <span class="type">string</span>)</span></span>(fi FileInfo, err <span class="type">error</span>)</span><br><span class="line"><span class="comment">//拷贝文件，io包下,返回拷贝的字节数和错误</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Copy</span><span class="params">(dst Writer, src Reader)</span></span> (written <span class="type">int64</span>, err <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="八、文件"><a href="#八、文件" class="headerlink" title="八、文件"></a>八、文件</h2><h4 id="1、读取用户输入"><a href="#1、读取用户输入" class="headerlink" title="1、读取用户输入"></a>1、读取用户输入</h4><p>从键盘读取输入</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">fmt.Scanln(&amp;str1, &amp;str2)	<span class="comment">//读取一行数据，以空格为界放入不同的变量</span></span><br><span class="line">fmt.Scanf(<span class="string">&quot;%d&quot;</span>, &amp;i)</span><br><span class="line">fmt.Sscan(input, format, %s)	<span class="comment">//以Sscan开始的函数，从input中读入，按照format进行格式化</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="2、命令行参数"><a href="#2、命令行参数" class="headerlink" title="2、命令行参数"></a>2、命令行参数</h4><p>os.Args是一个string类型的切片，用于存储命令行参数</p>
-<p>执行可执行文件时，在命令后添加命令行参数，遍历Args即可获取所有参数</p>
-<p>flag包解析命令行参数</p>
+<p>带缓冲的读取：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> inputReader *bufio.Reader</span><br><span class="line"><span class="keyword">var</span> input <span class="type">string</span></span><br><span class="line"><span class="keyword">var</span> err <span class="type">error</span></span><br><span class="line"></span><br><span class="line">inputReader = bufio.NewReader(os.stdin)</span><br><span class="line">input, err = inputReader.ReadString(<span class="string">&#x27;\n&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>创建一个标准输入的读取器，从键盘读取输入，直到遇见指定的字符为止，然后连同指定字符一同放入缓冲区，读取到文件结束时，将会返回读取到的字符串和io.EOF</p>
+<h4 id="2、文件读写"><a href="#2、文件读写" class="headerlink" title="2、文件读写"></a>2、文件读写</h4><p>文件使用os.File类型的指针来表示，前面使用过得os.Stdin和os.Stdout都是这种类型</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ReadFile</span><span class="params">(fileName <span class="type">string</span>)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WriteFile</span><span class="params">(filename <span class="type">string</span>, data []<span class="type">byte</span>, perm os.FileMode)</span></span> <span class="type">error</span></span><br></pre></td></tr></table></figure>
+
+<p>不带缓冲的读写，文件较小时可以使用，不需要手动关闭文件，os包下</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">file, err1 := os.Open(<span class="string">&quot;xxx&quot;</span>)	</span><br><span class="line"><span class="keyword">if</span> err1 != nile &#123;&#125;</span><br><span class="line"><span class="keyword">defer</span> file.Close()</span><br><span class="line">reader := bufio.NewReader(file)</span><br><span class="line"><span class="keyword">for</span> &#123;</span><br><span class="line">    input, err2 := reader.ReaderString(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">    fmt.Println(input)</span><br><span class="line">    <span class="keyword">if</span> err2 == io.EOF &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先打开一个文件，从当前项目的当前路劲寻找，返回一个<code>*os.File</code>，如果文件不存在或者没有足够的权限会抛出错误。文件正常打开后要延时关闭。接着生成一个读取器Reader，按行读取文件中的内容</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">inputFile := <span class="string">&quot;a.txt&quot;</span></span><br><span class="line">outputFile := <span class="string">&quot;b.txt&quot;</span></span><br><span class="line">input, err := ioutil.ReadFile(inputFile)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line">err = ioutil.WriteFile(outputFile, input, <span class="number">06444</span>)	<span class="comment">//权限，在Windows操作系统下无效</span></span><br></pre></td></tr></table></figure>
+
+<p>将文件整个读入到一个[]byte，在将其写入另一个文件</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">buf := <span class="built_in">make</span>([]<span class="type">byte</span>, <span class="number">1024</span>)</span><br><span class="line">file, err1 := os.Open(<span class="string">&quot;xxx&quot;</span>)	</span><br><span class="line"><span class="keyword">if</span> err1 != nile &#123;&#125;</span><br><span class="line"><span class="keyword">defer</span> file.Close()</span><br><span class="line">reader := bufio.NewReader(file)</span><br><span class="line">n, err := reader.Read(buf)</span><br></pre></td></tr></table></figure>
+
+<p>很多情况下，文件不按照行划分，或者就是一个二进制文件，这种时候需要使用带缓冲的读入。返回错误和读取到的字节数</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">outputFile, outputErr := os.OpenFile(<span class="string">&quot;xxx&quot;</span>, os.O_WRONLY | os.O_CREATE, <span class="number">0666</span>)</span><br><span class="line"><span class="keyword">defer</span> outputFile.Close()</span><br><span class="line"></span><br><span class="line">writer := bufio.NewWriter(outputFile)</span><br><span class="line">outputString <span class="comment">//读取文件</span></span><br><span class="line">writer.WriteString(outputString)</span><br><span class="line">writer.Flush()</span><br><span class="line"></span><br><span class="line"><span class="comment">//如果文件较小可以直接写入文件，fmt包中的F开头的函数可以直接写入io.Writer，file实现了writer接口</span></span><br><span class="line">fmt.Fprintf(outputFile, outputString)</span><br></pre></td></tr></table></figure>
+
+<p><code>OpenFile</code>有三个参数，文件名、一个或多个标志、文件权限</p>
+<ol>
+<li>os.O_RDONLY	只读</li>
+<li>os.O_WRONLY    只写</li>
+<li>os.O_CREATE      如果不存在则创建</li>
+<li>os.O_TRUNC       如果文件存在，则将其清空</li>
+<li>os.O_RDWR         可读可写</li>
+</ol>
+<p>读文件时文件权限可以忽略，写文件时无论unix还是Windows都需要使用0666</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">file, err := os.OpenFile(<span class="string">&quot;file&quot;</span>, os.O_RDWR, <span class="number">0666</span>)</span><br><span class="line">file.WriterString(<span class="string">&quot;xxxx&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>因为file本身实现了Reader和Writer接口，自身即可读写</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//判断文件或目录是否存在，返回一个描述文件的info</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Stat</span><span class="params">(name <span class="type">string</span>)</span></span>(fi FileInfo, err <span class="type">error</span>)</span><br><span class="line"><span class="comment">//拷贝文件，io包下,返回拷贝的字节数和错误</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Copy</span><span class="params">(dst Writer, src Reader)</span></span> (written <span class="type">int64</span>, err <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
+
+
+
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//p为参数值，name为参数名，value为默认值，usage为参数说明，获取指定命令行参数为&quot;-name&quot;的参数值，</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">IntVar</span><span class="params">(p *<span class="type">int</span>, name <span class="type">string</span>, value <span class="type">int</span>, usage <span class="type">string</span>)</span></span></span><br><span class="line"><span class="comment">//解析flag，必须在所有flag注册后，且未使用前解析</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Parse</span><span class="params">()</span></span> </span><br></pre></td></tr></table></figure>
 
+<p>os.Args是一个string类型的切片，用于存储命令行参数</p>
+<p>执行可执行文件时，在命令后添加命令行参数，遍历Args即可获取所有参数</p>
+<p>flag包解析命令行参数</p>
 <h4 id="3、json"><a href="#3、json" class="headerlink" title="3、json"></a>3、json</h4><p>轻量级的一种数据交换格式，在网络传输时，将数据序列化为json，接收到json后将其反序列化回数据，go中的字符串数字对象map结构体均可转换成json</p>
 <p>数据格式：{“key1”:”value1”, “key1”:”value2”}</p>
 <p>数组使用中括号括起来</p>
@@ -497,16 +532,15 @@
 <p>声明：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> intChan <span class="keyword">chan</span> <span class="type">int</span></span><br><span class="line">intChan = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>, <span class="number">3</span>)		<span class="comment">//有缓冲管道，长度不能自增长</span></span><br><span class="line">intChan = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>)		<span class="comment">//无缓冲管道</span></span><br></pre></td></tr></table></figure>
 
-<p>无缓冲通道：同步通信，放入数据不取走会被阻塞</p>
-<p>有缓冲通道：异步通信</p>
+<p>有缓冲通道：异步通信，缓存满载或变空之前管道都不会阻塞</p>
+<p>无缓冲通道：同步通信，放入数据不取走会被阻塞，必须在协程中使用</p>
 <p>channel本身是引用数据类型，且需要make后才能写入数据</p>
 <p>使用 </p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//写入</span></span><br><span class="line">intChan &lt;- <span class="number">10</span></span><br><span class="line">intChan &lt;- num</span><br><span class="line"><span class="comment">//取出</span></span><br><span class="line">num, ok = &lt;- intChan	<span class="comment">//ok表示是否取出</span></span><br><span class="line">num = &lt;- intChan</span><br><span class="line">&lt;-intChan</span><br><span class="line"><span class="comment">//关闭</span></span><br><span class="line"><span class="built_in">close</span>(intChan)</span><br><span class="line"><span class="comment">//遍历，for-range，不能使用常规的for</span></span><br><span class="line"><span class="keyword">for</span> v := <span class="keyword">range</span> intChan &#123;&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在没有协程的情况下，管道内没有数据，再取数据将会报错</p>
 <p>管道关闭后，管道的数据只能取出，不能写入</p>
-<p>遍历时如果管道没有关闭则会报错，管道已经关闭则正常执行</p>
-<p>管道阻塞机制：如果只是向管道写入数据而未读取数据，则会出现阻塞而导致死锁，原因是因为超出了管道容量，则会检查是否存在读取操作，如果没有读取操作，则管道死锁</p>
+<p>管道阻塞机制：如果只是向管道写入数据而未读取数据，则会出现阻塞而导致死锁，原因是因为超出了管道容量，则会检查是否存在读取操作，如果没有读取操作，则管道死锁。对于没有缓冲的管道，必须在协程中使用</p>
 <p>注意事项：</p>
 <ol>
 <li><p>channel可以声明为只读或只写</p>
@@ -538,11 +572,9 @@
 <p>value为go提供的有关于反射的接口，实现对对应数据的操作</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">v := reflect.ValueOf()	<span class="comment">//返回被检查对象的value</span></span><br><span class="line">v.Kind()	<span class="comment">//返回v的底层类型</span></span><br><span class="line">v.Interface()	<span class="comment">//返回当前检查对象的一个空接口</span></span><br></pre></td></tr></table></figure>
 
-<p>通过反射修改值：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//获取value对象，如果是值类型则需要传递指针</span></span><br><span class="line">v := reflect.ValueOf(&amp;i)</span><br><span class="line"><span class="comment">//传递指针后对对象进行封装</span></span><br><span class="line">v = v.Elem()	<span class="comment">//Elem返回v持有的接口保管的值的Value封装，或者v持有的指针指向的值的Value封装</span></span><br><span class="line"><span class="comment">//检测该对象是否可以修改</span></span><br><span class="line">v.CanSet()</span><br><span class="line">v.SetFloat(<span class="number">3.14</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="1、通过反射修改值："><a href="#1、通过反射修改值：" class="headerlink" title="1、通过反射修改值："></a>1、通过反射修改值：</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//获取value对象，如果是值类型则需要传递指针</span></span><br><span class="line">v := reflect.ValueOf(&amp;i)</span><br><span class="line"><span class="comment">//传递指针后对对象进行封装</span></span><br><span class="line">v = v.Elem()	<span class="comment">//Elem返回v持有的接口保管的值的Value封装，或者v持有的指针指向的值的Value封装</span></span><br><span class="line"><span class="comment">//检测该对象是否可以修改</span></span><br><span class="line">v.CanSet()</span><br><span class="line">v.SetFloat(<span class="number">3.14</span>)</span><br></pre></td></tr></table></figure>
 
-<p>反射结构：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">v.NumField()	<span class="comment">//返回结构体内字段数量</span></span><br><span class="line">v.Field(i)		<span class="comment">//通过索引获取对应的值，只有可以导出的字段才可以被修改</span></span><br><span class="line">v.Method(i).Call(<span class="literal">nil</span>)	<span class="comment">//通过相似的方法获取到方法并且调用</span></span><br></pre></td></tr></table></figure>
+<h4 id="2、反射结构："><a href="#2、反射结构：" class="headerlink" title="2、反射结构："></a>2、反射结构：</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">v.NumField()	<span class="comment">//返回结构体内字段数量</span></span><br><span class="line">v.Field(i)		<span class="comment">//通过索引获取对应的值，只有可以导出的字段才可以被修改</span></span><br><span class="line">v.Method(i).Call(<span class="literal">nil</span>)	<span class="comment">//通过相似的方法获取到方法并且调用</span></span><br></pre></td></tr></table></figure>
 
 
 
