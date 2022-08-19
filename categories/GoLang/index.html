@@ -22,13 +22,13 @@
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="BigRunFaFishKiller">
-<meta property="og:url" content="http://example.com/categories/GoLang/index.html">
+<meta property="og:url" content="http://example.com/categories/Golang/index.html">
 <meta property="og:site_name" content="BigRunFaFishKiller">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="大润发杀鱼匠">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/categories/GoLang/">
+<link rel="canonical" href="http://example.com/categories/Golang/">
 
 
 <script id="page-configurations">
@@ -41,7 +41,7 @@
   };
 </script>
 
-  <title>分类: GoLang | BigRunFaFishKiller</title>
+  <title>分类: Golang | BigRunFaFishKiller</title>
   
 
 
@@ -191,7 +191,7 @@
   <div class="post-block">
     <div class="posts-collapse">
       <div class="collection-title">
-        <h2 class="collection-header">GoLang
+        <h2 class="collection-header">Golang
           <small>分类</small>
         </h2>
       </div>
@@ -206,15 +206,35 @@
 
       <div class="post-meta">
         <time itemprop="dateCreated"
-              datetime="2022-07-09T17:43:44+08:00"
-              content="2022-07-09">
-          07-09
+              datetime="2022-08-05T08:47:45+08:00"
+              content="2022-08-05">
+          08-05
         </time>
       </div>
 
       <div class="post-title">
-          <a class="post-title-link" href="/2022/07/09/GoLang/" itemprop="url">
-            <span itemprop="name">GoLang</span>
+          <a class="post-title-link" href="/2022/08/05/GORM/" itemprop="url">
+            <span itemprop="name">GORM</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2022-08-04T08:44:06+08:00"
+              content="2022-08-04">
+          08-04
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2022/08/04/Gin/" itemprop="url">
+            <span itemprop="name">Gin</span>
           </a>
       </div>
 
@@ -294,7 +314,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -423,26 +443,6 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
     view     : 'FitH'
   };
   let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
-
-  if (NexT.utils.supportsPDFs()) {
-    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
-  } else {
-    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
-  }
-});
-</script>
-
-
-
-
-  
-
-  
-
-</body>
-</html>
-{encodeURIComponent(value)}`).join('&');
   let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
 
   if (NexT.utils.supportsPDFs()) {

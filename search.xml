@@ -3223,4 +3223,40 @@
         <tag>零散技术</tag>
       </tags>
   </entry>
+  <entry>
+    <title>go项目部署</title>
+    <url>/2022/08/19/go%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/</url>
+    <content><![CDATA[<p>记一次go项目部署，使用项目为gin-vue-admin</p>
+<p><a href="https://github.com/flipped-aurora/gin-vue-admin">flipped-aurora&#x2F;gin-vue-admin: 基于vite+vue3+gin搭建的开发基础平台（支持TS,JS混用），集成jwt鉴权，权限管理，动态路由，显隐可控组件，分页封装，多点登录拦截，资源权限，上传下载，代码生成器，表单生成器等开发必备功能。 (github.com)</a></p>
+<h1 id="一、配置"><a href="#一、配置" class="headerlink" title="一、配置"></a>一、配置</h1><p>后端：修改conf.yml文件，配置redis，配置数据库（本项目可自动初始化数据库），以及端口号等</p>
+<p>前端：修改.env.production文件</p>
+<h1 id="二、打包"><a href="#二、打包" class="headerlink" title="二、打包"></a>二、打包</h1><p>后端：</p>
+<ol>
+<li><p>交叉编译，得到二进制文件</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">GOOS=linux </span><br><span class="line">GOARCH=amd64 </span><br><span class="line"><span class="keyword">go</span> build</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>打包：将二进制文件，conf.yml,，resource目录打包为压缩文件</p>
+</li>
+</ol>
+<p>前端：执行<code>npm run build</code></p>
+<p>将前后端文件打包为一个压缩包</p>
+<h1 id="三、部署"><a href="#三、部署" class="headerlink" title="三、部署"></a>三、部署</h1><p>将压缩包上传到linux服务器并解压</p>
+<p>后端：</p>
+<ol>
+<li>添加二进制文件执行权<code>chmod -x xxx</code></li>
+<li>执行文件<code>./XXX</code></li>
+</ol>
+<p>前端：</p>
+<ol>
+<li>修改nginx配置文件</li>
+<li>执行项目<code>npm run dev</code></li>
+</ol>
+]]></content>
+      <categories>
+        <category>其他</category>
+      </categories>
+      <tags>
+        <tag>零散技术</tag>
+      </tags>
+  </entry>
 </search>
