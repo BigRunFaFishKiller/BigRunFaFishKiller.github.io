@@ -28,7 +28,7 @@
 <meta property="og:description" content="1、NoSQLNot Only SQL 泛指非关系型数据库，不依赖于业务逻辑的方式存储，以键值对的形式存储。  不遵循SQL标准 不支持ACID 性能远超SQL">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-27T09:49:55.000Z">
-<meta property="article:modified_time" content="2022-08-09T11:08:04.241Z">
+<meta property="article:modified_time" content="2022-08-20T14:35:29.262Z">
 <meta property="article:author" content="大润发杀鱼匠">
 <meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary">
@@ -224,7 +224,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-09 19:08:04" itemprop="dateModified" datetime="2022-08-09T19:08:04+08:00">2022-08-09</time>
+                <time title="修改时间：2022-08-20 22:35:29" itemprop="dateModified" datetime="2022-08-20T22:35:29+08:00">2022-08-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -359,6 +359,11 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Jedis</span> <span class="variable">jedis</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Jedis</span>(<span class="string">&quot;192.168&quot;</span>, <span class="number">6379</span>);</span><br><span class="line"><span class="type">String</span> <span class="variable">ping</span> <span class="operator">=</span> jedis.ping();</span><br></pre></td></tr></table></figure>
 
 <p>4、通过Jedis API操作数据库，方法名与命令名相同</p>
+<h2 id="2、jedis连接池"><a href="#2、jedis连接池" class="headerlink" title="2、jedis连接池"></a>2、jedis连接池</h2><p>jedis本身线程不安全，且频繁创建销毁有性能损耗，使用jedis连接池代替jedis直连</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> JedisPool jedisPool;</span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">	<span class="type">JedisPoolConfig</span> <span class="variable">jedisPoolConfig</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JedisPoolConfig</span>();</span><br><span class="line">    <span class="comment">//设置最大连接</span></span><br><span class="line">    jedisPoolConfig.setMaxTotal(<span class="number">8</span>);</span><br><span class="line">    <span class="comment">//设置最大空闲连接</span></span><br><span class="line">    jedisPoolConfig.setMaxIdle(<span class="number">8</span>);</span><br><span class="line">    <span class="comment">//设置最小空闲连接</span></span><br><span class="line">    jedisPoolConfig.setMinIdle(<span class="number">0</span>);</span><br><span class="line">    <span class="comment">//设置最长等待时间</span></span><br><span class="line">    jedisPoolConfig.setMaxWaitMillis(<span class="number">200</span>);</span><br><span class="line">    jedisPool = <span class="keyword">new</span> <span class="title class_">JedisPool</span>(jedisPoolConfig, <span class="string">&quot;IP&quot;</span>, <span class="number">6379</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Jedis <span class="title function_">getJedis</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> jedisPool.getResource();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
 <h1 id="7、SpringBoot整合Redis"><a href="#7、SpringBoot整合Redis" class="headerlink" title="7、SpringBoot整合Redis"></a>7、SpringBoot整合Redis</h1><p>1、引入依赖</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--连接池--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.commons<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-pool2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.11.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -366,6 +371,19 @@
 <figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Redis数据库索引（默认为0）</span></span><br><span class="line"><span class="attr">spring.redis.database</span>=<span class="string">0  </span></span><br><span class="line"><span class="comment"># Redis服务器地址</span></span><br><span class="line"><span class="attr">spring.redis.host</span>=<span class="string">127.0.0.1</span></span><br><span class="line"><span class="comment"># Redis服务器连接端口</span></span><br><span class="line"><span class="attr">spring.redis.port</span>=<span class="string">6379  </span></span><br><span class="line"><span class="comment"># Redis服务器连接密码（默认为空）</span></span><br><span class="line"><span class="attr">spring.redis.password</span>=<span class="string"></span></span><br><span class="line"><span class="comment"># 连接池最大连接数（使用负值表示没有限制）</span></span><br><span class="line"><span class="attr">spring.redis.pool.max-active</span>=<span class="string">8  </span></span><br><span class="line"><span class="comment"># 连接池最大阻塞等待时间（使用负值表示没有限制）</span></span><br><span class="line"><span class="attr">spring.redis.pool.max-wait</span>=<span class="string">-1  </span></span><br><span class="line"><span class="comment"># 连接池中的最大空闲连接</span></span><br><span class="line"><span class="attr">spring.redis.pool.max-idle</span>=<span class="string">8  </span></span><br><span class="line"><span class="comment"># 连接池中的最小空闲连接</span></span><br><span class="line"><span class="attr">spring.redis.pool.min-idle</span>=<span class="string">0  </span></span><br><span class="line"><span class="comment"># 连接超时时间（毫秒）</span></span><br><span class="line"><span class="attr">spring.redis.timeout</span>=<span class="string">0 </span></span><br></pre></td></tr></table></figure>
 
 <p>3、使用RedisTmeplate操作Redis</p>
+<p>封装了各种对Redis的操作，并且将不同类型的API封装到不同的类中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">redisTemplate.opsForValue();		<span class="comment">//返回操作String类型数据</span></span><br><span class="line">redisTemplate.opsForHash();			<span class="comment">//返回操作Hash类型数据</span></span><br><span class="line">redisTemplate.opsForList();			<span class="comment">//返回操作List类型数据</span></span><br><span class="line">redisTemplate.opsForSet();			<span class="comment">//返回操作Set类型数据</span></span><br><span class="line">redisTemplate.opsForSortedSet();	<span class="comment">//返回操作SortedSet类型数据</span></span><br><span class="line">redisTemplate						<span class="comment">//通用操作</span></span><br></pre></td></tr></table></figure>
+
+<p>使用:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">redisTemplate.opsForValue().set(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;zhangsan&quot;</span>);</span><br><span class="line"><span class="type">Object</span> <span class="variable">name</span> <span class="operator">=</span> redisTmeplate.opsForValue().get(<span class="string">&quot;name&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>redisTemplate可以接受Object作为值写入redis，不过写入前会将Object序列化为字节形式，不建议使用默认的序列化方式</p>
+<p>自定义序列化：对key和hashKey采用string序列化，对value和hashValue采用string序列化，储存java对象时手动进行序列化和反序列化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> RedisTemplate&lt;String, Object&gt; <span class="title function_">redisTemplate</span><span class="params">(RedisConnectionFactory redisConnectionFactory)</span> </span><br><span class="line">	<span class="keyword">throws</span> UnknownHostException&#123;</span><br><span class="line">    RedisTemplate&lt;String, Object&gt; redisTemplate = <span class="keyword">new</span> <span class="title class_">RedisRemplate</span>&lt;&gt;();</span><br><span class="line">    redisTemplate.setConnectionFactory(redisConnectionFactory);</span><br><span class="line">    <span class="comment">//设置序列化工具</span></span><br><span class="line">    <span class="type">GenericJackson2JsonRedisSerializer</span> <span class="variable">jsonRedisSerializer</span> <span class="operator">=</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">GenericJackson2JsonRedisSerializer</span>();</span><br><span class="line">    redisTemplate.setKeySerializer(RedisSerializer.string());</span><br><span class="line">    redisTemplate.setHasKeySerializer(RedisSerializer.string());</span><br><span class="line">    redisTemplate.setValueSerializer(RedisSerializer.string());</span><br><span class="line">    redisTemplate.setHasValueSerializer(RedisSerializer.string());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Spring提供一个StringRedisTemplate类，key和value都是string序列化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> StringRedisTemplate stringRedisTemplate;</span><br><span class="line"><span class="comment">//json工具</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">ObjectMapper</span> <span class="variable">mapper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectMapper</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> thrown JsonProcessingException &#123;</span><br><span class="line">    <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>(<span class="string">&quot;zhangsan&quot;</span>);</span><br><span class="line">    <span class="comment">//序列化并写入</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> mapper.writeValueAsString(user);</span><br><span class="line">    stringRedisTemplate.opsForValue.set(<span class="string">&quot;user:1&quot;</span>, json);</span><br><span class="line">    <span class="comment">//读取并反序列化</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">val</span> <span class="operator">=</span> stringRedisTemplate.opsForValue.get(<span class="string">&quot;user:1&quot;</span>);</span><br><span class="line">    <span class="type">User</span> <span class="variable">user1</span> <span class="operator">=</span> (user) mapper.readValue(val, user.class)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h1 id="8、事务和锁机制"><a href="#8、事务和锁机制" class="headerlink" title="8、事务和锁机制"></a>8、事务和锁机制</h1><p>单独隔离的操作，事务中的命令都被序列化、按序执行，执行过程中不会被其他命令打断</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Muiltu 开启事务，输入命令放入队列但不会执行</span><br><span class="line">Exec 执行命令队列</span><br><span class="line">Discard 放弃队列，取消执行命令	</span><br></pre></td></tr></table></figure>
 
@@ -383,26 +401,33 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">jedis.watch(<span class="string">&quot;库存&quot;</span>);	<span class="comment">//监视库存</span></span><br><span class="line"><span class="comment">//秒杀时开启事务</span></span><br><span class="line"><span class="type">Transaction</span> <span class="variable">mutil</span> <span class="operator">=</span> jedis.multi();</span><br><span class="line"><span class="comment">//组队</span></span><br><span class="line">multi.decr(<span class="string">&quot;库存key&quot;</span>);	<span class="comment">//库存减一</span></span><br><span class="line">multi.sadd(<span class="string">&quot;用户id&quot;</span>);    <span class="comment">//添加用户id</span></span><br><span class="line"><span class="comment">//执行结果</span></span><br><span class="line">List&lt;Object&gt; results = multi.exec();</span><br><span class="line"><span class="keyword">if</span>(results == <span class="literal">null</span> || results.size() == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">//秒杀失败</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>关于乐观锁造成的库存遗留问题：高并发的情况下，只有一人能修改数据，导致其他用户即使有库存的情况下也无法秒杀。使用Lua等脚本语言，在库存有剩余的情况下再次秒杀</p>
-<h1 id="9、持久化操作"><a href="#9、持久化操作" class="headerlink" title="9、持久化操作"></a>9、持久化操作</h1><h2 id="1、RDB"><a href="#1、RDB" class="headerlink" title="1、RDB"></a>1、RDB</h2><p>在指定时间间隔内将内存中的数据写入磁盘，使用Snapshot机制</p>
-<p>持久化时Redis拉起一个子进程，子进程将数据写入一个临时文件，持久化结束后将临时文件替换上次持久化文件。</p>
-<p>redis中默认文件名为dump.rdb，文件默认生成在启动目录中。</p>
-<p>修改配置文件的Snapshot部分，修改配置</p>
-<p>劣势：内存中的数据被克隆了一份，性能开销大；在执行持久化时服务器宕机，会丢失最后一次数据</p>
-<h2 id="2、AOF"><a href="#2、AOF" class="headerlink" title="2、AOF"></a>2、AOF</h2><p>以日志形式记录每个写操作，只许追加文件不可更改文件，Redis启动时会读取该文件重建数据。</p>
-<p>默认不开启，在redis.conf配置文件中修改appendonly.aof属性以开启</p>
-<p>文件保存路径同RDB</p>
-<p>两者数据都开启时，默认读取AOF文件。</p>
-<p>如果遇到AOF文件损坏，通过redis-check-aof –fixappendonly.aof命令进行修复</p>
-<p>同步频率设置：</p>
+<h1 id="9、持久化操作"><a href="#9、持久化操作" class="headerlink" title="9、持久化操作"></a>9、持久化操作</h1><h2 id="1、RDB"><a href="#1、RDB" class="headerlink" title="1、RDB"></a>1、RDB</h2><p>redis数据备份文件</p>
+<p>在指定时间间隔内将内存中的数据写入磁盘，使用Snapshot机制，默认保存在运行目录</p>
+<p>主动关闭redis时会执行一次持久化，开启redis时会读取持久化文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">save	由redis主进程执行RDB会阻塞所有命令</span><br><span class="line">bgsave	由redis子进程执行RDB</span><br></pre></td></tr></table></figure>
+
+<p>RDB机制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">save 900 1	900秒内有至少一个key被修改，执行bgsave</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000</span><br><span class="line"></span><br><span class="line">rdbcompression yes  开启压缩</span><br><span class="line">dbfilename dump.rdb	 RDB文件名</span><br><span class="line">dir ./		文件保存目录</span><br></pre></td></tr></table></figure>
+
+<p>RDB的fork原理</p>
+<p>bgsave会fork主进程得到子进程，共享主进程内存数据，此时主进程阻塞直到fork完成，fork完成后读取内存数据并写入RDB文件</p>
+<p>copy-on-write技术</p>
 <ol>
-<li>appendfsync always 始终同步</li>
-<li>appendfsync everyse 每秒同步一次</li>
-<li>appendfsyc no 不主动同步，同步时机交给操作系统</li>
+<li>当主进程执行读操作时，访问共享内存</li>
+<li>当主进程执行写操作时，则会拷贝修改的数据，在备份上进行写操作</li>
+<li>子进程进行复制操作时，共享内存是只读状态</li>
 </ol>
-<p>Rewrite压缩：</p>
-<p>避免文件过大，当文件超过设定的阈值时，启动文件压缩，只保留可以回复数据的最小指令集，即只关注对数据最后的一次操作。</p>
-<p>优势：数据备份更稳健，可读取日志文件，处理误操作</p>
-<p>劣势：更占磁盘空间，备份速度更慢，有一定性能压力</p>
+<h2 id="2、AOF"><a href="#2、AOF" class="headerlink" title="2、AOF"></a>2、AOF</h2><p>追加文件</p>
+<p>redis的每一个写命令都会记录在AOF文件中，可以看作命令日志文件，由主进程执行</p>
+<p>AOF默认关闭，需要修改配置文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">appendonly yes	开启AOF</span><br><span class="line">appendfilename	&quot;appendonly.aof&quot;	AOF文件名</span><br></pre></td></tr></table></figure>
+
+<p>AOF记录频率</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">appendfsync always	每执行一次命令，立即记录</span><br><span class="line">appendsfync	everysec	默认频率，先将命令放入AOF缓冲区，然后每隔1秒写入AOF</span><br><span class="line">appendsfync no	先将命令放入缓冲区，由系统决定何时写入磁盘</span><br></pre></td></tr></table></figure>
+
+<p>解决文件过大和同一key的多次操作</p>
+<p>通过执行<code>bgrewriteaof</code>命令，让AOF执行重写，用最少的命令达到效果</p>
+<p>redis在触发阈值时，也会自动执行重写，可以在配置文件中设置</p>
 <h1 id="10、缓存穿透、击穿、雪崩"><a href="#10、缓存穿透、击穿、雪崩" class="headerlink" title="10、缓存穿透、击穿、雪崩"></a>10、缓存穿透、击穿、雪崩</h1><h2 id="1、缓存穿透"><a href="#1、缓存穿透" class="headerlink" title="1、缓存穿透"></a>1、缓存穿透</h2><p>现象：</p>
 <ol>
 <li>应用服务器压力增大</li>
@@ -456,6 +481,120 @@
 <h2 id="4、分布式锁"><a href="#4、分布式锁" class="headerlink" title="4、分布式锁"></a>4、分布式锁</h2><p>单机部署系统演化为分布式系统，分布式系统多线程、多进程且分布在不同的机器上，原本单机部署的控制锁策略将失效，则需要分布式锁解决</p>
 <p>实现方案：redis实现分布式锁</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">setnx users 10		相当于加锁</span><br><span class="line">expire 10			给锁设置过期时间</span><br><span class="line">set users 10 nx ex 10 加锁并设置过期时间，保证原子性</span><br><span class="line">del users			相当于释放锁</span><br></pre></td></tr></table></figure>
+
+<h1 id="11、Redis集群"><a href="#11、Redis集群" class="headerlink" title="11、Redis集群"></a>11、Redis集群</h1><p>进一步提高redis并发能力，需要搭建主从集群，实现读写分离，主节点写从节点读</p>
+<p> 启动多个redis实例后，开启主从关系：</p>
+<ol>
+<li>修改配置文件（永久配置）：添加命令<code>slaveof &lt;masterip&gt; &lt;masterport&gt;</code></li>
+<li>连接redis服务后，客户端执行命令<code>slaveof &lt;masterip&gt; &lt;masterport&gt;</code></li>
+</ol>
+<p>数据同步原理：</p>
+<p>两个概念：repid，数据集标志，id一致则是统一数据集，每个主节点有唯一id，从节点继承主节点。offset，偏移量，记录在repl_baklog文件中的命令会随着数据量增大而增大，从节点完成同步时会记录当前偏移量，如果从节点偏移量小于主节点，则从节点数据落后需要更新</p>
+<p>主从第一次同步执行全量同步：从节点发送请求增量同步，主节点判断replid，发现不一致，拒接增量同步并发送版本信息，从节点保存主节点数据的版本信息，主节点执行bgsave生成RDB，并将RDB文件发送给从节点，从节点加载RDB。在主节点bgsave阶段的写命令会被保存到repl_baklog文件中，RDB完成后该文间发送给从节点，从节点执行命令完成同步。</p>
+<p>主从增量同步：从节点发送请求增量同步并发送repid和偏移量，主节点判断replid，并根据偏移量发送对应的repl_baklog文件数据，从节点执行命令。增量同步失败：repl_baklog文件超过上限，最开始的命令被覆盖，从节点无法正常同步则执行全量同步</p>
+<p>优化数据同步：</p>
+<ol>
+<li>无磁盘复制，避免磁盘IO：配置文件中修改<code>repi-diskless-sync yes</code></li>
+<li>控制单节点内存大小，减少RDB导致的磁盘IO</li>
+<li>适当提高repl_baklog的大小，从节点宕机尽快回复，避免全量同步</li>
+<li>限制主节点上的从节点，从节点过多可以使用主-从-从的链式结构</li>
+</ol>
+<h2 id="1、哨兵模式"><a href="#1、哨兵模式" class="headerlink" title="1、哨兵模式"></a>1、哨兵模式</h2><p>Redis提供哨兵（Sentinel），实现主从集群的的自动故障回复</p>
+<p>哨兵作用</p>
+<ol>
+<li>监控：Sentinel会不断检查主从节点是否按预期工作</li>
+<li>自动恢复：如果主节点故障，sentinel会将一个从节点升级为主节点，当故障节点恢复后，以新的主节点为主</li>
+</ol>
+<p>服务状态监控：</p>
+<p>sentinel基于心跳机制检测服务，每隔一秒向每个实例发送ping命令</p>
+<ol>
+<li>主观下线：如果sentinel节点发现某个实例未在规定时间响应，则认为该实例主观下线</li>
+<li>客观下线：如果超过指定数量（quorum）的sentinel都认为该实例主观下线，则该实例客观下线。该数量最好设置为sentinel实例数量的一半</li>
+</ol>
+<p>选择新的master：</p>
+<ol>
+<li>先判断从节点和主节点断开的时间，超过指定值（down-after-miliseconds * 10），则会排除该节点</li>
+<li>然后判断从节点的slave-property，越小优先级越高，为0永不选举</li>
+<li>然后判断从节点的offset，越大则数据越新，优先级越高</li>
+<li>最后判断从节点运行id，越小优先级越高</li>
+</ol>
+<p>故障转移：</p>
+<ol>
+<li>sentinel向选举的从节点发送命令，<code>slaveof no one</code>，成为主节点</li>
+<li>sentinel向其他节点广播<code>slaveof &lt;master&gt; &lt;masterport&gt;</code>命令，从节点同步新主节点的数据</li>
+<li>sentinel修改故障节点，让其成为新主节点的从节点</li>
+</ol>
+<p>搭建哨兵集群：</p>
+<ol>
+<li><p>搭建多个redis实例，新建sentinel.conf配置文件，添加以下内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">port xxxx  #哨兵端口号</span><br><span class="line">sentinel announce-ip xxx	#哨兵IP</span><br><span class="line">sentinel monitor mymaster IPxxx Portxxx quorum #哨兵监视的主节点和选举值</span><br><span class="line">sentinel down-after-miliseconds mymaster 5000</span><br><span class="line">sentinel failover-timeout mymaster 60000</span><br><span class="line">dir &quot;/tmp/s&quot;	#工作目录</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行哨兵实例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-sentinel 配置文件</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>RedisTemplate连接哨兵</p>
+<ol>
+<li><p>引入redis的starter依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在配置文件中指定sentinel信息</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">redis:</span> </span><br><span class="line">    <span class="attr">sentinel:</span></span><br><span class="line">      <span class="attr">master:</span> <span class="string">mymaster</span> <span class="comment">#指定master名称</span></span><br><span class="line">      <span class="attr">node:</span>	<span class="comment">#指定哨兵集群的具体地址</span></span><br><span class="line">        <span class="string">-xxxIP</span></span><br><span class="line">        <span class="string">-xxxIP</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置读写分离</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line">   <span class="keyword">public</span> LettuceClientConfigurationBuilderCustomizer <span class="title function_">configurationBuilderCustomizer</span><span class="params">()</span> &#123;</span><br><span class="line">       <span class="comment">//配置优先从从节点读取，所有从节点不可读，再读取主节点</span></span><br><span class="line">       <span class="keyword">return</span> configBuilder -&gt; configBuilder.readFrom(ReadFrom.REPLICA_PREFERRED);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="2、分片集群"><a href="#2、分片集群" class="headerlink" title="2、分片集群"></a>2、分片集群</h2><p>解决海量数据存储和高并发写问题</p>
+<p>分片集群特征：</p>
+<ol>
+<li>多个主节点，每主节点r保存不同数据</li>
+<li>每个主节点有多个从节点</li>
+<li>主节点之间通过ping检测健康状态</li>
+<li>客户端可以访问任意节点，最终被转发到正确节点</li>
+</ol>
+<p>搭建分片集群（三主三从）：</p>
+<ol>
+<li><p>在tmp下准备新的redis.conf</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">port 6379</span><br><span class="line"># 开启集群</span><br><span class="line">cluster-enabled yes</span><br><span class="line"># 集群配置文件名称，自动生成不需要维护</span><br><span class="line">cluster-config-file /tmp/6379/nodes.conf</span><br><span class="line"># 节点心跳失效时间</span><br><span class="line">cluster-node-timeout 5000</span><br><span class="line"># 持久化文件目录</span><br><span class="line">dir /tmp/6379</span><br><span class="line"># 绑定地址</span><br><span class="line">bind 0.0.0.0</span><br><span class="line"># 注册实例ip</span><br><span class="line">replica-announce -ip  xxx</span><br><span class="line"># 后台运行</span><br><span class="line">daemonize yes</span><br><span class="line"># 保护模式</span><br><span class="line">protected-mode no</span><br><span class="line"># 日志</span><br><span class="line">logfile /tmp/6379/run.log</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在多个集群的文件夹中，复制上面的新配置，并做对应的修改</p>
+</li>
+<li><p>以新的配置文件启动服务</p>
+</li>
+<li><p>创建集群</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli --cluster create --cluster-replicas 1 IP1 IP2 IP3 IP4 IP5 IP6</span><br></pre></td></tr></table></figure>
+
+<p>–cluster-replicas 1表示每个主节点的副本数量为1，根据公式<code>节点总数 / (replicas + 1)</code>得到主节点数，节点中前n个为主节点，其余为子节点，随机分配到不同的主节点</p>
+</li>
+</ol>
+<p>散列插槽：</p>
+<p>Redis会将每一个master节点映射到0~16383插槽上，节点存储的数据不与节点绑定而与插槽绑定。</p>
+<p>redis根据key的有效部分（例如：key是num，有效部分为num；key是{item}num，有效部分就是item）计算插槽值，根据插槽值寻找对应的节点存储查找数据。</p>
+<p>将同一类数据保存到固定节点时，使用相同的有效值</p>
+<p>集群伸缩：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 添加节点，告知集群中的一个节点，新节点的位置端口，还可指定节点为从节点并为其指定主节点</span><br><span class="line">redis-cli --cluster add-node new_host:new_port exist_host:exist_port</span><br><span class="line">--cluster-slave				# 可选参数，指定节点为从节点</span><br><span class="line">--cluster-master-id &lt;args&gt;  # 可选参数，为从节点指定主节点id</span><br><span class="line"></span><br><span class="line"># 分配插槽</span><br><span class="line">redis-cli --cluster reshard IP:PORT</span><br></pre></td></tr></table></figure>
+
+<p>故障转移：</p>
+<p>redis分片集群，主机宕机后自动故障转移</p>
+<p>手动进行数据迁移:</p>
+<ol>
+<li><p>操作从节点让主节点宕机</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CLUSTER FAILOVER</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>主节点返回当前数据的offset，从节点数据同步</p>
+</li>
+<li><p>从节点标记自己为主节点，并广播故障转移结果</p>
+</li>
+</ol>
+<p>RedisTemplate访问分片集群</p>
+<ol>
+<li><p>引入依赖</p>
+</li>
+<li><p>配置分片集群地址</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">redis:</span> </span><br><span class="line">     <span class="attr">cluster:</span> </span><br><span class="line">     <span class="attr">node:</span>	<span class="comment">#指定集群的具体地址</span></span><br><span class="line">       <span class="string">-xxxIP</span></span><br><span class="line">       <span class="string">-xxxIP</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置读写分离</p>
+</li>
+</ol>
 
     </div>
 
@@ -539,7 +678,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1%E3%80%81NoSQL"><span class="nav-number">1.</span> <span class="nav-text">1、NoSQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2%E3%80%81%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">2、常用数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AF%B9key%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">2.1.</span> <span class="nav-text">1、对key的操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81String-%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">2.2.</span> <span class="nav-text">2、String 字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81List-%E5%88%97%E8%A1%A8"><span class="nav-number">2.3.</span> <span class="nav-text">3、List 列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81Set-%E9%9B%86%E5%90%88"><span class="nav-number">2.4.</span> <span class="nav-text">4、Set 集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81Hash-%E5%93%88%E5%B8%8C"><span class="nav-number">2.5.</span> <span class="nav-text">5、Hash 哈希</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81Zset-%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88"><span class="nav-number">2.6.</span> <span class="nav-text">6、Zset 有序集合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3%E3%80%81Redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">3、Redis配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4%E3%80%81%E5%8F%91%E5%B8%83%E4%B8%8E%E8%AE%A2%E9%98%85"><span class="nav-number">4.</span> <span class="nav-text">4、发布与订阅</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5%E3%80%81%E6%96%B0%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">5、新数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81Bitmaps"><span class="nav-number">5.1.</span> <span class="nav-text">1、Bitmaps</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81HyperLogLog"><span class="nav-number">5.2.</span> <span class="nav-text">2、HyperLogLog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81Geospatial"><span class="nav-number">5.3.</span> <span class="nav-text">3、Geospatial</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6%E3%80%81%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B7%A5%E5%85%B7"><span class="nav-number">6.</span> <span class="nav-text">6、客户端工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81Jedis"><span class="nav-number">6.1.</span> <span class="nav-text">1、Jedis</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7%E3%80%81SpringBoot%E6%95%B4%E5%90%88Redis"><span class="nav-number">7.</span> <span class="nav-text">7、SpringBoot整合Redis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8%E3%80%81%E4%BA%8B%E5%8A%A1%E5%92%8C%E9%94%81%E6%9C%BA%E5%88%B6"><span class="nav-number">8.</span> <span class="nav-text">8、事务和锁机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis%E4%BA%8B%E5%8A%A1%E4%B8%89%E9%87%8D%E6%80%A7"><span class="nav-number">8.1.</span> <span class="nav-text">Redis事务三重性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%92%E6%9D%80%E6%A1%88%E4%BE%8B"><span class="nav-number">8.2.</span> <span class="nav-text">秒杀案例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9%E3%80%81%E6%8C%81%E4%B9%85%E5%8C%96%E6%93%8D%E4%BD%9C"><span class="nav-number">9.</span> <span class="nav-text">9、持久化操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81RDB"><span class="nav-number">9.1.</span> <span class="nav-text">1、RDB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81AOF"><span class="nav-number">9.2.</span> <span class="nav-text">2、AOF</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10%E3%80%81%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E3%80%81%E5%87%BB%E7%A9%BF%E3%80%81%E9%9B%AA%E5%B4%A9"><span class="nav-number">10.</span> <span class="nav-text">10、缓存穿透、击穿、雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">10.1.</span> <span class="nav-text">1、缓存穿透</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">10.2.</span> <span class="nav-text">2、缓存击穿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">10.3.</span> <span class="nav-text">3、缓存雪崩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-number">10.4.</span> <span class="nav-text">4、分布式锁</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1%E3%80%81NoSQL"><span class="nav-number">1.</span> <span class="nav-text">1、NoSQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2%E3%80%81%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">2、常用数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AF%B9key%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">2.1.</span> <span class="nav-text">1、对key的操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81String-%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">2.2.</span> <span class="nav-text">2、String 字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81List-%E5%88%97%E8%A1%A8"><span class="nav-number">2.3.</span> <span class="nav-text">3、List 列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81Set-%E9%9B%86%E5%90%88"><span class="nav-number">2.4.</span> <span class="nav-text">4、Set 集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81Hash-%E5%93%88%E5%B8%8C"><span class="nav-number">2.5.</span> <span class="nav-text">5、Hash 哈希</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81Zset-%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88"><span class="nav-number">2.6.</span> <span class="nav-text">6、Zset 有序集合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3%E3%80%81Redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">3、Redis配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4%E3%80%81%E5%8F%91%E5%B8%83%E4%B8%8E%E8%AE%A2%E9%98%85"><span class="nav-number">4.</span> <span class="nav-text">4、发布与订阅</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5%E3%80%81%E6%96%B0%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">5、新数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81Bitmaps"><span class="nav-number">5.1.</span> <span class="nav-text">1、Bitmaps</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81HyperLogLog"><span class="nav-number">5.2.</span> <span class="nav-text">2、HyperLogLog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81Geospatial"><span class="nav-number">5.3.</span> <span class="nav-text">3、Geospatial</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6%E3%80%81%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B7%A5%E5%85%B7"><span class="nav-number">6.</span> <span class="nav-text">6、客户端工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81Jedis"><span class="nav-number">6.1.</span> <span class="nav-text">1、Jedis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81jedis%E8%BF%9E%E6%8E%A5%E6%B1%A0"><span class="nav-number">6.2.</span> <span class="nav-text">2、jedis连接池</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7%E3%80%81SpringBoot%E6%95%B4%E5%90%88Redis"><span class="nav-number">7.</span> <span class="nav-text">7、SpringBoot整合Redis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8%E3%80%81%E4%BA%8B%E5%8A%A1%E5%92%8C%E9%94%81%E6%9C%BA%E5%88%B6"><span class="nav-number">8.</span> <span class="nav-text">8、事务和锁机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis%E4%BA%8B%E5%8A%A1%E4%B8%89%E9%87%8D%E6%80%A7"><span class="nav-number">8.1.</span> <span class="nav-text">Redis事务三重性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%92%E6%9D%80%E6%A1%88%E4%BE%8B"><span class="nav-number">8.2.</span> <span class="nav-text">秒杀案例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9%E3%80%81%E6%8C%81%E4%B9%85%E5%8C%96%E6%93%8D%E4%BD%9C"><span class="nav-number">9.</span> <span class="nav-text">9、持久化操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81RDB"><span class="nav-number">9.1.</span> <span class="nav-text">1、RDB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81AOF"><span class="nav-number">9.2.</span> <span class="nav-text">2、AOF</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10%E3%80%81%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E3%80%81%E5%87%BB%E7%A9%BF%E3%80%81%E9%9B%AA%E5%B4%A9"><span class="nav-number">10.</span> <span class="nav-text">10、缓存穿透、击穿、雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">10.1.</span> <span class="nav-text">1、缓存穿透</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">10.2.</span> <span class="nav-text">2、缓存击穿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">10.3.</span> <span class="nav-text">3、缓存雪崩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-number">10.4.</span> <span class="nav-text">4、分布式锁</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11%E3%80%81Redis%E9%9B%86%E7%BE%A4"><span class="nav-number">11.</span> <span class="nav-text">11、Redis集群</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-number">11.1.</span> <span class="nav-text">1、哨兵模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4"><span class="nav-number">11.2.</span> <span class="nav-text">2、分片集群</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -555,7 +694,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
