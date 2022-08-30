@@ -1938,101 +1938,6 @@
       </tags>
   </entry>
   <entry>
-    <title>数据结构与算法基础</title>
-    <url>/2022/07/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</url>
-    <content><![CDATA[<h2 id="1、复杂度"><a href="#1、复杂度" class="headerlink" title="1、复杂度"></a>1、复杂度</h2><span id="more"></span>
-
-<h3 id="1、时间复杂度"><a href="#1、时间复杂度" class="headerlink" title="1、时间复杂度"></a>1、时间复杂度</h3><p>一次操作如果与数据量没有关系，每次按照固定的时间完成操作，称为常数操作。</p>
-<p>时间复杂度为一个算法流程中，常数操作数量的一个指标，用O表示。根据常数操作数目，推算出常数操作的表达式。</p>
-<p>在表达式中只要高阶项，排除低阶项和常数项，排除高阶项系数，剩余的部分如果为f(N)，则时间复杂度为O(f(N))。</p>
-<p>评价一个算法的好坏，先看时间复杂度的指标，在分析不同样本下的实际运行时间，即常数项时间，时间复杂度相同时，根据实际测试确定算法好坏</p>
-<p>对于if-else操作，时间复杂度为较大者；对于for操作，时间复杂度为两者乘积</p>
-<p>选择排序时间复杂度：一个长度为n的数组</p>
-<ol>
-<li><p>第一次比较，查询n次，比较n次，1次交换</p>
-</li>
-<li><p>第二次比较，查询n-1次，比较n-1次，1次交换</p>
-</li>
-<li><p>以此类推</p>
-</li>
-<li><p>常数操作次数相加，求和的到表达式：<br>$$<br>an^2+bn+c<br>$$</p>
-</li>
-<li><p>排除低阶项和常数项，排除高阶项系数</p>
-</li>
-<li><p>得时间复杂度<br>$$<br>O(N^2)<br>$$</p>
-</li>
-<li></li>
-</ol>
-<p>关于异或运算的几个性质：</p>
-<ol>
-<li>a^a&#x3D;0,	a^0&#x3D;a</li>
-<li>异或运算满足交换律结合律</li>
-<li>可以理解为无进位的二进制相加</li>
-</ol>
-<h3 id="2、空间复杂度"><a href="#2、空间复杂度" class="headerlink" title="2、空间复杂度"></a>2、空间复杂度</h3><p>要完成自己设计流程 需要多少额外的空间</p>
-<p>如果程序运行过程中，不需要额外的数据结构，只是使用了额外的几个变量。那么额外空间复杂度为O(1)；<br>如果要申请一个和原数组大小一样的数组，那额外空间复杂度为O(n)；<br>如果申请一个是原数组大小一半的数组，那额外空间复杂度为O(n)（因为系数是可以忽略的）</p>
-<h3 id="3、最差情况下的进行时间复杂度计算"><a href="#3、最差情况下的进行时间复杂度计算" class="headerlink" title="3、最差情况下的进行时间复杂度计算"></a>3、最差情况下的进行时间复杂度计算</h3><p>插入排序</p>
-<ol>
-<li>先保障0到1有序，从第1位向前比较</li>
-<li>再保障0到2有序，从第二位向前比较</li>
-<li>以此类推</li>
-</ol>
-<p>最差时间复杂度:<br>$$<br>O(N^2)<br>$$<br>但是在该算法中，时间复杂度与数据情况相关。</p>
-<p>所以时间复杂度的计算应修正为数据情况最差的情况下的时间复杂度</p>
-<h3 id="4、递归行为和递归行为时间复杂度的估算"><a href="#4、递归行为和递归行为时间复杂度的估算" class="headerlink" title="4、递归行为和递归行为时间复杂度的估算"></a>4、递归行为和递归行为时间复杂度的估算</h3><p>使用master公式估计递归时间复杂度<br>$$<br>T(N) &#x3D; a*T(N&#x2F;b) + O(N^d)<br>$$<br>母问题的规模为N，等于子问题规模为N&#x2F;b（子问题即为递归调用），且子问题调用a次，加上除去递归的时间复杂度</p>
-<p>条件：<br>$$<br>\log_ba&lt;d &#x3D;&gt; O(N^d)<br>$$</p>
-<p>$$<br>\log_ba&gt;d &#x3D;&gt; O(N的\log_ba次)<br>$$</p>
-<p>$$<br>\log_ba&#x3D;d &#x3D;&gt; O(N^d * logN)<br>$$</p>
-<p>由此可以确定递归的时间复杂度</p>
-<p>归并排序：</p>
-<ol>
-<li>将数组分为两个部分，递归分割</li>
-<li>返回时合并左右两侧数组为一个临时数组，从两侧选择较小的数填入数组，较小侧指针右移，再次比较</li>
-<li>将临时将临时数组赋值到一个新数组上</li>
-</ol>
-<p>时间复杂度：O(N*logN)，空间复杂度O(N)</p>
-<p>快速排序：</p>
-<ol>
-<li>随机给定一个值num并将其与数组末尾交换，先将数组化为三个区域，大于区，小于区，等于区</li>
-<li>当小于时将此数与小于区的下一位交换，小于区从左向右扩大一位，数组指针右移</li>
-<li>当大于时将此数与大于区的上一位交换，大于区从右向左扩大一位，数组指针不动</li>
-<li>当等于时，数组指针右移，数组指针等于大于区时停止</li>
-<li>递归调用，将等于区左边第一位和等于去右边第一位和本次调用最两侧作为新的边界，当右侧边界小于等于左侧边界时，方法返回</li>
-</ol>
-<p>时间复杂度：O(N*logN)，空间复杂度：O(logN)</p>
-<h2 id="2、堆"><a href="#2、堆" class="headerlink" title="2、堆"></a>2、堆</h2><p>堆为完全二叉树，每一层从左向右一次加满</p>
-<p>大根堆：每颗子树的根节点为整颗数最大的节点</p>
-<p>小根堆：每颗子树的根节点为整颗数最小的节点，又被称为优先级队列，java中的类为PriorityQueue</p>
-<p>如果使用连续数组储存二叉树：父节点点（下标为i）的</p>
-<ol>
-<li>左下角数的索引为2 * i + 1</li>
-<li>右下角数的索引为2 * i + 2</li>
-<li>其父结点索引为(i - 1)  &#x2F; 2</li>
-</ol>
-<p>操作（大根堆）：</p>
-<ol>
-<li>heapInsert：将一个数和父节点进行比较，如果大于父节点则与其交换，直至父节点大于等于该数或该数的索引为0</li>
-<li>heapify（堆化）：将一个数和子节点的较大值与其比较，如果小于子节点则与其交换，直至子节点均小于该数或者没有子节点</li>
-</ol>
-<p>对于完全二叉树的一次操作，时间复杂度为O(logN)</p>
-<p>堆排序：将一个原始数组转换为堆，将最大值取出放到堆的最后一位堆大小减一，再将整个堆堆化，以此类推，直至取出所有的数，整个数组即完成排序</p>
-<p>堆的每一步操作时间复杂为O(logN)，遍历整个堆的时间复杂度为O(N)，循环嵌套，整个堆排序时间复杂度为O(N*logN)</p>
-<h2 id="3、排序"><a href="#3、排序" class="headerlink" title="3、排序"></a>3、排序</h2><p>1、桶排序</p>
-<p>取0到9十个桶（即容器），按照每个数的个位放进每个桶，再将从0开始到9的桶里数依次倒出，每个桶中的数字先进先出，再按照十位百位以此类推，排完所有数位即完成排序 </p>
-<p>具体实现：</p>
-<ol>
-<li>构造一个长度为10的数频表，记录每个数字出现的次数，记录完成后将其转换为一个前缀和数表，其意义为，小于等于索引 i 的数共产生了多少次。</li>
-<li>取出数时，从原数组的右侧遍历（保证先进先出），根据前缀和数表的具体数字决定其位置，取出数前将前缀表对应位置的数减一，然后将其作为在临时数组中的索引</li>
-</ol>
-]]></content>
-      <categories>
-        <category>计算机基础</category>
-      </categories>
-      <tags>
-        <tag>数据结构与算法基础</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>开发日记-条件分页查询的实现</title>
     <url>/2022/07/15/%E5%BC%80%E5%8F%91%E6%97%A5%E8%AE%B0-%E6%9D%A1%E4%BB%B6%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E7%8E%B0/</url>
     <content><![CDATA[<h2 id="需求说明"><a href="#需求说明" class="headerlink" title="需求说明"></a>需求说明</h2><span id="more"></span>
@@ -2673,7 +2578,7 @@
 <p>默认端口号6379</p>
 <p>默认16个数据库，下标从0开始，默认使用0号库</p>
 <p>底层是单线程+多路IO复用</p>
-<h1 id="2、常用数据类型"><a href="#2、常用数据类型" class="headerlink" title="2、常用数据类型"></a>2、常用数据类型</h1><h2 id="1、对key的操作"><a href="#1、对key的操作" class="headerlink" title="1、对key的操作"></a>1、对key的操作</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">keys * 查看所有key</span><br><span class="line">exists key 判断某个key是否存在</span><br><span class="line">type key 查看key的类型</span><br><span class="line">del key 删除key，直接删除</span><br><span class="line">unlink key 删除key，异步删除</span><br><span class="line">expire key 100 设置key的删除事件，秒为单位</span><br><span class="line">ttl key 查看key的过期时间，-1永不过期，-2已过期</span><br><span class="line">select i 切换到第i个库</span><br><span class="line">dbsize 查看key的数目</span><br><span class="line">flushdb 清空当前库</span><br><span class="line">flushall 清空所有库</span><br></pre></td></tr></table></figure>
+<h1 id="2、常用数据类型"><a href="#2、常用数据类型" class="headerlink" title="2、常用数据类型"></a>2、常用数据类型</h1><h2 id="1、对key的操作"><a href="#1、对key的操作" class="headerlink" title="1、对key的操作"></a>1、对key的操作</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">keys * 查看所有key</span><br><span class="line">exists key 判断某个key是否存在，并返回其值</span><br><span class="line">type key 查看key的类型</span><br><span class="line">del key 删除key，直接删除</span><br><span class="line">unlink key 删除key，异步删除</span><br><span class="line">expire key 100 设置key的删除事件，秒为单位</span><br><span class="line">ttl key 查看key的过期时间，-1永不过期，-2已过期</span><br><span class="line">select i 切换到第i个库</span><br><span class="line">dbsize 查看key的数目</span><br><span class="line">flushdb 清空当前库</span><br><span class="line">flushall 清空所有库</span><br></pre></td></tr></table></figure>
 
 <h2 id="2、String-字符串"><a href="#2、String-字符串" class="headerlink" title="2、String 字符串"></a>2、String 字符串</h2><p>二进制安全，可以保存二进制文件，value最多可以为512Mb</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set &lt;key&gt; &lt;value&gt; 设置键值对，设置相同key覆盖初值</span><br><span class="line">get &lt;key&gt; 获取值</span><br><span class="line">append &lt;key&gt; &lt;value&gt; 将指定的值追加到对应key的值</span><br><span class="line">strlen &lt;key&gt; 获取值的长度</span><br><span class="line">setnx &lt;key&gt; &lt;value&gt; 可以不存在才能设置，不可重复设置</span><br><span class="line">incr &lt;key&gt; key中存储的value数字加一 incrby &lt;key&gt; &lt;步长&gt; 储存的数字加步长</span><br><span class="line">decr &lt;key&gt; key中储存的value数字减一</span><br><span class="line">mset k1 v1 k2 v2 设置多个键值对</span><br><span class="line">mget k1 k2 k3 获取多个值</span><br><span class="line">msetnx k1 v1 k2 v2 k1,k2都不存在才能设置</span><br><span class="line">getrange k 0 3 获取从第0位到第3位共4个值</span><br><span class="line">setrange k 3 v 在第三位设置值</span><br><span class="line">setex k 过期时间 v 在设置值的时候设置过期时间</span><br><span class="line">getset k v 取出旧值，设置新值</span><br></pre></td></tr></table></figure>
@@ -2681,14 +2586,14 @@
 <p>value底层采用动态字符串，字符串大小小于1m，扩容时翻倍，大于1m时，扩容时增加1m，最大512m</p>
 <p>redis操作是原子性的</p>
 <h2 id="3、List-列表"><a href="#3、List-列表" class="headerlink" title="3、List 列表"></a>3、List 列表</h2><p>单键多值，按插入顺序排序，可以添加数据到头尾，底层实现为双向链表，当元素较少时使用连续分配空间的压缩列表，当储存大量数据时使用多个压缩列表组成大列表</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lpush/rpush k1 v1 k2 v2 从左边或右边插入一个或多个值</span><br><span class="line">lpop/rpop k 从左边或右边弹出一个值，当取出所有值时，键被销毁</span><br><span class="line">rpoplpush k1 k2 从k1右边弹出一个值，放入k2左边</span><br><span class="line">lrange k 0 1 返回索引从0到1的值，0到-1取出全部</span><br><span class="line">lindex k 0 返回指定索引的值</span><br><span class="line">llen k 返回列表长度</span><br><span class="line">linsert k before/after v newv 将newv放入v的前面或后面</span><br><span class="line">lrem k n v 从左边删除n个v</span><br><span class="line">lset k index v 将下标为index的值设置为v</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lpush/rpush k1 v1 v2 v3 从左边或右边插入一个或多个值</span><br><span class="line">lpop/rpop k 从左边或右边取出一个值，当取出所有值时，键被销毁</span><br><span class="line">brpop k rpop的阻塞版本，方list为空时，会一直阻塞，直到list中有值或超时</span><br><span class="line">rpoplpush k1 k2 从k1右边取出一个值，放入k2左边</span><br><span class="line">lrange k 0 1 取出索引从0到1的值，0到-1取出全部</span><br><span class="line">lindex k 0 返回指定索引的值</span><br><span class="line">llen k 返回列表长度</span><br><span class="line">linsert k before/after v newv 将newv放入v的前面或后面</span><br><span class="line">lrem k n v 从左边删除n个v</span><br><span class="line">lset k index v 将下标为index的值设置为v</span><br></pre></td></tr></table></figure>
 
 <h2 id="4、Set-集合"><a href="#4、Set-集合" class="headerlink" title="4、Set 集合"></a>4、Set 集合</h2><p>类似于list，但可以自动排重，且无序，底层实现为value为空的hash表所实现的字典，添加删除查找的时间复杂度为O(1)</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sadd k v1 v2 将一个或多个值加入集合</span><br><span class="line">smembers k 返回所有值</span><br><span class="line">sismemember k v 判断集合中是否有v值</span><br><span class="line">scard k 返回集合中的元素个数</span><br><span class="line">srem k v1 v2 删除集合中的v1、v2</span><br><span class="line">spop k 随机从集合中弹出值，弹出后删除</span><br><span class="line">srandmember k  n 随机从集合中返回n个值</span><br><span class="line">smove source destination v 将v从一个集合移动到另一个集合</span><br><span class="line">sinter k1 k2 返回两个集合的交集元素</span><br><span class="line">sunion k1 k2 返回两个集合的并集元素</span><br><span class="line">sdiff k1 k2 返回在k1中不在k2中的元素</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sadd k v1 v2 v3 将一个或多个值加入集合</span><br><span class="line">smembers k 返回所有值</span><br><span class="line">sismemember k v 判断集合中是否有v值，存在返回1，不存在返回0</span><br><span class="line">scard k 返回集合中的元素个数</span><br><span class="line">srem k v1 v2 删除集合中的v1、v2</span><br><span class="line">spop k 随机从集合中取出值</span><br><span class="line">srandmember k  n 随机从集合中返回n个值</span><br><span class="line">smove source destination v 将v从一个集合移动到另一个集合</span><br><span class="line">sinter k1 k2 返回两个集合的交集元素</span><br><span class="line">sunion k1 k2 返回两个集合的并集元素</span><br><span class="line">sdiff k1 k2 返回在k1中不在k2中的元素</span><br></pre></td></tr></table></figure>
 
 <h2 id="5、Hash-哈希"><a href="#5、Hash-哈希" class="headerlink" title="5、Hash 哈希"></a>5、Hash 哈希</h2><p>值是一个string类型f的filed和value的映射表即键值对的集合，适合存储对象，类似java的Map&lt;String, Object&gt; ，底层实现为两种，当field较少时使用压缩列表，当field较多时使用哈希表</p>
 <p>key {field1&#x3D;value1，field2&#x3D;value2}</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hset k filed v 给filed赋值v</span><br><span class="line">hget k f 从f中返回值</span><br><span class="line">hmset k f1 v1 f2 v2 批量设置hash值</span><br><span class="line">hexists k f 查看f是否存在</span><br><span class="line">hkeys k 返回所有的f</span><br><span class="line">hvals k 返回所有的v</span><br><span class="line">hincrby k f i 给f中的值增加i</span><br><span class="line">hsetnx k f v 当f不存在时，设置值</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hset k filed v 将v赋值给filed</span><br><span class="line">hget k f 从f中返回值</span><br><span class="line">hmset k f1 v1 f2 v2 批量设置hash值</span><br><span class="line">hexists k f 查看f是否存在</span><br><span class="line">hkeys k 返回所有的f</span><br><span class="line">hvals k 返回所有的v</span><br><span class="line">hincrby k f i 给f中的值增加i</span><br><span class="line">hsetnx k f v 当f不存在时，设置值</span><br></pre></td></tr></table></figure>
 
 <h2 id="6、Zset-有序集合"><a href="#6、Zset-有序集合" class="headerlink" title="6、Zset 有序集合"></a>6、Zset 有序集合</h2><p>类似于set，但是每个成员关联一个“评分”，被用于按照从最低分到最高分排序，成员唯一，但评分不一定唯一。底层实现类似于Map&lt;String, Double&gt;，又类似于TreeSet，根据权重排序，使用两种结构，hash关联value和score，跳跃表用于给value排序</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">zadd k score1 v1 score2 v1 将一个或多个元素及其评分放入有序集合</span><br><span class="line">zrange k 0 3 返回下标在0到3的元素，使用withscores可以将评分取出</span><br><span class="line">zrangebyscore k min max 返回值介于min max的元素，按score从小到大排序，使用withscores可以将评分取出</span><br><span class="line">zrevrangebyscore k max min 同上，从大到小排序</span><br><span class="line">zincrby k i v 给元素加上i</span><br><span class="line">zrem k v 删除指定的v</span><br><span class="line">zcount k min max 统计区间内元素个数</span><br><span class="line">zrank k v 返回该值的排名，从0开始</span><br></pre></td></tr></table></figure>
@@ -2809,7 +2714,8 @@
 <p>解决文件过大和同一key的多次操作</p>
 <p>通过执行<code>bgrewriteaof</code>命令，让AOF执行重写，用最少的命令达到效果</p>
 <p>redis在触发阈值时，也会自动执行重写，可以在配置文件中设置</p>
-<h1 id="10、缓存穿透、击穿、雪崩"><a href="#10、缓存穿透、击穿、雪崩" class="headerlink" title="10、缓存穿透、击穿、雪崩"></a>10、缓存穿透、击穿、雪崩</h1><h2 id="1、缓存穿透"><a href="#1、缓存穿透" class="headerlink" title="1、缓存穿透"></a>1、缓存穿透</h2><p>现象：</p>
+<h2 id="3、混合持久化"><a href="#3、混合持久化" class="headerlink" title="3、混合持久化"></a>3、混合持久化</h2><p>将rdb文件和增量aof放在一起，aof不再记录所有的命令，而是记录两次RDB持久化之间的命令，重启redis时优先加载rdb文件，在加载aof文件</p>
+<h1 id="10、缓存设计"><a href="#10、缓存设计" class="headerlink" title="10、缓存设计"></a>10、缓存设计</h1><h2 id="1、缓存穿透"><a href="#1、缓存穿透" class="headerlink" title="1、缓存穿透"></a>1、缓存穿透</h2><p>现象：</p>
 <ol>
 <li>应用服务器压力增大</li>
 <li>redis命中率降低，即缓存中查不到数据</li>
@@ -2817,14 +2723,14 @@
 </ol>
 <p>原因：</p>
 <ol>
-<li>redis查询不到数据</li>
+<li>redis查询不到数据，自身业务逻辑存在问题</li>
 <li>大量非正常url访问</li>
 </ol>
 <p>解决方法：</p>
 <ol>
 <li>缓存空值：如果查询缓存数据为空，则将该空值进行缓存，并将过期时间设置为一个较短时间</li>
 <li>设置白名单：使用bitmap定义一个可访问白名单，名单id作为bitmaps的偏移量，每一次访问和map中的id进行比较，id存在才可访问</li>
-<li>布隆过滤器：</li>
+<li>布隆过滤器：连续的数据结构，每个储存位都是一个bit，用以标识数据是否存在。存储数据时，使用多个hash函数将这些变量映射为多个点。判断key是否存在时，使用这些hash函数计算，判断对应的储存位是否为1</li>
 <li>实时监控：Redis命中率急剧降低时，排查访问对象，进行处理</li>
 </ol>
 <h2 id="2、缓存击穿"><a href="#2、缓存击穿" class="headerlink" title="2、缓存击穿"></a>2、缓存击穿</h2><p>现象：</p>
@@ -2835,13 +2741,13 @@
 </ol>
 <p>原因：</p>
 <ol>
-<li>redis某个key过期，同时大量访问中使用了该key</li>
+<li>一个并发量较大的key在某个时间过期，导致所有请求发送到数据库中</li>
 </ol>
 <p>解决方法：</p>
 <ol>
 <li>预先设置热门key</li>
 <li>实时调整，实时调整redis的key过期时间</li>
-<li>使用锁：查询redis如果为空，则设置排他锁，休眠一段时间再次查询，查询成功则释放锁，否则不释放锁</li>
+<li>使用锁：查询某个key如果为空，则对这个key设置排他锁，同时取去数据库查询，写入缓存后，在释放锁。在上锁期间，请求将被阻塞，释放锁后，后面的所有请求都可以从缓存中拿到数据</li>
 </ol>
 <h2 id="3、缓存雪崩"><a href="#3、缓存雪崩" class="headerlink" title="3、缓存雪崩"></a>3、缓存雪崩</h2><p>现象：</p>
 <ol>
@@ -2859,10 +2765,22 @@
 <li>及时更新缓存，某个key将要过期时，触发通知另一个线程去后台实时更新key</li>
 <li>将缓存失效时间分散开，在原有缓存失效时间上增加一个随机值，这样每一个缓存的过期时间的重复率将降低，很难引发集体失效</li>
 </ol>
-<h2 id="4、分布式锁"><a href="#4、分布式锁" class="headerlink" title="4、分布式锁"></a>4、分布式锁</h2><p>单机部署系统演化为分布式系统，分布式系统多线程、多进程且分布在不同的机器上，原本单机部署的控制锁策略将失效，则需要分布式锁解决</p>
-<p>实现方案：redis实现分布式锁</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setnx users 10		相当于加锁</span><br><span class="line">expire 10			给锁设置过期时间</span><br><span class="line">set users 10 nx ex 10 加锁并设置过期时间，保证原子性</span><br><span class="line">del users			相当于释放锁</span><br></pre></td></tr></table></figure>
-
+<h2 id="4、数据库与缓存的一致性"><a href="#4、数据库与缓存的一致性" class="headerlink" title="4、数据库与缓存的一致性"></a>4、数据库与缓存的一致性</h2><p>缓存不一致的原因：</p>
+<ol>
+<li>缓存key删除失败</li>
+<li>并发写入脏数据</li>
+</ol>
+<p>选择合适的更新缓存的策略</p>
+<ol>
+<li>以删除缓存代替对缓存的写操作</li>
+<li>先更新数据库，再删除缓存</li>
+</ol>
+<p>缓存不一致的处理：</p>
+<ol>
+<li>设置key过期时间作为最基本的保证</li>
+<li>延时双删：第一次删除缓存后，更新数据库，过一段时间再次删除</li>
+<li>监听数据库变化，获取需要操作的数据，将缓存放入消息队列，用消息队列的重试机制，重试删除对应的key</li>
+</ol>
 <h1 id="11、Redis集群"><a href="#11、Redis集群" class="headerlink" title="11、Redis集群"></a>11、Redis集群</h1><p>进一步提高redis并发能力，需要搭建主从集群，实现读写分离，主节点写从节点读</p>
 <p> 启动多个redis实例后，开启主从关系：</p>
 <ol>
@@ -2894,7 +2812,7 @@
 </ol>
 <p>选择新的master：</p>
 <ol>
-<li>先判断从节点和主节点断开的时间，超过指定值（down-after-miliseconds * 10），则会排除该节点</li>
+<li>先过滤主观下线、断线、5秒内没有回应sentinel节点ping响应、与主节点失联超过指定值（down-after-miliseconds * 10）的从节点</li>
 <li>然后判断从节点的slave-property，越小优先级越高，为0永不选举</li>
 <li>然后判断从节点的offset，越大则数据越新，优先级越高</li>
 <li>最后判断从节点运行id，越小优先级越高</li>
@@ -2924,12 +2842,13 @@
 <li><p>配置读写分离</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line">   <span class="keyword">public</span> LettuceClientConfigurationBuilderCustomizer <span class="title function_">configurationBuilderCustomizer</span><span class="params">()</span> &#123;</span><br><span class="line">       <span class="comment">//配置优先从从节点读取，所有从节点不可读，再读取主节点</span></span><br><span class="line">       <span class="keyword">return</span> configBuilder -&gt; configBuilder.readFrom(ReadFrom.REPLICA_PREFERRED);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
 </ol>
-<h2 id="2、分片集群"><a href="#2、分片集群" class="headerlink" title="2、分片集群"></a>2、分片集群</h2><p>解决海量数据存储和高并发写问题</p>
+<h2 id="2、分片集群"><a href="#2、分片集群" class="headerlink" title="2、分片集群"></a>2、分片集群</h2><p>实现数据分区：突破单机限制，容量提高；每个节点均可以对外提供读写服务，提高集群响应能力</p>
+<p>实现高可用：支持自动故障转移，任意节点故障，集群仍可对外提供服务</p>
 <p>分片集群特征：</p>
 <ol>
 <li>多个主节点，每主节点r保存不同数据</li>
 <li>每个主节点有多个从节点</li>
-<li>主节点之间通过ping检测健康状态</li>
+<li>主节点之间通过ping检测健康状态，节点下线流程同哨兵模式</li>
 <li>客户端可以访问任意节点，最终被转发到正确节点</li>
 </ol>
 <p>搭建分片集群（三主三从）：</p>
@@ -2952,10 +2871,12 @@
 <p>redis根据key的有效部分（例如：key是num，有效部分为num；key是{item}num，有效部分就是item）计算插槽值，根据插槽值寻找对应的节点存储查找数据。</p>
 <p>将同一类数据保存到固定节点时，使用相同的有效值</p>
 <p>集群伸缩：</p>
+<p>在不影响集群对服务的情况下，为集群添加节点扩容或下线节点缩容</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 添加节点，告知集群中的一个节点，新节点的位置端口，还可指定节点为从节点并为其指定主节点</span><br><span class="line">redis-cli --cluster add-node new_host:new_port exist_host:exist_port</span><br><span class="line">--cluster-slave				# 可选参数，指定节点为从节点</span><br><span class="line">--cluster-master-id &lt;args&gt;  # 可选参数，为从节点指定主节点id</span><br><span class="line"></span><br><span class="line"># 分配插槽</span><br><span class="line">redis-cli --cluster reshard IP:PORT</span><br></pre></td></tr></table></figure>
 
 <p>故障转移：</p>
 <p>redis分片集群，主机宕机后自动故障转移</p>
+<p>部署redis集群应至少部署在三个物理节点上，才能避免单点问题</p>
 <p>手动进行数据迁移:</p>
 <ol>
 <li><p>操作从节点让主节点宕机</p>
@@ -2975,6 +2896,33 @@
 </li>
 <li><p>配置读写分离</p>
 </li>
+</ol>
+<h1 id="12、Redis应用"><a href="#12、Redis应用" class="headerlink" title="12、Redis应用"></a>12、Redis应用</h1><h2 id="1、分布式锁"><a href="#1、分布式锁" class="headerlink" title="1、分布式锁"></a>1、分布式锁</h2><p>单机部署系统演化为分布式系统，分布式系统多线程、多进程且分布在不同的机器上，原本单机部署的控制锁策略将失效，则需要分布式锁解决</p>
+<p>实现方案：redis实现分布式锁</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setnx users 10		相当于加锁</span><br><span class="line">expire 10			给锁设置过期时间</span><br><span class="line">set users 10 nx ex 10 加锁并设置过期时间，保证两个命令的原子性</span><br><span class="line">del users			相当于释放锁</span><br></pre></td></tr></table></figure>
+
+<p>多个客户端使用setnx指令，获取到key后，其他客户端无法再设置key，相当于上了锁，完成业务逻辑后删除key，相当于释放锁。为防止死锁，需要设置过期时间</p>
+<p>可以使用Redission框架实现分布式锁</p>
+<h2 id="2、异步队列"><a href="#2、异步队列" class="headerlink" title="2、异步队列"></a>2、异步队列</h2><ol>
+<li><p>list作为队列，lpush生产消息，brpop消费信息：当list为空时brpop会被阻塞，直到list中有值或超时。这种方式只能实现一对一的消息队列。</p>
+</li>
+<li><p>使用pub&#x2F;sub进行消息的发布&#x2F;订阅</p>
+</li>
+</ol>
+<p>一般异步队列的实现还是交由专业的消息队列</p>
+<h2 id="3、延时队列"><a href="#3、延时队列" class="headerlink" title="3、延时队列"></a>3、延时队列</h2><p>使用zet，将时间戳作为score进行排序，可以一直向内存中生产消息，再利用zrangebyscore查询符合条件的待处理任务，再循环执行队列任务即可</p>
+<h2 id="4、lua脚本"><a href="#4、lua脚本" class="headerlink" title="4、lua脚本"></a>4、lua脚本</h2><p>Redis的事务功能比较简单，平时的开发中，可以利用Lua脚本来增强Redis的命令。</p>
+<p>Lua脚本能给开发人员带来这些好处：</p>
+<ul>
+<li>Lua脚本在Redis中是原子执行的，执行过程中间不会插入其他命令。</li>
+<li>Lua脚本可以帮助开发和运维人员创造出自己定制的命令，并可以将这 些命令常驻在Redis内存中，实现复用的效果。</li>
+<li>Lua脚本可以将多条命令一次性打包，有效地减少网络开销。</li>
+</ul>
+<h2 id="5、redis管道"><a href="#5、redis管道" class="headerlink" title="5、redis管道"></a>5、redis管道</h2><p>Redis 服务端接收到管道发送过来的多条命令后，会一直执命令，并将命令的执行结果进行缓存，直到最后一条命令执行完成，再所有命令的执行结果一次性返回给客户端。</p>
+<p>优点：</p>
+<ol>
+<li>减少服务器与客户端的IO</li>
+<li>减少系统调用的次数</li>
 </ol>
 ]]></content>
       <categories>
@@ -3114,6 +3062,12 @@
 <p>快速入门：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//创建数据库连接</span></span><br><span class="line"><span class="keyword">var</span> Db *gorm.DB	<span class="comment">//声明全局数据库连接和错误</span></span><br><span class="line"><span class="keyword">var</span> Err <span class="type">error</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	dsn := <span class="string">&quot;root:password@tcp(127.0.0.1:3306)/mybatis?charset=utf8mb4&amp;parseTime=True&amp;loc=Local&quot;</span></span><br><span class="line">	Db, Err = gorm.Open(mysql.Open(dsn), &amp;gorm.Config&#123;&#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//创建结构体</span></span><br><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">	Id       <span class="type">string</span></span><br><span class="line">	Password <span class="type">int</span></span><br><span class="line">	Username <span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(User)</span></span> TableName() <span class="type">string</span> &#123; <span class="comment">//将user表绑定到User结构体上</span></span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;user&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u User)</span></span> String() <span class="type">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> fmt.Sprintf(<span class="string">&quot;&#123;id = %v, username = %v, password = %v&#125;&quot;</span>, u.Id, u.Username, u.Password)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//查询</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> user []domain.User</span><br><span class="line">    model.Db.Debug().Find(&amp;user)	<span class="comment">//通过Debug方法可以查看每条SQL语句的执行</span></span><br><span class="line">	<span class="keyword">for</span> _, user := <span class="keyword">range</span> user &#123;</span><br><span class="line">		fmt.Println(user)</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>mysql和gorm的配置，以这种方式打开可以详细配置mysql和gorm的一些配置属性</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">DB, err = gorm.Open(mysql.New(mysql.Config&#123;</span><br><span class="line">		DSN: <span class="string">&quot;root:yuanxiao88110@tcp(127.0.0.1)/gorm?charset=utf8mb4&amp;parseTime=True&amp;loc=Local&quot;</span>,</span><br><span class="line">	&#125;), &amp;gorm.Config&#123;</span><br><span class="line">		NamingStrategy: schema.NamingStrategy&#123;</span><br><span class="line">			TablePrefix: <span class="string">&quot;t_&quot;</span>, 		<span class="comment">//给表名前缀、</span></span><br><span class="line">			SingularTable: <span class="literal">true</span>,	<span class="comment">//表名设置为单数</span></span><br><span class="line">		&#125;,</span><br><span class="line">    	DisableForeignKeyConstraintWhenMigrating: <span class="literal">true</span>,	<span class="comment">//禁用物理外键</span></span><br><span class="line">	&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>连接池：获取通用数据库接口，设置数据库连接池</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">sqlDB,err := DB.DB()</span><br><span class="line">sqlDB.SetMaxIdleConns(<span class="number">10</span>)	<span class="comment">//设置连接池最大空闲连接数</span></span><br></pre></td></tr></table></figure>
+
 <h1 id="二-、模型约定"><a href="#二-、模型约定" class="headerlink" title="二 、模型约定"></a>二 、模型约定</h1><p>GORM通过模型与表之间进行绑定，模型由结构体组成</p>
 <p>定义好结构后可以使用方法自动创建表：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.AutoMigrate(&amp;User&#123;&#125;)</span><br></pre></td></tr></table></figure>
@@ -3127,10 +3081,13 @@
 <li><p>使用 <code>CreatedAt</code>、<code>UpdatedAt</code> 字段追踪创建、更新时间</p>
 </li>
 <li><p>表名默认为结构体名的复数，因此自定义表需要和表进行绑定</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(User)</span></span> TableName() <span class="type">string</span> &#123; <span class="comment">//将user表绑定到User结构体上</span></span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;user&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//也可以通过Table()指定表名</span></span><br><span class="line">db.Table(<span class="string">&quot;user&quot;</span>).Find(&amp;User)</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(User)</span></span> TableName() <span class="type">string</span> &#123; 	<span class="comment">//将user表绑定到User结构体上</span></span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;user&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//也可以通过Table()指定表名</span></span><br><span class="line">db.Table(<span class="string">&quot;user&quot;</span>).Find(&amp;User)</span><br></pre></td></tr></table></figure></li>
 </ol>
-<p>字段的权限控制：允许使用标签对字段的权限控制</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;&lt;-:create&quot;`</span> <span class="comment">// allow read and create</span></span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;&lt;-:update&quot;`</span> <span class="comment">// allow read and update</span></span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;&lt;-&quot;`</span>        <span class="comment">// allow read and write (create and update)</span></span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;&lt;-:false&quot;`</span>  <span class="comment">// allow read, disable write permission</span></span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;-&gt;&quot;`</span>        <span class="comment">// readonly (disable write permission unless it configured)</span></span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;-&gt;;&lt;-:create&quot;`</span> <span class="comment">// allow read and create</span></span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;-&gt;:false;&lt;-:create&quot;`</span> <span class="comment">// createonly (disabled read from db)</span></span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;-&quot;`</span>            <span class="comment">// ignore this field when write and read with struct</span></span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;-:all&quot;`</span>        <span class="comment">// ignore this field when write, read and migrate with struct</span></span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;-:migration&quot;`</span>  <span class="comment">// ignore this field when migrate with struct</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>字段的权限控制：允许使用标签对字段的权限控制，其他标签参考文档</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;&lt;-:create&quot;`</span> <span class="comment">// allow read and create</span></span><br><span class="line">  Name <span class="type">string</span> <span class="string">`gorm:&quot;&lt;-:update&quot;`</span> <span class="comment">// allow read and update</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>常用标签：模型的字段添加标签，使其在建表时具有一定的功能</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="string">`gorm:&quot;primarrKey&quot;`</span>		主键</span><br><span class="line"><span class="string">`gorm:&quot;embedded&quot;`</span>		在模型中嵌入其他模型</span><br><span class="line"><span class="string">`gorm:&quot;index&quot;`</span>			索引</span><br><span class="line"><span class="string">`gorm:&quot;not null&quot;`</span>		非空</span><br><span class="line"><span class="string">`gorm:&quot;default:xxx&quot;`</span>	默认值</span><br><span class="line"><span class="string">`gorm:&quot;comment:xxx&quot;`</span>	注释</span><br></pre></td></tr></table></figure>
 
 <p>创建、更新时间的追踪：</p>
 <p>GORM 约定使用 <code>CreatedAt</code>、<code>UpdatedAt</code> 追踪创建、更新时间。如果定义了这种字段，GORM 在创建、更新时会自动填充 </p>
@@ -3151,7 +3108,7 @@
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// gorm.Model 的定义</span></span><br><span class="line"><span class="keyword">type</span> Model <span class="keyword">struct</span> &#123;</span><br><span class="line">  ID        <span class="type">uint</span>           <span class="string">`gorm:&quot;primaryKey&quot;`</span></span><br><span class="line">  CreatedAt time.Time</span><br><span class="line">  UpdatedAt time.Time</span><br><span class="line">  DeletedAt gorm.DeletedAt <span class="string">`gorm:&quot;index&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>可以通过给字段添加标签，设置诸如主键自增等功能，具体标签查看文档</p>
-<h1 id="三、创建"><a href="#三、创建" class="headerlink" title="三、创建"></a>三、创建</h1><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Create(&amp;user)		<span class="comment">//创建数据</span></span><br><span class="line">db.NewRecord(&amp;user)		<span class="comment">//判断主键是否为空，即判断是否存在此记录</span></span><br></pre></td></tr></table></figure>
+<h1 id="三、创建"><a href="#三、创建" class="headerlink" title="三、创建"></a>三、创建</h1><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Create(&amp;user)		<span class="comment">//创建数据，可以传入[]user切片创建多条记录</span></span><br><span class="line"><span class="comment">//函数返回值为一个DB，该DB中包含一个Error和RowsAffected，可以从中获取信息</span></span><br><span class="line">db.NewRecord(&amp;user)		<span class="comment">//判断主键是否为空，即判断是否存在此记录</span></span><br><span class="line"></span><br><span class="line">db.Select(<span class="string">&quot;xxx&quot;</span>).create()	<span class="comment">//选择指定字段查询</span></span><br><span class="line">db.Omit(<span class="string">&quot;xxx&quot;</span>).Create()		<span class="comment">//忽略指定字段查询</span></span><br></pre></td></tr></table></figure>
 
 <p>默认值：设置标签，当该字段没有传入值时，将使用默认值</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">	Id       <span class="type">string</span></span><br><span class="line">	Password <span class="type">int</span></span><br><span class="line">    Username <span class="type">string</span> <span class="string">`gorm:&quot;default:&#x27;zhangsan&#x27;&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -3170,10 +3127,14 @@
 </ol>
 <h1 id="四、查询"><a href="#四、查询" class="headerlink" title="四、查询"></a>四、查询</h1><p>简单查询可以使用下列方法，复杂查询建议使用原生SQL</p>
 <p>一般查询:</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> user User</span><br><span class="line"><span class="keyword">var</span> users []User</span><br><span class="line"><span class="comment">//根据主键查询第一条记录</span></span><br><span class="line">db.First(&amp;user)</span><br><span class="line"><span class="comment">//随机查询一条记录</span></span><br><span class="line">db.Take(&amp;user)</span><br><span class="line"><span class="comment">//根据主键查询最后一条记录</span></span><br><span class="line">ab.Last(&amp;user)</span><br><span class="line"><span class="comment">//查询所有记录</span></span><br><span class="line">db.Find(&amp;users)</span><br><span class="line"><span class="comment">//查询指定某条记录，当主键为整形时可用</span></span><br><span class="line">db.First(&amp;user, <span class="number">10</span>)</span><br><span class="line"><span class="comment">//查询第一个，没有则按照条件生成一个</span></span><br><span class="line">db.FirstOrInit(&amp;user, User&#123;Name: <span class="string">&quot;zhangsan&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> user User</span><br><span class="line"><span class="keyword">var</span> users []User</span><br><span class="line"><span class="comment">//根据主键查询第一条记录</span></span><br><span class="line">db.First(&amp;user)</span><br><span class="line"><span class="comment">//随机查询一条记录</span></span><br><span class="line">db.Take(&amp;user)</span><br><span class="line"><span class="comment">//根据主键查询最后一条记录</span></span><br><span class="line">ab.Last(&amp;user)</span><br><span class="line"><span class="comment">//查询所有记录</span></span><br><span class="line">db.Find(&amp;users)</span><br><span class="line"><span class="comment">//查询指定某条记录，当主键为整形时可用</span></span><br><span class="line">db.First(&amp;user, <span class="number">10</span>)</span><br><span class="line"><span class="comment">//查询第一个，没有则按照条件生成一个</span></span><br><span class="line">db.FirstOrInit(&amp;user, User&#123;Name: <span class="string">&quot;zhangsan&quot;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">//查询结果保存在map中，需要声明查询的模型</span></span><br><span class="line">db.Model(&amp;user&#123;&#125;).First(<span class="keyword">map</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//选择查询字段</span></span><br><span class="line">db.Select(<span class="string">&quot;name&quot;</span>).First(&amp;user)</span><br><span class="line"></span><br><span class="line"><span class="comment">//将查询结果封装在其他结构体中</span></span><br><span class="line">db.Model(&amp;User&#123;&#125;).First(&amp;userInfo)</span><br></pre></td></tr></table></figure>
+
+
 
 <p>where条件查询：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Where(<span class="string">&quot;name = ?&quot;</span>, <span class="string">&quot;zhangsan&quot;</span>).First(&amp;user)</span><br><span class="line">db.Where(<span class="string">&quot;name in (?)&quot;</span>, []<span class="type">string</span>&#123;<span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;lisi&quot;</span>&#125;).Find(&amp;users)</span><br><span class="line">db.Where(<span class="string">&quot;name like ?&quot;</span>, <span class="string">&quot;%shangsan&quot;</span>).Find(&amp;users)</span><br><span class="line">db.Where(<span class="string">&quot;name = ? and age &gt; ?&quot;</span>, <span class="string">&quot;zhangsan&quot;</span>. <span class="string">&quot;22&quot;</span>).Fins(&amp;users)</span><br><span class="line">db.Where(<span class="string">&quot;created_at &gt; ?&quot;</span>, day).Find(&amp;user)	<span class="comment">//day为time.Time类型</span></span><br></pre></td></tr></table></figure>
+
+
 
 <p>struct和map查询：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Where(User&#123;Name: <span class="string">&quot;zhangsan&quot;</span>, Age: <span class="number">18</span>&#125;).Find(&amp;users)</span><br><span class="line">db.Where(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>&#125;).Find(&amp;users)</span><br><span class="line">db.Where([]<span class="type">int64</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;).Find(&amp;users)	<span class="comment">//传入主键的切片</span></span><br></pre></td></tr></table></figure>
@@ -3183,62 +3144,193 @@
 <p>排除条件，使用同where</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Not([]<span class="type">int64</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;).Find(&amp;users) <span class="comment">//查询主键字段不在1，2,3的记录</span></span><br></pre></td></tr></table></figure>
 
+
+
 <p>or条件查询：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Where(<span class="string">&quot;name = zhangsan&quot;</span>).Or(User&#123;Name: <span class="string">&quot;lisi&quot;</span>&#125;).Find(&amp;users)</span><br></pre></td></tr></table></figure>
 
-<p>内联查询：将查询条件直接写在会立即生成SQL语句的方法里面</p>
+
+
+<p>内联条件：用法同where，需要考虑sql注入问题</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//当主键为非数字型时</span></span><br><span class="line">db.First(&amp;user, <span class="string">&quot;id = ?&quot;</span>, <span class="string">&quot;abc&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//map</span></span><br><span class="line">db.First(&amp;user, <span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123; <span class="string">&quot;name&quot;</span> : <span class="string">&quot;zhangsan&quot;</span> &#125;)</span><br></pre></td></tr></table></figure>
+
+
+
 <p>Attrs:</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//条件查询第一条记录，如果没有查询到记录，则会使用Attrs中的数据更新结构体</span></span><br><span class="line">db.Where(User&#123;Username: <span class="string">&quot;zhangsan&quot;</span>&#125;).Attrs(User&#123;Password: <span class="number">234</span>&#125;).FirstOrInit(&amp;user)</span><br></pre></td></tr></table></figure>
 
+
+
 <p>Assign：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//条件查询第一条记录，无论是否查询到数据, 都会使用Assign中的数据更新结构体</span></span><br><span class="line">db.Where(User&#123;Username: <span class="string">&quot;zhangsan&quot;</span>&#125;).Assign(User&#123;Password: <span class="number">234</span>&#125;).FirstOrInit(&amp;user)</span><br></pre></td></tr></table></figure>
+
+
 
 <p>FirstOrCreate：匹配第一条记录，如果没有匹配到则创建一条记录</p>
 <p>查询字段：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Select(<span class="string">&quot;name as username, age&quot;</span>).Find(&amp;users)</span><br><span class="line">db.Select([]<span class="type">string</span>&#123;<span class="string">&quot;name&quot;</span>, <span class="string">&quot;age&quot;</span>&#125;).Find(&amp;users)</span><br><span class="line">db.Select(<span class="string">&quot;?&quot;</span>, )</span><br></pre></td></tr></table></figure>
 
+
+
 <p>子查询：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//等价于select * from &#x27;user&#x27; where id in (select age from &#x27;user&#x27; where age &gt; 18)</span></span><br><span class="line">db.Where(<span class="string">&quot;id in ?&quot;</span>, db.Table(<span class="string">&quot;user&quot;</span>).Select(<span class="string">&quot;age&quot;</span>).Where(<span class="string">&quot;age &gt; 18&quot;</span>).QueryExpr())</span><br></pre></td></tr></table></figure>
+
+
 
 <p>排序：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Order(<span class="string">&quot;name desc&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">//覆盖排序，执行第二条Sql时将覆盖前面的排序</span></span><br><span class="line"><span class="comment">//等价于：</span></span><br><span class="line"><span class="comment">//select * from user order by name</span></span><br><span class="line"><span class="comment">//select * from user order by age</span></span><br><span class="line">db.Order(<span class="string">&quot;name&quot;</span>).Find(&amp;users).Order(<span class="string">&quot;age&quot;</span>, <span class="literal">true</span>).Find(&amp;users1)</span><br></pre></td></tr></table></figure>
 
+
+
 <p>Limit：指定检索出的记录条数</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Limit(<span class="number">3</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+
 
 <p>偏移：指定返回记录时跳过的条数</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Offset(<span class="number">3</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">//-1表示取消偏移</span></span><br><span class="line"><span class="comment">//等价于</span></span><br><span class="line"><span class="comment">//select * from user offset 3</span></span><br><span class="line"><span class="comment">//select * from user</span></span><br><span class="line">db.Offset(<span class="number">3</span>).Find(&amp;users).Offset(<span class="number">-1</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
 
+
+
 <p>count：立即执行方法</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//count()必须时链式查询的最后一个操作，他会覆盖前面的select</span></span><br><span class="line">db.Where(<span class="string">&quot;age &gt; 10&quot;</span>).Find(&amp;users).Count(&amp;count)</span><br></pre></td></tr></table></figure>
+
+
 
 <p>连接查询：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Select(<span class="string">&quot;user.name, email.email&quot;</span>).Joins(<span class="string">&quot;left join email on email.user_id = user.id&quot;</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
 
+
+
 <p>单独查询一个列：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//查询一个列并返回一个切片</span></span><br><span class="line">db.Find(&amp;users).Pluck(<span class="string">&quot;age&quot;</span>, &amp;ages)</span><br></pre></td></tr></table></figure>
+
+
 
 <p>scan：扫描结果至一个结构体</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Result <span class="keyword">struct</span> &#123;</span><br><span class="line">    Name <span class="type">string</span></span><br><span class="line">    Age <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line">db.Table(<span class="string">&quot;user&quot;</span>).Select(<span class="string">&quot;name, age&quot;</span>).Scan(&amp;result)</span><br></pre></td></tr></table></figure>
 
+
+
 <p>原生SQL：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Row(<span class="string">&quot;select name, age from uer where name = ?&quot;</span>, <span class="string">&quot;zhangsan&quot;</span>).Scan(&amp;result)</span><br></pre></td></tr></table></figure>
+
+
 
 <p>链式操作：</p>
 <p>除了crud方法，其他方法如<code>db.Where()</code>不会立即执行语句，可以在其基础上再增加条件，最后再执行</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">tx := db.Where(<span class="string">&quot;age &gt; 18&quot;</span>)</span><br><span class="line">tx = tx.Where(<span class="string">&quot;name = ?&quot;</span>, zhangsan)</span><br><span class="line">tx.Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+
 
 <p>范围：</p>
 <p>scopes，建立在链式操作基础上，抽取通用逻辑，重复利用代码</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AgeGreaterThan18</span><span class="params">(db *gorm.DB)</span></span> *gotm.DB &#123;</span><br><span class="line">    <span class="keyword">return</span> db.Where(<span class="string">&quot;age &gt; 18&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Scopes内可以传入多个参数</span></span><br><span class="line">db.Scopes(AgeGreaterThan18).Find(&amp;users)</span><br></pre></td></tr></table></figure>
 
 <p>多个立即执行方法：在执行多个立即执行方法时，后一个立即执行方法会复用第一个立即执行方法（不包含内联条件）</p>
-<h1 id="五、更新"><a href="#五、更新" class="headerlink" title="五、更新"></a>五、更新</h1><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//更新所有字段</span></span><br><span class="line">db.Save()</span><br><span class="line"><span class="comment">//更新指定字段</span></span><br><span class="line">db.Model(&amp;user).Update(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;lisi&quot;</span>)</span><br><span class="line"><span class="comment">//更新多个字段，只有属性变化才会更新，传入结构体时，结构体必须为非零值</span></span><br><span class="line">db.Model(&amp;user).Updates(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;shangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>&#125;)</span><br><span class="line"><span class="comment">//更新选中字段</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">&quot;name&quot;</span>).Updates(<span class="string">&quot;name&quot;</span>: <span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>)</span><br><span class="line"><span class="comment">//忽略选中字段</span></span><br><span class="line">db.Model(&amp;user).Omit(<span class="string">&quot;name&quot;</span>).Updates(<span class="string">&quot;name&quot;</span>: <span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>)</span><br><span class="line"><span class="comment">//无Hooks更新</span></span><br><span class="line">db.Model(&amp;user).UpdateColumns(<span class="string">&quot;name&quot;</span>)</span><br><span class="line"><span class="comment">//批量更新，钩子函数也不会执行</span></span><br><span class="line">db.Model(User&#123;&#125;).Where(<span class="string">&quot;id in (?)&quot;</span>, []<span class="type">int</span>&#123;<span class="number">10</span>, <span class="number">11</span>&#125;).Updates()</span><br><span class="line"><span class="comment">//返回影响条数</span></span><br><span class="line">db.Model(User&#123;&#125;).Where(<span class="string">&quot;id in (?)&quot;</span>, []<span class="type">int</span>&#123;<span class="number">10</span>, <span class="number">11</span>&#125;).Updates().RowsAffected</span><br></pre></td></tr></table></figure>
+<h1 id="五、更新"><a href="#五、更新" class="headerlink" title="五、更新"></a>五、更新</h1><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//根据user的主键更新所有字段，传入零值也会被更新，如果user没有主键则会创建新的记录</span></span><br><span class="line">db.Save(&amp;user)</span><br><span class="line"></span><br><span class="line"><span class="comment">//下列方法更新，如果没有限定where条件，则会更新所有记录</span></span><br><span class="line"><span class="comment">//更新指定字段</span></span><br><span class="line">db.Model(&amp;user).Update(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;lisi&quot;</span>)</span><br><span class="line"><span class="comment">//更新多个字段，只有属性变化才会更新，可以传入结构体或map，结构体的零值不参与更新</span></span><br><span class="line">db.Model(&amp;user).Updates(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;shangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>&#125;)</span><br><span class="line"><span class="comment">//更新选中字段</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">&quot;name&quot;</span>).Updates(<span class="string">&quot;name&quot;</span>: <span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>)</span><br><span class="line"><span class="comment">//忽略选中字段</span></span><br><span class="line">db.Model(&amp;user).Omit(<span class="string">&quot;name&quot;</span>).Updates(<span class="string">&quot;name&quot;</span>: <span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>)</span><br><span class="line"><span class="comment">//无Hooks更新</span></span><br><span class="line">db.Model(&amp;user).UpdateColumns(<span class="string">&quot;name&quot;</span>)</span><br><span class="line"><span class="comment">//批量更新，钩子函数也不会执行</span></span><br><span class="line">db.Model(User&#123;&#125;).Where(<span class="string">&quot;id in (?)&quot;</span>, []<span class="type">int</span>&#123;<span class="number">10</span>, <span class="number">11</span>&#125;).Updates()</span><br><span class="line"><span class="comment">//返回影响条数</span></span><br><span class="line">db.Model(User&#123;&#125;).Where(<span class="string">&quot;id in (?)&quot;</span>, []<span class="type">int</span>&#123;<span class="number">10</span>, <span class="number">11</span>&#125;).Updates().RowsAffected</span><br></pre></td></tr></table></figure>
 
 <h1 id="六、删除"><a href="#六、删除" class="headerlink" title="六、删除"></a>六、删除</h1><p>gorm通过主键字段删除记录，如果主键为空，则会删除所有值</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Delete(&amp;user)</span><br><span class="line"><span class="comment">//批量删除</span></span><br><span class="line">db.Where(<span class="string">&quot;id in (?)&quot;</span>, []<span class="type">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;).Delete(User&#123;&#125;)</span><br><span class="line"><span class="comment">//软删除，如果一个模型由DeleteAt字段，调用Delete方法时将执行软删除，不会真正删除记录，只会为该字段赋值</span></span><br><span class="line"><span class="comment">//查询软删除记录</span></span><br><span class="line">db.Unscoped().Where(<span class="string">&quot;age = 20&quot;</span>).Find(&amp;user)</span><br><span class="line"><span class="comment">//物理删除</span></span><br><span class="line">db.Unscoped().Delete(&amp;user)</span><br></pre></td></tr></table></figure>
 
-]]></content>
+<h1 id="七、迁移"><a href="#七、迁移" class="headerlink" title="七、迁移"></a>七、迁移</h1><p>将数据库绑定到一个对象上，可以使用gorm函数完成自动创建表，更改表名等功能</p>
+<p>AotuMigrate自动创建表、缺失的外键、索引等</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.AutoMigrate(&amp;User&#123;&#125;)</span><br><span class="line"></span><br><span class="line">db.AutoMigrate(&amp;User&#123;&#125;, &amp;Product&#123;&#125;, &amp;Order&#123;&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建表时添加后缀</span></span><br><span class="line">db.Set(<span class="string">&quot;gorm:table_options&quot;</span>, <span class="string">&quot;ENGINE=InnoDB&quot;</span>).AutoMigrate(&amp;User&#123;&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>Migrator接口，为每个数据库提供统一的api</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 为 `User` 创建表</span></span><br><span class="line">db.Migrator().CreateTable(&amp;User&#123;&#125;)</span><br><span class="line"><span class="comment">// 添加列</span></span><br><span class="line">db.Migrator().AddColumn(&amp;User&#123;&#125;, <span class="string">&quot;Name&quot;</span>)</span><br><span class="line"><span class="comment">// 创建约束</span></span><br><span class="line">db.Migrator().CreateConstraint(&amp;User&#123;&#125;, <span class="string">&quot;name_checker&quot;</span>)</span><br><span class="line"><span class="comment">// 为 user &amp; credit_cards 创建 db 外键</span></span><br><span class="line">db.Migrator().CreateConstraint(&amp;User&#123;&#125;, <span class="string">&quot;CreditCards&quot;</span>)</span><br><span class="line"><span class="comment">// 为 Name 字段创建索引</span></span><br><span class="line">db.Migrator().CreateIndex(&amp;User&#123;&#125;, <span class="string">&quot;Name&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>其他API参考文档</p>
+<h1 id="八、一对一关系"><a href="#八、一对一关系" class="headerlink" title="八、一对一关系"></a>八、一对一关系</h1><p>belongsTo：</p>
+<p>A模型与另外一个B模型建立一对一关系，A模型属于B模型，A模型直到B模型的所有信息但B模型不知道A的存在</p>
+<p>在A模型中，添加B模型字段和BID字段，在迁移时，会自动创建A、B两个表，并且以A的BID作为物理外键</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">    gorm.Model</span><br><span class="line">    Name <span class="type">string</span></span><br><span class="line">    CompanyID <span class="type">int</span></span><br><span class="line">    Conpany Company</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Company <span class="keyword">struct</span> &#123;</span><br><span class="line">    gorm.Model</span><br><span class="line">    Name <span class="type">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>hasOne：</p>
+<p>A模型与另外一个B模型建立一对一关系，A模型拥有B模型</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">  gorm.Model</span><br><span class="line">  CreditCard CreditCard</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> CreditCard <span class="keyword">struct</span> &#123;</span><br><span class="line">  gorm.Model</span><br><span class="line">  Number <span class="type">string</span></span><br><span class="line">  UserID <span class="type">uint</span>	<span class="comment">//作为外键</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>预加载：</p>
+<p>在查询的时候使用预加载，可以在查询一个模型的时候，将另外一个模型查询出</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">db.Preload(<span class="string">&quot;Company&quot;</span>).First(&amp;user)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>关系操作：</p>
+<p>即将一个模型绑定到另外一个模型的外键上</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">company := &amp;Company&#123;</span><br><span class="line">    Name: <span class="string">&quot;A&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">creditCard := &amp;CreditCard&#123;</span><br><span class="line">    Number: <span class="string">&quot;abc&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//belongsTo</span></span><br><span class="line">db.Model(&amp;User&#123;&#125;).Association(<span class="string">&quot;Company&quot;</span>).Append(&amp;company)</span><br><span class="line"><span class="comment">//hasOne</span></span><br><span class="line">db.Model(&amp;User&#123;&#125;).Association(<span class="string">&quot;CrediCard&quot;</span>).Append(&amp;creditCard)</span><br><span class="line"><span class="built_in">delete</span>	<span class="comment">//删除关系</span></span><br><span class="line">Replace <span class="comment">//替换关系</span></span><br><span class="line">Clear 	<span class="comment">//清楚所关系</span></span><br><span class="line">Count	<span class="comment">//计数关系</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="九、一对多关系"><a href="#九、一对多关系" class="headerlink" title="九、一对多关系"></a>九、一对多关系</h1><p>同一对一关系，在多的那一方，存放另一个模型的切片</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">  gorm.Model</span><br><span class="line">  CreditCard []CreditCard</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> CreditCard <span class="keyword">struct</span> &#123;</span><br><span class="line">  gorm.Model</span><br><span class="line">  Number <span class="type">string</span></span><br><span class="line">  UserID <span class="type">uint</span>	<span class="comment">//作为外键</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>预加载内联查询：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//查询指定的关联模型</span></span><br><span class="line">db.Preload(<span class="string">&quot;CreditCard&quot;</span>, <span class="string">&quot;UserID = ?&quot;</span>, <span class="string">&quot;1&quot;</span>).First(&amp;user)</span><br><span class="line"><span class="comment">//传入函数的形式，复杂的查询使用这种方式，放在哪个预加载中，函数即查询对应的表</span></span><br><span class="line">db.Preload(<span class="string">&quot;CreditCard&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(db *gorm.DB)</span></span> *gorm.DB &#123;</span><br><span class="line">    <span class="keyword">return</span> db.Where(<span class="string">&quot;userID = ?&quot;</span>, <span class="string">&quot;1&quot;</span>)</span><br><span class="line">&#125;).First(&amp;user)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>链式预加载：</p>
+<p>在链式关系中，可以使用链式预加载查询嵌套的模型</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">  gorm.Model</span><br><span class="line">  CreditCard CreditCard</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> CreditCard <span class="keyword">struct</span> &#123;</span><br><span class="line">  gorm.Model</span><br><span class="line">  Number <span class="type">string</span></span><br><span class="line">  UserID <span class="type">uint</span>	<span class="comment">//作为外键</span></span><br><span class="line">  Info Info</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Info <span class="keyword">struct</span> &#123;</span><br><span class="line">    gorm.Model</span><br><span class="line">    CreateData time.Time</span><br><span class="line">    CreditCardID <span class="type">uint</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">db.Preload(<span class="string">&quot;CreditCard.Info&quot;</span>).Preload(<span class="string">&quot;CreditCard&quot;</span>).First(&amp;user)</span><br></pre></td></tr></table></figure>
+
+<h1 id="十、多对多关系"><a href="#十、多对多关系" class="headerlink" title="十、多对多关系"></a>十、多对多关系</h1><p>在两个模型之间建立一张中间表</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// User 拥有并属于多种 language，`user_languages` 是连接表</span></span><br><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">  gorm.Model</span><br><span class="line">  Languages []*Language <span class="string">`gorm:&quot;many2many:user_languages;&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Language <span class="keyword">struct</span> &#123;</span><br><span class="line">  gorm.Model</span><br><span class="line">  Name <span class="type">string</span></span><br><span class="line">  Users []*User <span class="string">`gorm:&quot;many2many:user_languages;&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="十一、多态和关系标签"><a href="#十一、多态和关系标签" class="headerlink" title="十一、多态和关系标签"></a>十一、多态和关系标签</h1><p>多态：</p>
+<p>将拥有者的类型ID都保存在多态模型中，多态关系仅存在于一对多和一对一的关系之中</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Dog <span class="keyword">struct</span> &#123;</span><br><span class="line">  ID   <span class="type">int</span></span><br><span class="line">  Name <span class="type">string</span></span><br><span class="line">  <span class="comment">//polymorphicValue属性将改变多态类型中的类型字段的值</span></span><br><span class="line">  Toys []Toy <span class="string">`gorm:&quot;polymorphic:Owner;polymorphicValue:petDog&quot;`</span>	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Toy <span class="keyword">struct</span> &#123;</span><br><span class="line">  ID        <span class="type">int</span></span><br><span class="line">  Name      <span class="type">string</span></span><br><span class="line">  OwnerID   <span class="type">int</span></span><br><span class="line">  OwnerType <span class="type">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关联标签：</p>
+<table>
+<thead>
+<tr>
+<th>foreignKey</th>
+<th>指定当前模型的列作为连接表的外键</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>references</td>
+<td>指定引用表的列名，其将被映射为连接表外键</td>
+</tr>
+<tr>
+<td>polymorphic</td>
+<td>指定多态类型，比如模型名</td>
+</tr>
+<tr>
+<td>polymorphicValue</td>
+<td>指定多态值、默认表名</td>
+</tr>
+<tr>
+<td>many2many</td>
+<td>指定连接表表名</td>
+</tr>
+<tr>
+<td>joinForeignKey</td>
+<td>指定连接表的外键列名，其将被映射到当前表</td>
+</tr>
+<tr>
+<td>joinReferences</td>
+<td>指定连接表的外键列名，其将被映射到引用表</td>
+</tr>
+<tr>
+<td>constraint</td>
+<td>关系约束，例如：<code>OnUpdate</code>、<code>OnDelete</code></td>
+</tr>
+</tbody></table>
+<h1 id="十二、事务"><a href="#十二、事务" class="headerlink" title="十二、事务"></a>十二、事务</h1><p>gorm默认所有操作都开启事务</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> user User</span><br><span class="line">DB.Transaction(<span class="function"><span class="keyword">func</span><span class="params">(tx *gorm.DB)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">	tx.First(&amp;user)</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;)</span><br><span class="line">fmt.Println(user)</span><br></pre></td></tr></table></figure>
+
+<p>tx的使用基本与DB相同</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">//手动事务</span></span><br><span class="line">tx := db.Begin()</span><br><span class="line">...</span><br><span class="line">tx.Commit()</span><br><span class="line"><span class="comment">//回滚事务</span></span><br><span class="line">tx.Rollback()</span><br><span class="line"><span class="comment">//记录回滚点，并回滚到指定的回滚点</span></span><br><span class="line">tx.SavePoint(<span class="string">&quot;A&quot;</span>)</span><br><span class="line">tx.RollbackTo(<span class="string">&quot;A&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h1 id="十三、钩子"><a href="#十三、钩子" class="headerlink" title="十三、钩子"></a>十三、钩子</h1>]]></content>
       <categories>
         <category>Golang</category>
       </categories>
@@ -3405,15 +3497,16 @@
 
 <p>2.连接redis</p>
 <p>go-redis自身会维护一个连接池，创建一次client即可，不需要关闭</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> redisDb *redis.Client</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">initClient</span><span class="params">()</span></span> &#123;</span><br><span class="line">	redisDb = redis.NewClient(&amp;redis.Options&#123;</span><br><span class="line">		Addr:     <span class="string">&quot;49.234.36.190:6379&quot;</span>, <span class="comment">// redis地址</span></span><br><span class="line">		Password: <span class="string">&quot;&quot;</span>,      <span class="comment">// redis密码，没有则留空</span></span><br><span class="line">		DB:       <span class="number">1</span>,                    <span class="comment">// 默认数据库，默认是0</span></span><br><span class="line">	&#125;)</span><br><span class="line">	_, err := redisDb.Ping().Result() <span class="comment">//ping数据库，连通则返回一个“pong”</span></span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> redisDb *redis.Client</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">initClient</span><span class="params">()</span></span> &#123;</span><br><span class="line">	redisDB = redis.NewClient(&amp;redis.Options&#123;</span><br><span class="line">		Addr:     <span class="string">&quot;82.157.244.46:6379&quot;</span>, <span class="comment">// redis地址</span></span><br><span class="line">		Password: <span class="string">&quot;&quot;</span>,                   <span class="comment">// redis密码，没有则留空</span></span><br><span class="line">		DB:       <span class="number">1</span>,                    <span class="comment">// 默认数据库，默认是0</span></span><br><span class="line">	&#125;)</span><br><span class="line">	result, err := redisDB.Ping().Result()</span><br><span class="line">	fmt.Println(result)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <span id="more"></span>
 
 <p>3.redis.Options结构体的解释</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Options <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// 网络类型 tcp 或者 unix.</span></span><br><span class="line">	<span class="comment">// 默认是 tcp.</span></span><br><span class="line">	Network <span class="type">string</span></span><br><span class="line">	<span class="comment">// redis地址，格式 host:port</span></span><br><span class="line">	Addr <span class="type">string</span></span><br><span class="line">	<span class="comment">// 新建一个redis连接的时候，会回调这个函数</span></span><br><span class="line">	OnConnect <span class="function"><span class="keyword">func</span><span class="params">(*Conn)</span></span> <span class="type">error</span></span><br><span class="line">	<span class="comment">// redis密码，redis server没有设置可以为空。</span></span><br><span class="line">	Password <span class="type">string</span></span><br><span class="line">	<span class="comment">// redis数据库，序号从0开始，默认是0，可以不用设置</span></span><br><span class="line">	DB <span class="type">int</span></span><br><span class="line">	<span class="comment">// redis操作失败最大重试次数，默认不重试。</span></span><br><span class="line">	MaxRetries <span class="type">int</span>	</span><br><span class="line">	<span class="comment">// 最小重试时间间隔.</span></span><br><span class="line">	<span class="comment">// 默认是 8ms ; -1 表示关闭.</span></span><br><span class="line">	MinRetryBackoff time.Duration	</span><br><span class="line">	<span class="comment">// 最大重试时间间隔</span></span><br><span class="line">	<span class="comment">// 默认是 512ms; -1 表示关闭.</span></span><br><span class="line">	MaxRetryBackoff time.Duration</span><br><span class="line">	<span class="comment">// redis连接超时时间.</span></span><br><span class="line">	<span class="comment">// 默认是 5 秒.</span></span><br><span class="line">	DialTimeout time.Duration	</span><br><span class="line">	<span class="comment">// socket读取超时时间</span></span><br><span class="line">	<span class="comment">// 默认 3 秒.</span></span><br><span class="line">	ReadTimeout time.Duration	</span><br><span class="line">	<span class="comment">// socket写超时时间</span></span><br><span class="line">	WriteTimeout time.Duration</span><br><span class="line">	<span class="comment">// redis连接池的最大连接数.</span></span><br><span class="line">	<span class="comment">// 默认连接池大小等于 cpu个数 * 10</span></span><br><span class="line">	PoolSize <span class="type">int</span>	</span><br><span class="line">	<span class="comment">// redis连接池最小空闲连接数.</span></span><br><span class="line">	MinIdleConns <span class="type">int</span></span><br><span class="line">	<span class="comment">// redis连接最大的存活时间，默认不会关闭过时的连接.</span></span><br><span class="line">	MaxConnAge time.Duration	</span><br><span class="line">	<span class="comment">// 当你从redis连接池获取一个连接之后，连接池最多等待这个拿出去的连接多长时间。</span></span><br><span class="line">	<span class="comment">// 默认是等待 ReadTimeout + 1 秒.</span></span><br><span class="line">	PoolTimeout time.Duration</span><br><span class="line">	<span class="comment">// redis连接池多久会关闭一个空闲连接.</span></span><br><span class="line">	<span class="comment">// 默认是 5 分钟. -1 则表示关闭这个配置项</span></span><br><span class="line">	IdleTimeout time.Duration</span><br><span class="line">	<span class="comment">// 多长时间检测一下，空闲连接</span></span><br><span class="line">	<span class="comment">// 默认是 1 分钟. -1 表示关闭空闲连接检测</span></span><br><span class="line">	IdleCheckFrequency time.Duration</span><br><span class="line">	<span class="comment">// 只读设置，如果设置为true， redis只能查询缓存不能更新。</span></span><br><span class="line">	readOnly <span class="type">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="二-操作数据"><a href="#二-操作数据" class="headerlink" title="二.操作数据"></a>二.操作数据</h1><p>执行自定义命令：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">val, err := rdb.Do(ctx, <span class="string">&quot;get&quot;</span>, <span class="string">&quot;key&quot;</span>).Result()</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> err == redis.Nil &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;key does not exists&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">panic</span>(err)</span><br><span class="line">&#125;</span><br><span class="line">fmt.Println(val.(<span class="type">string</span>))</span><br></pre></td></tr></table></figure>
+<h1 id="二-操作数据"><a href="#二-操作数据" class="headerlink" title="二.操作数据"></a>二.操作数据</h1><p><strong>go-redis的函数和redis命令同名</strong></p>
+<p>执行自定义命令：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">val, err := rdb.Do(ctx, <span class="string">&quot;get&quot;</span>, <span class="string">&quot;key&quot;</span>).Result()	<span class="comment">//返回值为空接口</span></span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> err == redis.Nil &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;key does not exists&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">panic</span>(err)</span><br><span class="line">&#125;</span><br><span class="line">fmt.Println(val.(<span class="type">string</span>))</span><br></pre></td></tr></table></figure>
 
 <p>将命令赋值给函数</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">get := rdb.Get(ctx, <span class="string">&quot;key&quot;</span>)</span><br><span class="line">fmt.Println(get.Val(), get.Err())</span><br></pre></td></tr></table></figure>
@@ -3512,5 +3605,10 @@
       <tags>
         <tag>redis</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>数据结构</title>
+    <url>/2022/08/28/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>
