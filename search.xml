@@ -3685,4 +3685,71 @@
     <url>/2022/08/28/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</url>
     <content><![CDATA[]]></content>
   </entry>
+  <entry>
+    <title>docker</title>
+    <url>/2022/09/09/docker/</url>
+    <content><![CDATA[<h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><h2 id="1、概念"><a href="#1、概念" class="headerlink" title="1、概念"></a>1、概念</h2><p>docker是基于go语言开发的容器化技术，将应用及其运行环境打包为一个镜像文件，镜像运行在docker容器中，而docker容器在任何操作系统上都是一致的，因此实现了跨平台、跨服务器部署，做到一次镜像，处处运行，解决了运行环境和配置问题的软件容器。</p>
+<p> 容器虚拟化技术：Linux容器是与系统隔离的一系列进程，从另一个镜像运行，并由该镜像提供支持进程所需的全部文件，因此在开发、测试到部署过程其都具有可移植性。Linux容器不是模拟一个操作系统，而是对进程隔离，有了容器，就可以将软件运行的资源打包到一个容器中。容器与虚拟机不同，不需要捆绑一整套操作系统，只需要软件工作所需的库资源和配置，因此系统能在保持高效的同时做到部署在容器中的任何软件都能始终如一地运行。docker是对Linux容器技术的实现</p>
+<p>docker的实质使在已经运行的Linux环境下制造一个隔离的文件环境，通过复用Linux内核达到同时运行多个实例的效果，因此它的执行效率几乎等同于所部署的Linux主机</p>
+<p>容器和虚拟机的区别：</p>
+<p>虚拟机首先虚拟出一套硬件，再在虚拟硬件上虚拟出一套操作系统，在该系统上再运行应用程序；容器直接在宿主的操作系统上运行应用程序，容器没有自己的内核，使用宿主的操作系统内核</p>
+<span id="more"></span>
+
+<h2 id="2、三要素"><a href="#2、三要素" class="headerlink" title="2、三要素"></a>2、三要素</h2><p>镜像：一个只读文件的模板包含最基本的运行环境和应用程序，可以被用来创建Docker容器，相当于容器的源代码</p>
+<p>容器：Docker利用容器独立运行一组应用，容器就是利用镜像创建的运行实例，可以将容器看做一个简易的Linux环境和在其中的应用程序</p>
+<p>仓库：集中存放镜像的场所，最大的镜像仓库时DockerHub，国内的公开仓库包括阿里云、网易云等</p>
+<p>Docker本身是一个容器运行的载体或称之为管理引擎，开发人员将应用程序和所需要的依赖打包形成一个可交付的运行环境即镜像，然后Docker通过该镜像文件可以创造出多个同时运行的容器实例</p>
+<h2 id="3、工作原理"><a href="#3、工作原理" class="headerlink" title="3、工作原理"></a>3、工作原理</h2><p>Docker是一个CS结构的系统，Docker守护进程运行在主机上，然后通过Socket连接从客户端访问，守护进程从客户端接受到命令并管理运行在主机上的容器。例如Mysql，Docker启动容器后，外部可以通过Navicat等软件连接到Docker的守护进程，通过守护进程再去操作MySQL容器实例</p>
+<p>运行流程</p>
+<ol>
+<li>用户使用Docker-Client即命令窗口与Docker-Daemon建立通信并发送请求给后者</li>
+<li>Docker-Daemon作为主体部分，首先提供Docker Server功能接受请求</li>
+<li>Docker Engine执行Docker内部的一系列工作，每一项工作都是以一个Job的形式存在</li>
+<li>Job运行时，当需要容器镜像时，则从Docker Registry中下载镜像，并通过镜像管理驱动Graph Driver将下载的镜像以Graph的形式存储</li>
+<li>当需要为Docker创建网络环境时，通过网络管理驱动Network Driver创建并配置</li>
+<li>当需要限制Docker容器运行时资源或用户指令等操作，则通过Exec Driver来完成</li>
+<li>Libcontainer是一项独立的容器管理包，Network Driver以及Exec Driver都是通过其来实现具体对容器的操作</li>
+</ol>
+<h1 id="二、常用命令"><a href="#二、常用命令" class="headerlink" title="二、常用命令"></a>二、常用命令</h1><h2 id="1、帮助启动类命令"><a href="#1、帮助启动类命令" class="headerlink" title="1、帮助启动类命令"></a>1、帮助启动类命令</h2><p><img src="/.com//image-20220909210428165.png" alt="image-20220909210428165"></p>
+<h2 id="2、镜像命令"><a href="#2、镜像命令" class="headerlink" title="2、镜像命令"></a>2、镜像命令</h2><p><img src="/.com//image-20220909210730638.png" alt="image-20220909210730638"></p>
+<h2 id="3、容器命令"><a href="#3、容器命令" class="headerlink" title="3、容器命令"></a>3、容器命令</h2><p>新建+启动容器：</p>
+<p>docker run [OPTIONS] IMAGE [COMMAND][ARG…]</p>
+<p><img src="/.com//image-20220909212257259.png" alt="image-20220909212257259"></p>
+<p>docker run -it ubuntu bash	启动交互式容器，启动容器后返回一个该容器的终端，以便继续输入命令操作容器</p>
+<p><img src="/.com//image-20220909212917031.png" alt="image-20220909212917031"></p>
+<p>docker ps [OPTIONS]	列出当前所有容器</p>
+<p><img src="/.com//image-20220909213355645.png" alt="image-20220909213355645"></p>
+<p>docker run -d ubuntu	守护模式启动容器，即后台运行</p>
+<p>退出容器：</p>
+<p> 进入交互式容器后：输入命令exit关闭整个容器或按住ctrl+Q+P后台运行容器</p>
+<p>其他命令：</p>
+<p><img src="/.com//image-20220909214556034.png" alt="image-20220909214556034"></p>
+<p>查看容器日志：docker logs 容器ID</p>
+<p>查看容器内进程： </p>
+<p>Linux命令 ps -ef</p>
+<p>docker top 容器ID</p>
+<p>查看容器内部情况：</p>
+<p>docker inspect 容器ID</p>
+<p>进入容器进行命令行交互：</p>
+<p>docker exec -it 容器ID bash	打开一个新的终端，并且可以启动新的进程，exit命令不会关闭容器</p>
+<p>docker attach 容器ID				直接进入容器启动的终端，不会启动新的进程，exit命令会关闭容器</p>
+<p>从容器拷贝文件到主机：</p>
+<p>docker cp 容器ID:容器内路径 目的主机路径</p>
+<p>导入和导出容器：</p>
+<p>docker export 容器ID  &gt; 文件名.tar												导出整个容器内容形成一个tar文件到当前目录</p>
+<p>cat 文件名.tar | docker import  -镜像用户&#x2F;镜像名:镜像版本 	  导入tar文件形成一个镜像</p>
+<h1 id="三、docker镜像"><a href="#三、docker镜像" class="headerlink" title="三、docker镜像"></a>三、docker镜像</h1><p>镜像的底层是联合文件系统（UnionFSync），一种分层、轻量级并且高性能的文件系统，它支持对文件系统的修改作为一次提交来一层一层叠加，同时可以将不同目录挂载到同一个虚拟文件系统下。镜像可以通过分层来进行继承，基于基础镜像，可以制作各种具体的应用镜像。</p>
+<p>特性：一次性加载多个文件系统，但从外部来看，只有一个文件系统，联合加载会将各层文件系统叠加起来，这样最终的文件系统会包含所有底层的文件和目录</p>
+<p>加载原理：</p>
+<p><img src="/.com//image-20220909223013179.png" alt="image-20220909223013179"></p>
+<p>好处：共享资源，方便复制迁移和复用，可以在base镜像上构建新的镜像，Docker Host只需在磁盘上保存一份base镜像，同时也只需要加载一份镜像即可为所有镜像服务</p>
+<p>docker镜像是只读的，容器层是可写的，当容器启动时，一个新的可写层被加载到容器顶部，这一层被称为容器层，容器层之下被称为镜像层</p>
+<h2 id="1、镜像分层"><a href="#1、镜像分层" class="headerlink" title="1、镜像分层"></a>1、镜像分层</h2>]]></content>
+      <categories>
+        <category>运维</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
 </search>
