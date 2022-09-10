@@ -3717,7 +3717,7 @@
 <p><img src="/.com//image-20220909212257259.png" alt="image-20220909212257259"></p>
 <p>docker run -it ubuntu bash	启动交互式容器，启动容器后返回一个该容器的终端，以便继续输入命令操作容器</p>
 <p><img src="/.com//image-20220909212917031.png" alt="image-20220909212917031"></p>
-<p>docker ps [OPTIONS]	列出当前所有容器</p>
+<p>docker ps  [OPTIONS]	列出当前所有容器</p>
 <p><img src="/.com//image-20220909213355645.png" alt="image-20220909213355645"></p>
 <p>docker run -d ubuntu	守护模式启动容器，即后台运行</p>
 <p>退出容器：</p>
@@ -3744,7 +3744,52 @@
 <p><img src="/.com//image-20220909223013179.png" alt="image-20220909223013179"></p>
 <p>好处：共享资源，方便复制迁移和复用，可以在base镜像上构建新的镜像，Docker Host只需在磁盘上保存一份base镜像，同时也只需要加载一份镜像即可为所有镜像服务</p>
 <p>docker镜像是只读的，容器层是可写的，当容器启动时，一个新的可写层被加载到容器顶部，这一层被称为容器层，容器层之下被称为镜像层</p>
-<h2 id="1、镜像分层"><a href="#1、镜像分层" class="headerlink" title="1、镜像分层"></a>1、镜像分层</h2>]]></content>
+<p>docker commit -m&#x3D;”描述信息” -a&#x3D;”作者” 容器ID 镜像目录&#x2F;镜像名:[tag]   提交容器生成一个新的镜像</p>
+<p>发布镜像到阿里云：</p>
+<ol>
+<li><p>登录阿里云：$ docker login –username&#x3D; registry.cn-hangzhou.aliyuncs.com</p>
+</li>
+<li><p>标记镜像：$ docker tag [ImageId] registry.cn-hangzhou.aliyuncs.com&#x2F;bigrunfafishkiller&#x2F;bigrunfafishkiller:[镜像版本号]</p>
+</li>
+<li><p>推送镜像：$ docker push registry.cn-hangzhou.aliyuncs.com&#x2F;bigrunfafishkiller&#x2F;bigrunfafishkiller:[镜像版本号]</p>
+</li>
+<li><p>拉取镜像：$ docker pull registry.cn-hangzhou.aliyuncs.com&#x2F;bigrunfafishkiller&#x2F;bigrunfafishkiller:[镜像版本号]</p>
+</li>
+</ol>
+<h1 id="四、Docker容器卷"><a href="#四、Docker容器卷" class="headerlink" title="四、Docker容器卷"></a>四、Docker容器卷</h1><h1 id="五、DockerFile"><a href="#五、DockerFile" class="headerlink" title="五、DockerFile"></a>五、DockerFile</h1><p>DockerFile是用于构建Docker镜像的文本文件，由构成镜像的所需指令和参数构成的脚本</p>
+<p>执行流程： </p>
+<ol>
+<li>Docker运行一个基础容器</li>
+<li>执行一条指令并对容器做出修改</li>
+<li>执行一次类似于commit的操作，提交一个新的镜像层</li>
+<li>再基于刚才提交的镜像，运行一个新容器</li>
+<li>执行下一条指令，直到全部指令被执行</li>
+</ol>
+<p>Docker文件规范：</p>
+<ol>
+<li>保留字指令字母大写，且后面至少跟随一条参数</li>
+<li>指令按照从上到下，顺序执行</li>
+<li>#表示注释</li>
+<li>每条指令都会创建一个新的镜像层并对镜像层进行提交</li>
+</ol>
+<p>构建：docker build -t 新镜像的名字:TAG.	命令结尾有一个点</p>
+<p>常用保留字：</p>
+<p>FORM：表示当前镜像基于哪个基础镜像</p>
+<p>MAINTAINER：镜像维护者的信息</p>
+<p>RUN：容器构建时需要执行的命令，等同于在命令行输入命令，shell格式：RUN yum install vim，exec模式：RUN [“.&#x2F;test.php”, “dev”, “offline”] 等价于RUN .&#x2F;test dev offline</p>
+<p>EXPOSE：容器对外暴露的端口</p>
+<p>WORKDIR：进入容器后，终端默认的工作目录</p>
+<p>USER：指定镜像的用户，默认为root</p>
+<p>ENV：用于构建镜像时配置环境变量，ENV MY_PATH &#x2F;usr&#x2F;mytest，这个环境变量可以在后续的指令中使用，就如同在命令前面指定了环境变量一样，$MY_PATH引用环境变量</p>
+<p>ADD：将宿主机目录下的文件拷贝进镜像，且会自动处理URL和解压tar压缩包，文件必须和Dockerfile同一目录</p>
+<p>COPY：将宿主机目录下的文件拷贝进镜像</p>
+<p>VOLUME：容器数据卷，用于数据保存和持久化</p>
+<p>CMD：指定容器启动后所做的事，shell格式和exec格式，可以有多个CMD，但是只有最后一个生效，CMD会被docker run之后的参数替换，当和ENTRYPOINT连用时，CMD中的命令，会作为参数传递给ENTRYPOINT指令</p>
+<p>ENTRYPOINT：指定容器启动时要运行的命令，类似于CMD命令，但是不会被docker run后的参数覆盖，而且这些参数会被送给ENTRYPOINT指定的程序</p>
+<p><img src="/.com//image-20220910200650046.png" alt="image-20220910200650046"></p>
+<p>虚悬镜像：</p>
+<p>仓库名和标签都是&lt;none&gt;的镜像，称为dangling image，通常时执行构建的时候没有指定tag和用户</p>
+]]></content>
       <categories>
         <category>运维</category>
       </categories>
