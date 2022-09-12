@@ -28,7 +28,7 @@
 <meta property="og:description" content="一、简介开发者友好的orm框架，本笔记参考官方文档 导包： 1234import (  &quot;gorm.io&#x2F;driver&#x2F;mysql&quot;  &quot;gorm.io&#x2F;gorm&quot;)">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-08-05T00:47:45.000Z">
-<meta property="article:modified_time" content="2022-09-11T03:00:34.153Z">
+<meta property="article:modified_time" content="2022-09-11T06:19:44.623Z">
 <meta property="article:author" content="大润发杀鱼匠">
 <meta property="article:tag" content="web后端框架">
 <meta name="twitter:card" content="summary">
@@ -224,7 +224,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-11 11:00:34" itemprop="dateModified" datetime="2022-09-11T11:00:34+08:00">2022-09-11</time>
+                <time title="修改时间：2022-09-11 14:19:44" itemprop="dateModified" datetime="2022-09-11T14:19:44+08:00">2022-09-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -296,7 +296,7 @@
 <p>如果想要保存 UNIX（毫&#x2F;纳）秒时间戳，而不是 time，只需将 <code>time.Time</code> 修改为 <code>int</code> 即可</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">  CreatedAt time.Time <span class="comment">// 在创建时，如果该字段值为零值，则使用当前时间填充</span></span><br><span class="line">  UpdatedAt <span class="type">int</span>       <span class="comment">// 在创建时该字段值为零值或者在更新时，使用当前时间戳秒数填充</span></span><br><span class="line">  Updated   <span class="type">int64</span> <span class="string">`gorm:&quot;autoUpdateTime:nano&quot;`</span> <span class="comment">// 使用时间戳填纳秒数充更新时间</span></span><br><span class="line">  Updated   <span class="type">int64</span> <span class="string">`gorm:&quot;autoUpdateTime:milli&quot;`</span> <span class="comment">// 使用时间戳毫秒数填充更新时间</span></span><br><span class="line">  Created   <span class="type">int64</span> <span class="string">`gorm:&quot;autoCreateTime&quot;`</span>      <span class="comment">// 使用时间戳秒数填充创建时间</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>如果模型由DeleteAt字段，在调用gorm的delete方法时，不会直接删除数据，而会将当前时间赋值给该字段</p>
+<p>如果模型有DeleteAt字段，在调用gorm的delete方法时，不会直接删除数据，而会将当前时间赋值给该字段</p>
 <p>模型嵌入：</p>
 <p>对于匿名结构体，其字段将自动嵌入父结构体</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;  </span><br><span class="line">	gorm.Model  </span><br><span class="line">    Name <span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 等效于</span></span><br><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;  </span><br><span class="line">    ID        <span class="type">uint</span>           <span class="string">`gorm:&quot;primaryKey&quot;`</span>  </span><br><span class="line">    CreatedAt time.Time  </span><br><span class="line">    UpdatedAt time.Time  </span><br><span class="line">    DeletedAt gorm.DeletedAt <span class="string">`gorm:&quot;index&quot;`</span>  </span><br><span class="line">    Name <span class="type">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>

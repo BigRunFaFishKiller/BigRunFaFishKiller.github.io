@@ -3170,7 +3170,7 @@
 <p>如果想要保存 UNIX（毫&#x2F;纳）秒时间戳，而不是 time，只需将 <code>time.Time</code> 修改为 <code>int</code> 即可</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">  CreatedAt time.Time <span class="comment">// 在创建时，如果该字段值为零值，则使用当前时间填充</span></span><br><span class="line">  UpdatedAt <span class="type">int</span>       <span class="comment">// 在创建时该字段值为零值或者在更新时，使用当前时间戳秒数填充</span></span><br><span class="line">  Updated   <span class="type">int64</span> <span class="string">`gorm:&quot;autoUpdateTime:nano&quot;`</span> <span class="comment">// 使用时间戳填纳秒数充更新时间</span></span><br><span class="line">  Updated   <span class="type">int64</span> <span class="string">`gorm:&quot;autoUpdateTime:milli&quot;`</span> <span class="comment">// 使用时间戳毫秒数填充更新时间</span></span><br><span class="line">  Created   <span class="type">int64</span> <span class="string">`gorm:&quot;autoCreateTime&quot;`</span>      <span class="comment">// 使用时间戳秒数填充创建时间</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>如果模型由DeleteAt字段，在调用gorm的delete方法时，不会直接删除数据，而会将当前时间赋值给该字段</p>
+<p>如果模型有DeleteAt字段，在调用gorm的delete方法时，不会直接删除数据，而会将当前时间赋值给该字段</p>
 <p>模型嵌入：</p>
 <p>对于匿名结构体，其字段将自动嵌入父结构体</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;  </span><br><span class="line">	gorm.Model  </span><br><span class="line">    Name <span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 等效于</span></span><br><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;  </span><br><span class="line">    ID        <span class="type">uint</span>           <span class="string">`gorm:&quot;primaryKey&quot;`</span>  </span><br><span class="line">    CreatedAt time.Time  </span><br><span class="line">    UpdatedAt time.Time  </span><br><span class="line">    DeletedAt gorm.DeletedAt <span class="string">`gorm:&quot;index&quot;`</span>  </span><br><span class="line">    Name <span class="type">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -3757,7 +3757,25 @@
 <li><p>拉取镜像：$ docker pull registry.cn-hangzhou.aliyuncs.com&#x2F;bigrunfafishkiller&#x2F;bigrunfafishkiller:[镜像版本号]</p>
 </li>
 </ol>
-<h1 id="四、Docker容器卷"><a href="#四、Docker容器卷" class="headerlink" title="四、Docker容器卷"></a>四、Docker容器卷</h1><h1 id="五、DockerFile"><a href="#五、DockerFile" class="headerlink" title="五、DockerFile"></a>五、DockerFile</h1><p>DockerFile是用于构建Docker镜像的文本文件，由构成镜像的所需指令和参数构成的脚本</p>
+<h1 id="四、Docker容器卷"><a href="#四、Docker容器卷" class="headerlink" title="四、Docker容器卷"></a>四、Docker容器卷</h1><p>将docker容器中的数据保存进宿主机的磁盘中，将容器的一个目录和宿主机的一个目录建立映射关系。卷就是目录和文件，由docker挂载到容器，卷设计的目的是为了数据持久化，完全独立于容器的生命周期，因此docker不会在容器删除时删除其挂载的数据卷</p>
+<p>docker run -it –privilege&#x3D;true -v &#x2F;宿主机的绝对路径:&#x2F;容器内目录 镜像名		挂载数据卷，可以用多个-v指令，挂载多个容器卷</p>
+<p>没有目录会自动创建对应目录</p>
+<p>特点</p>
+<ol>
+<li>数据卷可以在容器间共享数据</li>
+<li>数据更新实时生效，且为双向更新</li>
+<li>数据卷的更新不会包含在镜像的更新中</li>
+<li>数据卷的生命周期一致持续到没有容器使用为止</li>
+</ol>
+<p>docker inspect 容器ID	查看容器详细信息，其中的Mounts属性可以查看挂载的目录</p>
+<p>读写规则：</p>
+<ol>
+<li>读写	-v &#x2F;宿主机的绝对路径:&#x2F;容器内目录	等价于	-v &#x2F;宿主机的绝对路径:&#x2F;容器内目录:rw</li>
+<li>只读    -v &#x2F;宿主机的绝对路径:&#x2F;容器内目录:ro   容器只可读宿主机的文件</li>
+</ol>
+<p>容器卷的继承和共享：</p>
+<p>docker  run -it –privilege&#x3D;true  –volumes-from 父容器名 镜像名</p>
+<h1 id="五、DockerFile"><a href="#五、DockerFile" class="headerlink" title="五、DockerFile"></a>五、DockerFile</h1><p>DockerFile是用于构建Docker镜像的文本文件，由构成镜像的所需指令和参数构成的脚本</p>
 <p>执行流程： </p>
 <ol>
 <li>Docker运行一个基础容器</li>
