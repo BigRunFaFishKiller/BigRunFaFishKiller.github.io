@@ -3742,7 +3742,7 @@
 <p>导入和导出容器：</p>
 <p>docker export 容器ID  &gt; 文件名.tar												导出整个容器内容形成一个tar文件到当前目录</p>
 <p>cat 文件名.tar | docker import  -镜像用户&#x2F;镜像名:镜像版本 	  导入tar文件形成一个镜像</p>
-<h1 id="三、docker镜像"><a href="#三、docker镜像" class="headerlink" title="三、docker镜像"></a>三、docker镜像</h1><p>镜像的底层是联合文件系统（UnionFSync），一种分层、轻量级并且高性能的文件系统，它支持对文件系统的修改作为一次提交来一层一层叠加，同时可以将不同目录挂载到同一个虚拟文件系统下。镜像可以通过分层来进行继承，基于基础镜像，可以制作各种具体的应用镜像。</p>
+<h1 id="三、Docker镜像"><a href="#三、Docker镜像" class="headerlink" title="三、Docker镜像"></a>三、Docker镜像</h1><p>镜像的底层是联合文件系统（UnionFSync），一种分层、轻量级并且高性能的文件系统，它支持对文件系统的修改作为一次提交来一层一层叠加，同时可以将不同目录挂载到同一个虚拟文件系统下。镜像可以通过分层来进行继承，基于基础镜像，可以制作各种具体的应用镜像。</p>
 <p>特性：一次性加载多个文件系统，但从外部来看，只有一个文件系统，联合加载会将各层文件系统叠加起来，这样最终的文件系统会包含所有底层的文件和目录</p>
 <p>加载原理：</p>
 <p><img src="/.com//image-20220909223013179.png" alt="image-20220909223013179"></p>
@@ -3805,12 +3805,61 @@
 <p>ENV：用于构建镜像时配置环境变量，ENV MY_PATH &#x2F;usr&#x2F;mytest，这个环境变量可以在后续的指令中使用，就如同在命令前面指定了环境变量一样，$MY_PATH引用环境变量</p>
 <p>ADD：将宿主机目录下的文件拷贝进镜像，且会自动处理URL和解压tar压缩包，文件必须和Dockerfile同一目录</p>
 <p>COPY：将宿主机目录下的文件拷贝进镜像</p>
-<p>VOLUME：容器数据卷，用于数据保存和持久化</p>
+<p>VOLUME：容器数据卷，用于数据保存和持久化，在镜像中创建挂载点，这样只要通过该镜像创建的容器都有了挂载点</p>
 <p>CMD：指定容器启动后所做的事，shell格式和exec格式，可以有多个CMD，但是只有最后一个生效，CMD会被docker run之后的参数替换，当和ENTRYPOINT连用时，CMD中的命令，会作为参数传递给ENTRYPOINT指令</p>
 <p>ENTRYPOINT：指定容器启动时要运行的命令，类似于CMD命令，但是不会被docker run后的参数覆盖，而且这些参数会被送给ENTRYPOINT指定的程序</p>
 <p><img src="/.com//image-20220910200650046.png" alt="image-20220910200650046"></p>
 <p>虚悬镜像：</p>
 <p>仓库名和标签都是&lt;none&gt;的镜像，称为dangling image，通常时执行构建的时候没有指定tag和用户</p>
+<h1 id="六、Network"><a href="#六、Network" class="headerlink" title="六、Network"></a>六、Network</h1><p>Docker网络主要是保证容器间的相互通信以及端口映射，以及在容器ip变动时直接通过服务器名进行网络通信</p>
+<p>网络模式：</p>
+<ol>
+<li>bridge：为每一个容器分配、设置ip，并将容器连接到一个docker0虚拟网桥，默认使用</li>
+<li>host：容器不虚拟自己的网卡，使用主机ip、端口</li>
+<li>none：有独立network space，但并没有对其进行任何设置</li>
+<li>container：与另外一个容器共享ip、端口等</li>
+</ol>
+<p>常用命令：</p>
+<ol>
+<li>指定容器网络模式：docker run –network bridge tomcat</li>
+<li>创建网络模式：docker network create aa</li>
+<li>查看所有网桥模式：docker network ls</li>
+<li>查看网络源数据：docker network inspect aa</li>
+</ol>
+<p>bridge：</p>
+<p>Docker使用linux桥接，在宿主机内虚拟一个Docker容器网桥docker0，启动一个容器时会根据网桥的网段分配给容器一个ip，同时docker0也是每个容器的默认网关，因此同一宿主机内的容器都接入同一个网桥，实现容器间的相互通信。</p>
+<p>docker0会在内核层面连通其他的物理或虚拟网卡，这就将所有的容器和本机都放在了同一物理网络下，Docker默认指定了docker0接口的ip和子网掩码，让主机和容器之间可以通过网桥相互通信。</p>
+<p>docker0相当于交换机，其上有许多虚拟接口veth，每个容器有一个虚拟网卡eth0，docker0中的每一个veth匹配某个容器实例内部eth0，两两配对</p>
+<p><img src="/.com//QQ%E6%88%AA%E5%9B%BE20221002194756.png" alt="QQ截图20221002194756"></p>
+<p>host：</p>
+<p>容器不会获得一个独立网络空间，使用宿主机的ip和端口</p>
+<p><img src="/.com//QQ%E6%88%AA%E5%9B%BE20221002194925.png" alt="QQ截图20221002194925"></p>
+<p>none：</p>
+<p>禁用网络标志，只有一个本地localhost，需要自行配置网络</p>
+<p>container：</p>
+<p>新建立的容器和一个已经存在的容器共享一个网络ip、端口范围，但是两个容器除网络配置外，文件系统等相互隔离</p>
+<p><img src="/.com//QQ%E6%88%AA%E5%9B%BE20221002195711.png" alt="QQ截图20221002195711"></p>
+<p>自定义网络：</p>
+<p>如果没有自定义网络，同一个docker下的容器可以通过ip相互ping通，但是无法使用服务名相互ping通</p>
+<p>步骤：</p>
+<ol>
+<li>新建桥接网络：docker network create aa</li>
+<li>新建容器加入上述网络：docker run -d -p 8081:8080 –network aa –name tomcat81 tomcat8-jdk8 || docker run -d -p 8081:8080 –network aa –name tomcat82 tomcat8-jdk8</li>
+<li>通过服务名（即容器名）可以相互ping通容器，避免因为ip变化导致无法访问服务</li>
+</ol>
+<h1 id="七、Compose"><a href="#七、Compose" class="headerlink" title="七、Compose"></a>七、Compose</h1><p>Docker-Compose是Docker官方开源项目，实现对Docker容器集群的编排。自定义yaml格式配置文件写好多个容器的调用关系，即可一次启动或者关闭所有容器</p>
+<p>核心概念：</p>
+<ol>
+<li>服务：容器实例</li>
+<li>工程：一组关联的服务构成完整的项目即完整的业务单元</li>
+</ol>
+<p>使用步骤：</p>
+<ol>
+<li>编写Dockerfile定义各个微服务应用并构建出对应的镜像文件</li>
+<li>使用docker-compose.yml定义一个工程，安排好各个容器服务</li>
+<li>执行docker-compose up命令启动并运行整个应用程序，完成一键部署</li>
+</ol>
+<p>docker-compose适合单机部署多个容器，k8s更适合集群部署多个容器</p>
 ]]></content>
       <categories>
         <category>运维</category>
