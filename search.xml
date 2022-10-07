@@ -3663,28 +3663,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Redis应用</title>
-    <url>/2022/08/26/Redis%E5%BA%94%E7%94%A8/</url>
-    <content><![CDATA[<h1 id="1、短信登录"><a href="#1、短信登录" class="headerlink" title="1、短信登录"></a>1、短信登录</h1><p>登录或者注册时，后台生成一个验证码，并且以手机号为key在redis中存储验证码。当后台检验验证码登录后，随机生成一个token，以token为key，用户信息为value（可以将用户信息以JSON字符串或者以Hash数据结构的形式保存），缓存到Redis中并将token发送回客户端，以后每次请求时，都携带token验证登录状态和信息。</p>
-<span id="more"></span>
-
-<h1 id="2、商户查询缓存"><a href="#2、商户查询缓存" class="headerlink" title="2、商户查询缓存"></a>2、商户查询缓存</h1><p>缓存时数据交换时的缓冲区，存储数据的临时地方，读写性能较高。</p>
-<p>缓存工作模型：在客户端与数据库之间架设Redis缓存，当客户端发送请求时先查询Redis，如果命中则返回数据，未命中则查询数据库，查询后返回客户端并写入缓存。</p>
-<p>缓存更新策略：</p>
-<ol>
-<li>内存淘汰机制：当Redis内存不足时，自动淘汰部分数据，低一致性需求使用该策略</li>
-<li>超时剔除，给缓存添加到期时间，到期后自动删除</li>
-<li>主动更新，在修改数据库的同时修改缓存，高一致性需求使用该策略</li>
-</ol>
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-      <tags>
-        <tag>redis</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>数据结构</title>
     <url>/2022/08/28/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</url>
     <content><![CDATA[]]></content>
@@ -3860,6 +3838,8 @@
 <li>执行docker-compose up命令启动并运行整个应用程序，完成一键部署</li>
 </ol>
 <p>docker-compose适合单机部署多个容器，k8s更适合集群部署多个容器</p>
+<p>常用命令：</p>
+<p><img src="/.com//QQ%E6%88%AA%E5%9B%BE20221003190605.png" alt="QQ截图20221003190605"></p>
 ]]></content>
       <categories>
         <category>运维</category>
