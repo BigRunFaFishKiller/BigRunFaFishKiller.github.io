@@ -188,6 +188,107 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/09/%E5%88%9D%E5%A7%8B%E5%BC%BA%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95-Paxos%E3%80%81Raft/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/1.jpg">
+      <meta itemprop="name" content="大润发杀鱼匠">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BigRunFaFishKiller">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/09/%E5%88%9D%E5%A7%8B%E5%BC%BA%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95-Paxos%E3%80%81Raft/" class="post-title-link" itemprop="url">初始强一致性算法--Paxos、Raft</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-10-09 19:04:22 / 修改时间：20:47:09" itemprop="dateCreated datePublished" datetime="2022-10-09T19:04:22+08:00">2022-10-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">分布式</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、一致性问题"><a href="#一、一致性问题" class="headerlink" title="一、一致性问题"></a>一、一致性问题</h1><p>分布式系统由一组为了完成共同任务而协调工作的计算机节点组成。目前主流分布式系统的实现是微服务——即将单机整体的项目，先垂直拆分为多个不同的服务模块，每个服务还可以水平拆分随时进行扩容或者缩容。微服务系统可以将服务部署在价格低廉的小型机上，同时可以根据流量随时进行扩容或者缩容从而降本增效，但其问题也是显著的，因为网络的不稳定以及机器故障，分布式系统数据如何保证一致性是需要解决的核心难题之一。</p>
+<p>针对一致性问题有两种解决思路：</p>
+<p>弱一致性：即最终一致性，优先保证系统的高可用，通过某种手段使数据最终一致，常见的应用就是DNS服务器</p>
+<p>强一致性：引入其他协议，牺牲部分性能，保证系统较强的一致性</p>
+<h1 id="二、强一致性算法"><a href="#二、强一致性算法" class="headerlink" title="二、强一致性算法"></a>二、强一致性算法</h1><h1 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h1><p>数据一致性问题，简单来说就是，系统请求一个值后，分布式系统所有节点对该值达成一致意见，其中最著名的解决方案就是Lamport提出的Paxos算法，在多台服务器中间建立选举机制，通过统一的发号与应答完成数据的一致性。</p>
+<p>在解释算法时，Lamport虚拟了一个叫Paxos的小岛：</p>
+<blockquote>
+<p>这个岛按照议会民主制的政治模式制订法律，但是没有人愿意将自己的全部时间和精力放在这种事情上。所以无论是议员，议长或者传递纸条的服务员都不能承诺别人需要时一定会出现，也无法承诺批准决议或者传递消息的时间。但是这里假设没有拜占庭将军问题（Byzantine failure，即虽然有可能一个消息被传递了两次，但是绝对不会出现错误的消息）；只要等待足够的时间，消息就会被传到。另外，Paxos 岛上的议员是不会反对其他议员提出的决议的</p>
+</blockquote>
+<p>在Paxos算法中对应的种角色：</p>
+<ol>
+<li>Client：系统外部发送请求，即岛上提出建议的群众</li>
+<li>Proposer：接受Client的请求并向集群提出提议，当一个Proposer挂掉后，将新开一个Proposer保证可用，即议长</li>
+<li>Acceptor：提议的投票者和接受者，Acceptor，即议员</li>
+<li>Learner：提议的接受者，对集群一致性没有影响，即书记员</li>
+</ol>
+<p>系统运作时分为以下几个步骤：</p>
+<ol>
+<li>client发送一个提案，Proposer向Acceptor请求一个编号为N的提案</li>
+<li>如果N大于Acceptor此前接受的任何提案的编号，Acceptor接受提案，否则拒绝提案。</li>
+<li>如果一半以上Acceptor接受提案，即达到了多数派，Proposer则向Acceptor发送一个包含提案号N以及提案内容的请求</li>
+<li>如果Acceptor在接受提案号和实际接受到提案之间，没有接受到大于N的提案，Acceptor则接受该提案，某则拒绝提案</li>
+</ol>
+<p>即如图所示：</p>
+<p><img src="/.com//192010B7EAD324EA13F7045275A0E0E7-16653170876213.png" alt="192010B7EAD324EA13F7045275A0E0E7"></p>
+<p>以上是Paxos的基本思想，很明显上述算法存在一定缺陷，提案编号和提案内容分为两次发送，需要两次RPC，其次是Proposer挂掉后，系统将启动另一个Proposer，本意是好的，但是当第二个Proposer启动后，如果此时第一个Proposer回复后，系统内将存在两个Proposer，此时可能会产生一个“活锁”问题，即当一个Proposer发送提案后，第二个Proposer发送一个提案，此时第一个Proposer的提案将不会有回复，它会再次发送提案，此时第二个Proposer的提案将得不到回应，它也会再次发送提案，此时两个Proposer将一直会争夺提案，请求将的不到执行。</p>
+<p>因此由Paxos算法衍生除了“Multi Paxos”</p>
+<p>由Paxos衍生出的新概念角色：Leader，唯一的Proposer，从所有的节点中选举Leader，所有请求都要经过Leader，同时在第一次请求时，某一个节点向其他节点发出选举信号，当多数节点响应后，此节点成为Leader，此后请求从Leader节点发出，并且同时发出提案号和提案内容</p>
+<h1 id="Raft"><a href="#Raft" class="headerlink" title="Raft"></a>Raft</h1><p>Raft算法是Multi Paxos一种简化实现，它将Paxos算法划分为3个子问题：1、Leader选举，2、日志复制，3、安全保证，并且将角色进行了简化，划分为Leader即Proposer，Follower即Acceptor和Candidate即Leader候选人</p>
+<p>Leader选举：Raft通过心跳机制实现确保Leader的存在，起初系统内不存在Leader，当某个节点长时间没有接受到Leader信号，某个节点将成为Candidate向其他节点发送选举信号，当多数派同意后，该节点将成为Leader对外接受请求</p>
+<p>日志复制：当外部发送请求后，Leader将提案发送给Follower完成数据一致，在Raft中将其称之为“log entry”，Leader将提案放入类似于缓存的位置，当其他Follower接受到提案后将天放到缓存并向Leader回应，当多数派回应后Leader提交本次提案，并再次向Follower发出信号，此时接受到信号的Follower将提交</p>
+<p>安全保证：当Leader挂掉后，通过心跳机制，集群中将再次产出Candidate，向其他节点发送选举信号，多数派同意后将成为新的Leader。同时节点等待的延时是随机的，以保证多个Candidate竞选时不会产生平票的问题</p>
+<p>网络分区问题：当集群产生分区情况时，如果分为两个，集群会产生两个Leader，一般部署的集群节点为单数，因此产生分区时一定会有一个多数派，此时的多数派任然能够保持可用状态，少数派的Leader将无法更新对应分区，当分区回复后，如果多数派集群发生更新，少数派的集群将会服从多数派的管理。当没有多数派的时候，集群将不可用，需要等待分区恢复重新选出Leader</p>
+<h1 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h1><p>本文只是对Paxos算法的简单理解，具体的实现显然比本文的理解复杂的多，如有不足还请指正。Raft官网有一个动画对Raft算法有可视化的解释<a target="_blank" rel="noopener" href="https://raft.github.io/">Raft Consensus Algorithm</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/09/docker/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -965,88 +1066,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/26/VUE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/1.jpg">
-      <meta itemprop="name" content="大润发杀鱼匠">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BigRunFaFishKiller">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/07/26/VUE/" class="post-title-link" itemprop="url">VUE</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-07-26 17:39:26" itemprop="dateCreated datePublished" datetime="2022-07-26T17:39:26+08:00">2022-07-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-27 11:23:30" itemprop="dateModified" datetime="2022-07-27T11:23:30+08:00">2022-07-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%85%B6%E4%BB%96/" itemprop="url" rel="index"><span itemprop="name">其他</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h1><p>VUE是一个JavaScript框架，简化dom元素的操作，实现响应式数据驱动</p>
-<p><a target="_blank" rel="noopener" href="https://cn.vuejs.org/v2/guide/index.html">介绍 — Vue.js (vuejs.org)</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/07/26/VUE/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1118,20 +1137,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
