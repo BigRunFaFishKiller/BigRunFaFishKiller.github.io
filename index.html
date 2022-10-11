@@ -188,6 +188,93 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/11/%E6%B5%85%E8%B0%88KMP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/1.jpg">
+      <meta itemprop="name" content="大润发杀鱼匠">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BigRunFaFishKiller">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/11/%E6%B5%85%E8%B0%88KMP/" class="post-title-link" itemprop="url">浅谈KMP</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-10-11 15:16:42 / 修改时间：15:17:06" itemprop="dateCreated datePublished" datetime="2022-10-11T15:16:42+08:00">2022-10-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="对KMP的思考"><a href="#对KMP的思考" class="headerlink" title="对KMP的思考"></a>对KMP的思考</h1><p>KMP算法是字符串匹配的经典算法之一，能将暴力匹配的复杂度从$O(n^2)$降低到$O(n)$。在了解KMP之前，我们先来看看暴力匹配字符串的实现。</p>
+<p>给定一个带匹配字符串str &#x3D; “abababc”和一个模板串t &#x3D; “ababc”，返回模板串在带匹配串中的下标。<br>设一个指针i在str上移动，指针j在t上移动，当i指向索引4即“b”的时候，j指针指向“c”，此时发生不匹配的情况，于是i指针重新指向索引1，j指针索引0，进行下一轮匹配，直到模板串匹配完成。<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e4d77d4b7ca64bc7bdd5fa51504e706d~tplv-k3u1fbpfcp-watermark.image" alt="AFC6A862B8D58F3C8AB691E080AA520C.png"></p>
+<p>很明显，暴力求解将整个待匹配的字符串重复循环，其时间复杂度是较高的，那么有什么办法可以优化呢？</p>
+<p>如果我们只让i向前移动，不进行回退，那么就可以将算法优化为线性时间。例如在上图中，在索引4的位置发生了不匹配，但是发生不匹配的前两位和模板串的开头两位是匹配的，因此我们不回退i指针，让j指针跳过模板串的前两位，从第三位继续匹配。</p>
+<p>对于已经遍历过的子串，我们是否可以从中再发掘一些信息呢？我们将发送不匹配的点称为错误点，从中我们可以看出，错误点的前两位和模板串的前两位是匹配的，我们将错误点之前的串提取为一个子串。在这个子串中，最长的相等的前后缀，其长度为2即“ab”，因此<em><strong>如果我们在这个子串的下一位发生了不匹配，那么就说明，错误点的前两位必定是“ab”，此时再进行匹配的时候，我们就可以跳过模板串的前两位</strong></em></p>
+<p>对于前后缀，上述可能表示的不是很清楚。此时的前缀是指不包含最后一个字符的前缀，后缀指的是不包含第一个字符的后缀。例如“abab”，其前缀有“a”、“ab”、“aba”，其后缀有“b”、“ab”、“bab”。</p>
+<p>由此引申除了KMP算法中的核心——next数组，我们为模板串的每一位都计算一个值，这个值的意思就是，<strong>当下一位发生发生不匹配的时候，让j指针跳过模板串的next[ j - 1 ]位</strong>。</p>
+<p>此时我们再来看KMP算法的字符串匹配情况</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/928b8cc53ebb4be29a0296b871ecbf71~tplv-k3u1fbpfcp-watermark.image" alt="223A4A8A4D9D34B12DE3165C206513A2.png"></p>
+<p>还是在索引4发生了不匹配，但是此时我们有了next数组，通过查询错误点前一位的next数组值，等于2，因此我们将跳过模板串的前两位，此时再向后移动i、j指针继续检查，不必再回退i指针，我们的算法就被优化为了线性时间。</p>
+<p>下面是KMP算法的代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">kmp</span><span class="params">(String str, String sub)</span> &#123;</span><br><span class="line">    <span class="type">int</span>[] next = findNext(sub);</span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; str.length() &amp;&amp; j &lt; sub.length()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (str.charAt(i) == sub.charAt(j)) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (j &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            j = next[j - <span class="number">1</span>];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j == sub.length()) &#123;</span><br><span class="line">        <span class="keyword">return</span> i - j;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//不存在则返回-1</span></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="next数组求解"><a href="#next数组求解" class="headerlink" title="next数组求解"></a>next数组求解</h1><p>特别说明，此时KMP算法中的next数组并不是原KMP算法中表达的意思，我们日常讨论的KMP都是经过简化处理的。</p>
+<p>从前面的讨论我们得出，next数组每一位的值是<strong>以该位结尾的模板串的子串，其所对应的最大前后缀长度</strong></p>
+<p>顺着这个思路我们先暴力求解一下next数组，设模板串为“abacabab”。显然next数组第一位均为0即next[0] &#x3D; 0，索引1的子串“ab”其最长相等前后缀的长度也为0，next[1] &#x3D; 0，子串“aba”其最长相等前后缀的长度为1，以此类推，“abac”其next[3] &#x3D; 0,“abaca”其next[4] &#x3D; 1。</p>
+<p>此时我们发现，当我们找到第一个相等前后缀的时候，我们可以判断这个字符的下一位是否相等，如果相等则可以直接让前后缀的长度加一，可如果不相等呢？对于上述模板串的子串“abacaba”其最大前后缀长度为3，然而其下一个子串“abacabab”，我们难道又要暴力求解吗？</p>
+<p>对于“abacaba”其存在长度为3的相等的前后缀，我们以“aba”为基础判断加上下一个字符是否也满足相等的前后缀是行不通的，又因为左边的子串等于右边的子串（都是“aba”），所以<strong>左边子串的最长的前缀一定等于右边子串的最长后缀即“a”</strong>，我们就以“aba”的最长前后缀即“a”为基础再进行后面的查找，如果加上下一个字符任然没有最长前后缀，我们就查“a”的最长前后缀，又因为“a”的最长前后缀为0，所以其next值为0。</p>
+<p>有了思路算法就很好实现了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span>[] findNext(String str) &#123;</span><br><span class="line">    <span class="keyword">if</span> (str.length() == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">int</span>[] &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span>[] next = <span class="keyword">new</span> <span class="title class_">int</span>[str.length()];</span><br><span class="line">    next[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">prefixNum</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; str.length(); i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (str.charAt(i) == next[prefixNum]) &#123;</span><br><span class="line">            prefixNum++;</span><br><span class="line">            next[i] = prefixNum;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (prefixNum == <span class="number">0</span>) &#123;</span><br><span class="line">            next[i] = prefixNum;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            next[i] = prefixNum - <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/11/Raft%E7%AE%97%E6%B3%95%E5%BA%94%E7%94%A8%E2%80%94%E2%80%94Redis%E5%93%A8%E5%85%B5%E9%80%89%E4%B8%BE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -967,92 +1054,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/04/Gin/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/1.jpg">
-      <meta itemprop="name" content="大润发杀鱼匠">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BigRunFaFishKiller">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/08/04/Gin/" class="post-title-link" itemprop="url">Gin</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-08-04 08:44:06" itemprop="dateCreated datePublished" datetime="2022-08-04T08:44:06+08:00">2022-08-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-11 10:51:30" itemprop="dateModified" datetime="2022-09-11T10:51:30+08:00">2022-09-11</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><p>轻量级http web框架，性能高</p>
-<p>引入包：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">go get -u github.com/gin-gonic/gin</span><br><span class="line">//如果无法下载，需要修改代理：go env -w GOPROXY=https://goproxy.cn,direct</span><br><span class="line"></span><br><span class="line">import &quot;github.com/gin-gonic/gin&quot;</span><br></pre></td></tr></table></figure>
-
-<p>快速启动：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	r := gin.Default()		<span class="comment">//创建默认路由引擎</span></span><br><span class="line">	r.GET(<span class="string">&quot;/ping&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;	<span class="comment">//配置请求地址和回调函数</span></span><br><span class="line">		c.JSON(<span class="number">200</span>, gin.H&#123;			<span class="comment">//响应json，200可以用http.StatusOk替换，其他状态码也有对应常量</span></span><br><span class="line">			<span class="string">&quot;message&quot;</span>: <span class="string">&quot;pong&quot;</span>,</span><br><span class="line">		&#125;)</span><br><span class="line">	&#125;)</span><br><span class="line">    r.Run() <span class="comment">// 监听并在 0.0.0.0:8080 上启动服务，Run(&quot;:8000&quot;)，在8000端口上启动服务</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/08/04/Gin/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1124,14 +1125,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
