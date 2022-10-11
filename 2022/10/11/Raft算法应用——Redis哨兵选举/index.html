@@ -20,15 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="BigRunFaFishKiller">
-<meta property="og:url" content="http://example.com/archives/2022/07/index.html">
+  <meta name="description" content="在前一篇博客中我们谈到了Paxos算法以及其变种Raft算法（初识强一致性算法–Paxos、Raft - 掘金 (juejin.cn)）这篇文章我们探讨一下Raft算法的实际应用——Redis哨兵选举。首先说明Redis哨兵选举并没有完全运用Raft算法，只是运用Raft算法中的子问题Leader的选举 一、哨兵首先我们来谈一谈哨兵（Sentinel）。哨兵是Redis集群高可用的一种实现，哨兵通">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Raft算法应用——Redis哨兵选举">
+<meta property="og:url" content="http://example.com/2022/10/11/Raft%E7%AE%97%E6%B3%95%E5%BA%94%E7%94%A8%E2%80%94%E2%80%94Redis%E5%93%A8%E5%85%B5%E9%80%89%E4%B8%BE/index.html">
 <meta property="og:site_name" content="BigRunFaFishKiller">
+<meta property="og:description" content="在前一篇博客中我们谈到了Paxos算法以及其变种Raft算法（初识强一致性算法–Paxos、Raft - 掘金 (juejin.cn)）这篇文章我们探讨一下Raft算法的实际应用——Redis哨兵选举。首先说明Redis哨兵选举并没有完全运用Raft算法，只是运用Raft算法中的子问题Leader的选举 一、哨兵首先我们来谈一谈哨兵（Sentinel）。哨兵是Redis集群高可用的一种实现，哨兵通">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-11T07:13:18.000Z">
+<meta property="article:modified_time" content="2022-10-11T07:14:09.967Z">
 <meta property="article:author" content="大润发杀鱼匠">
+<meta property="article:tag" content="算法">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/archives/2022/07/">
+<link rel="canonical" href="http://example.com/2022/10/11/Raft%E7%AE%97%E6%B3%95%E5%BA%94%E7%94%A8%E2%80%94%E2%80%94Redis%E5%93%A8%E5%85%B5%E9%80%89%E4%B8%BE/">
 
 
 <script id="page-configurations">
@@ -36,12 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | BigRunFaFishKiller</title>
+  <title>Raft算法应用——Redis哨兵选举 | BigRunFaFishKiller</title>
   
 
 
@@ -182,234 +187,102 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 24 篇日志。 继续努力。</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/11/Raft%E7%AE%97%E6%B3%95%E5%BA%94%E7%94%A8%E2%80%94%E2%80%94Redis%E5%93%A8%E5%85%B5%E9%80%89%E4%B8%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/1.jpg">
+      <meta itemprop="name" content="大润发杀鱼匠">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BigRunFaFishKiller">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Raft算法应用——Redis哨兵选举
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-10-11 15:13:18 / 修改时间：15:14:09" itemprop="dateCreated datePublished" datetime="2022-10-11T15:13:18+08:00">2022-10-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">分布式</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2022</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-27T17:49:55+08:00"
-              content="2022-07-27">
-          07-27
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/27/redis/" itemprop="url">
-            <span itemprop="name">Redis</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-26T17:39:26+08:00"
-              content="2022-07-26">
-          07-26
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/26/VUE/" itemprop="url">
-            <span itemprop="name">VUE</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-23T10:10:54+08:00"
-              content="2022-07-23">
-          07-23
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/23/SpringBoot/" itemprop="url">
-            <span itemprop="name">SpringBoot</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-20T12:08:33+08:00"
-              content="2022-07-20">
-          07-20
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/20/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url">
-            <span itemprop="name">设计模式</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-16T20:43:43+08:00"
-              content="2022-07-16">
-          07-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/16/%E5%BC%80%E5%8F%91%E6%97%A5%E8%AE%B0-%E5%AD%90%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/" itemprop="url">
-            <span itemprop="name">开发日记-子查询的实际应用</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-15T21:46:30+08:00"
-              content="2022-07-15">
-          07-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/15/%E5%BC%80%E5%8F%91%E6%97%A5%E8%AE%B0-%E6%9D%A1%E4%BB%B6%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E7%8E%B0/" itemprop="url">
-            <span itemprop="name">开发日记-条件分页查询的实现</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-10T10:52:05+08:00"
-              content="2022-07-10">
-          07-10
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/10/Java%E6%93%8D%E4%BD%9CExcel%E6%96%87%E4%BB%B6/" itemprop="url">
-            <span itemprop="name">Java操作Excel文件</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-09T17:43:44+08:00"
-              content="2022-07-09">
-          07-09
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/09/GoLang/" itemprop="url">
-            <span itemprop="name">GoLang</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-07T21:17:46+08:00"
-              content="2022-07-07">
-          07-07
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/07/MyBatis/" itemprop="url">
-            <span itemprop="name">MyBatis</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-07T16:35:21+08:00"
-              content="2022-07-07">
-          07-07
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/07/JDBC/" itemprop="url">
-            <span itemprop="name">JDBC</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
+        <p>在前一篇博客中我们谈到了Paxos算法以及其变种Raft算法（<a target="_blank" rel="noopener" href="https://juejin.cn/post/7152497368397840415">初识强一致性算法–Paxos、Raft - 掘金 (juejin.cn)</a>）这篇文章我们探讨一下Raft算法的实际应用——Redis哨兵选举。首先说明Redis哨兵选举并没有完全运用Raft算法，只是运用Raft算法中的子问题Leader的选举</p>
+<h1 id="一、哨兵"><a href="#一、哨兵" class="headerlink" title="一、哨兵"></a>一、哨兵</h1><p>首先我们来谈一谈哨兵（Sentinel）。哨兵是Redis集群高可用的一种实现，哨兵通过心跳机制监视集群中的主服务器和从服务器，当哨兵监视到集群中的主服务器没有响应心跳时，会先判断该主服务器主观下线，并且通知其他哨兵进行判断，当超过一半的哨兵认为该服务器主观下线该服务器构成客观下线，此时哨兵集群中会选举出一个“头领”哨兵，将主服务器下线，并通过一定的规则拉起从服务器作为集群新的主服务器，并完成新的主从复制。选举“头领”哨兵的过程就运用Raft算法的Leader选举过程。</p>
+<p>在讨论选举过程我们先来了解一下哨兵的。哨兵的本质是一个特殊运行状态下的Redis服务器，去掉了数据库功能并维护一些新的信息例如集群中主从服务器地址、端口号等等。在启动哨兵后系统会建立一个结构称为“sentinelState”用以保存服务器中所有与哨兵功能有关的状态。在“sentinelState”中有一个字典表保存着被监视的服务器以及其他哨兵的信息，通过这些信息，哨兵可以通过订阅、连接主从服务器，连接其他哨兵，完成对系统内所有服务器的监视，以及接受其他哨兵传来的信息。“sentinelState”还存在一个计数器“config_epoch”，用于进行故障转移。</p>
+<h1 id="二、“头领”选举"><a href="#二、“头领”选举" class="headerlink" title="二、“头领”选举"></a>二、“头领”选举</h1><p>当一个主服务器被判断为客观下线的时候，监视该服务器的哨兵就会选举出一个“头领”进行故障转移。</p>
+<p>哨兵集群的任何一个哨兵都能成为“头领哨兵”，每个发现服务器下线的哨兵都会向其他哨兵发送命令，要求其他哨兵将自己作为“局部头领”哨兵。设置“局部头领”哨兵的过程是先到先得，当A哨兵接收到了B哨兵的信息后，A哨兵就将B哨兵作为头领哨兵，并且拒绝其他所有哨兵要求设置头部哨兵的信息同时使“config_epoch”加1。并且A哨兵会向B哨兵发送一条信息，里面记录着B哨兵的id，当B哨兵接收到信息后，就知道已经有一台哨兵将自己作为了“头领”哨兵。当集群中有一台哨兵胜出后就称为哨兵集群的“头领”哨兵，完成接下里的故障转移。如果在给定的时间内没有完成“头领”的选举，哨兵将会在一段时间后重新选举，直到选出“头领”哨兵为止。</p>
+<p>因为“头领”哨兵需要半数以上其他哨兵的支持，同时由上面的过程可知，在一次选举中，每个哨兵只会设置一次哨兵，因此集群中只会产生一个“头领”哨兵。“config_epoch”实际上就是一个计数器，表示一次选举，在选举的过程中用以校验信息，其他并无特别之处。</p>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/10/09/%E5%88%9D%E8%AF%86%E5%BC%BA%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95-Paxos%E3%80%81Raft/" rel="prev" title="初识强一致性算法--Paxos、Raft">
+      <i class="fa fa-chevron-left"></i> 初识强一致性算法--Paxos、Raft
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
   
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/2022/07/page/2/">2</a><a class="extend next" rel="next" href="/archives/2022/07/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
+  
+  
 
 
 
@@ -461,6 +334,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%93%A8%E5%85%B5"><span class="nav-number">1.</span> <span class="nav-text">一、哨兵</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E2%80%9C%E5%A4%B4%E9%A2%86%E2%80%9D%E9%80%89%E4%B8%BE"><span class="nav-number">2.</span> <span class="nav-text">二、“头领”选举</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
